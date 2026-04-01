@@ -1,8 +1,10 @@
 // @ts-nocheck
 "use client";
 
+
 import { useState, useEffect, useRef } from "react";
 import Skills from "../components/Skills";
+import ThreeScene from "../components/ui/ThreeScene";
 
 function useInView(thr) {
   var t = thr === undefined ? 0.1 : thr;
@@ -438,6 +440,7 @@ export default function App() {
         <div>
           <Cursor />
           <Particles />
+          <ThreeScene />
           <FloatingResume />
           <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", background: "radial-gradient(ellipse 65% 48% at 50% -2%,rgba(99,102,241,.1),transparent 62%),radial-gradient(ellipse 48% 38% at 95% 98%,rgba(139,92,246,.07),transparent 58%)" }} />
 
