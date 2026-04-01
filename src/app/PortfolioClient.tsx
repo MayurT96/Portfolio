@@ -1,0 +1,629 @@
+// @ts-nocheck
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import Skills from "../components/Skills";
+
+function useInView(thr) {
+  var t = thr === undefined ? 0.1 : thr;
+  var ref = useRef(null);
+  var s = useState(false); var vis = s[0]; var setVis = s[1];
+  useEffect(function () {
+    var obs = new IntersectionObserver(function (en) { if (en[0].isIntersecting) setVis(true); }, { threshold: t });
+    if (ref.current) obs.observe(ref.current);
+    return function () { obs.disconnect(); };
+  }, [t]);
+  return [ref, vis];
+}
+
+function Typewriter(props) {
+  var words = props.words;
+  var s1 = useState(""); var txt = s1[0]; var setTxt = s1[1];
+  var s2 = useState(0); var wi = s2[0]; var setWi = s2[1];
+  var s3 = useState(false); var del = s3[0]; var setDel = s3[1];
+  useEffect(function () {
+    var word = words[wi % words.length];
+    var id = setTimeout(function () {
+      if (!del) {
+        var n = word.slice(0, txt.length + 1); setTxt(n);
+        if (n.length === word.length) setTimeout(function () { setDel(true); }, 2000);
+      } else {
+        var n2 = word.slice(0, txt.length - 1); setTxt(n2);
+        if (n2.length === 0) { setDel(false); setWi(function (i) { return i + 1; }); }
+      }
+    }, del ? 35 : 85);
+    return function () { clearTimeout(id); };
+  });
+  return (
+    <span>
+      <span style={{ color: "#a78bfa" }}>{txt}</span>
+      <span style={{ animation: "blink 1s step-end infinite", color: "#7c3aed" }}>|</span>
+    </span>
+  );
+}
+
+function Cursor() {
+  var ring = useRef(null); var dot = useRef(null);
+  var trails = useRef([null,null,null,null,null]);
+  var rx = useRef(0); var ry = useRef(0); var mx = useRef(0); var my = useRef(0);
+  var tx = useRef([0,0,0,0,0]); var ty = useRef([0,0,0,0,0]);
+
+  useEffect(function () {
+    var onM = function (e) { mx.current = e.clientX; my.current = e.clientY; };
+    window.addEventListener("mousemove", onM);
+    var raf;
+    function tick() {
+      var dx = mx.current - rx.current;
+      var dy = my.current - ry.current;
+      rx.current += dx * 0.12;
+      ry.current += dy * 0.12;
+      
+      var speed = Math.sqrt(dx*dx + dy*dy);
+      var angle = Math.atan2(dy, dx) * 180 / Math.PI;
+      var sx = Math.min(2.5, 1 + speed * 0.015);
+      var sy = Math.max(0.3, 1 - speed * 0.005);
+      if (ring.current) ring.current.style.transform = "translate(" + (rx.current - 18) + "px," + (ry.current - 18) + "px) rotate(" + angle + "deg) scale(" + sx + "," + sy + ")";
+      if (dot.current) dot.current.style.transform = "translate(" + (mx.current - 3) + "px," + (my.current - 3) + "px)";
+
+      tx.current[0] += (mx.current - tx.current[0]) * 0.35;
+      ty.current[0] += (my.current - ty.current[0]) * 0.35;
+      for(var i=1; i<5; i++) {
+        tx.current[i] += (tx.current[i-1] - tx.current[i]) * 0.45;
+        ty.current[i] += (ty.current[i-1] - ty.current[i]) * 0.45;
+      }
+      for(var j=0; j<5; j++) {
+        if (trails.current[j]) trails.current[j].style.transform = "translate(" + (tx.current[j] - 2) + "px," + (ty.current[j] - 2) + "px)";
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    tick();
+
+    var onD = function() {
+      if(ring.current) {
+        ring.current.style.transition = "transform 0.1s cubic-bezier(0,0,0.2,1), opacity 0.1s";
+        ring.current.style.transform += " scale(1.5)";
+        ring.current.style.opacity = "0.2";
+        setTimeout(() => {
+          if(ring.current) {
+            ring.current.style.transition = "none";
+            ring.current.style.opacity = "1";
+          }
+        }, 150);
+      }
+    };
+    window.addEventListener("mousedown", onD);
+    return function () { window.removeEventListener("mousemove", onM); window.removeEventListener("mousedown", onD); cancelAnimationFrame(raf); };
+  }, []);
+
+  return (
+    <div style={{ pointerEvents: "none", zIndex: 9999 }}>
+      {[0, 1, 2, 3, 4].map(i => (
+        <div key={i} ref={el => trails.current[i] = el} style={{ position: "fixed", top: 0, left: 0, width: 4, height: 4, borderRadius: "50%", background: "rgba(167,139,250," + (0.5 - i*0.08) + ")", filter: "blur(0.5px)" }} />
+      ))}
+      <div ref={ring} style={{ position: "fixed", top: 0, left: 0, width: 36, height: 36, borderRadius: "50%", border: "1.5px solid rgba(167,139,250,0.5)" }} />
+      <div ref={dot} style={{ position: "fixed", top: 0, left: 0, width: 6, height: 6, borderRadius: "50%", background: "#fff", boxShadow: "0 0 12px #a78bfa" }} />
+    </div>
+  );
+}
+
+function Particles() {
+  var cvs = useRef(null);
+  useEffect(function () {
+    var c = cvs.current; var ctx = c.getContext("2d");
+    var W = c.width = window.innerWidth; var H = c.height = window.innerHeight;
+    var N = Math.min(55, Math.floor(W * H / 18000));
+    var pts = [];
+    for (var i = 0; i < N; i++) pts.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22, r: Math.random() * 1.2 + .3, hue: Math.random() * 50 + 220 });
+    var raf;
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < pts.length; i++) {
+        var p = pts[i]; p.vx *= .99; p.vy *= .99; p.x = (p.x + p.vx + W) % W; p.y = (p.y + p.vy + H) % H;
+        var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+        g.addColorStop(0, "hsla(" + p.hue + ",90%,70%,.5)"); g.addColorStop(1, "hsla(" + p.hue + ",90%,60%,0)");
+        ctx.beginPath(); ctx.fillStyle = g; ctx.arc(p.x, p.y, p.r * 4, 0, 6.28); ctx.fill();
+      }
+      for (var i = 0; i < pts.length; i++) for (var j = i + 1; j < pts.length; j++) {
+        var dx = pts[i].x - pts[j].x; var dy = pts[i].y - pts[j].y; var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 80) { ctx.beginPath(); ctx.strokeStyle = "rgba(120,100,255," + (.09 * (1 - d / 80)) + ")"; ctx.lineWidth = .4; ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke(); }
+      }
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    var onR = function () { W = c.width = window.innerWidth; H = c.height = window.innerHeight; };
+    window.addEventListener("resize", onR);
+    return function () { cancelAnimationFrame(raf); window.removeEventListener("resize", onR); };
+  }, []);
+  return <canvas ref={cvs} style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", opacity: .45 }} />;
+}
+
+function Preloader(props) {
+  var s1 = useState(0); var pct = s1[0]; var setPct = s1[1];
+  var s2 = useState(false); var out = s2[0]; var setOut = s2[1];
+  useEffect(function () {
+    var v = 0;
+    var id = setInterval(function () {
+      v += Math.random() * 8 + 3;
+      if (v >= 100) { v = 100; clearInterval(id); setTimeout(function () { setOut(true); setTimeout(props.onDone, 500); }, 400); }
+      setPct(Math.floor(v));
+    }, 50);
+    return function () { clearInterval(id); };
+  }, []);
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "#06060f", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", zIndex: 99999, opacity: out ? 0 : 1, transition: "opacity .5s", pointerEvents: out ? "none" : "all" }}>
+      <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 11, letterSpacing: ".35em", color: "#a78bfa", marginBottom: 30, textTransform: "uppercase" }}>Initializing</div>
+      <div style={{ width: 200, height: 1, background: "rgba(255,255,255,.07)", position: "relative" }}>
+        <div style={{ position: "absolute", top: 0, left: 0, height: "100%", width: pct + "%", background: "linear-gradient(90deg,#6366f1,#a78bfa)", transition: "width .08s", boxShadow: "0 0 10px #7c3aed" }} />
+      </div>
+      <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 11, color: "rgba(255,255,255,.2)", marginTop: 14 }}>{pct}%</div>
+    </div>
+  );
+}
+
+function Navbar(props) {
+  var links = ["About", "Skills", "Projects", "Contact"];
+  var s = useState(null); var hov = s[0]; var setHov = s[1];
+  return (
+    <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, height: 62, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(18px,6vw,80px)", background: props.scrolled ? "rgba(6,6,15,.9)" : "transparent", backdropFilter: props.scrolled ? "blur(22px)" : "none", borderBottom: props.scrolled ? "1px solid rgba(255,255,255,.05)" : "none", transition: "all .4s" }}>
+      <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 19, background: "linear-gradient(120deg,#fff,rgba(167,139,250,.8))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Bunny96</div>
+      <div style={{ display: "flex", gap: "clamp(14px,3vw,38px)", alignItems: "center" }}>
+        {links.map(function (l) {
+          return <a key={l} href={"#" + l.toLowerCase()} onMouseEnter={function () { setHov(l); }} onMouseLeave={function () { setHov(null); }}
+            style={{ fontFamily: "'Playfair Display', serif", fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: hov === l ? "#fff" : "rgba(255,255,255,.42)", textDecoration: "none", transition: "color .25s", cursor: "none" }}>{l}</a>;
+        })}
+        <a href="https://github.com/MayurT96" target="_blank" rel="noopener noreferrer"
+          style={{ fontFamily: "'Playfair Display', serif", fontSize: 11, letterSpacing: ".1em", padding: "6px 16px", borderRadius: 40, border: "1px solid rgba(167,139,250,.3)", color: "rgba(167,139,250,.75)", textDecoration: "none", transition: "all .25s", cursor: "none" }}
+          onMouseEnter={function (e) { e.currentTarget.style.background = "rgba(139,92,246,.12)"; e.currentTarget.style.color = "#c4b5fd"; }}
+          onMouseLeave={function (e) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(167,139,250,.75)"; }}>
+          GitHub
+        </a>
+      </div>
+    </nav>
+  );
+}
+
+function Fade(props) {
+  var v = useInView(0.08); var ref = v[0]; var vis = v[1];
+  var base = { opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(28px)", transition: "opacity .82s cubic-bezier(.23,1,.32,1), transform .82s cubic-bezier(.23,1,.32,1)" };
+  return <section id={props.id} ref={ref} style={Object.assign({}, base, props.style || {})}>{props.children}</section>;
+}
+
+function SH(props) {
+  return (
+    <div style={{ marginBottom: 52 }}>
+      <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 10, letterSpacing: ".3em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 10 }}>{props.tag}</div>
+      <h2 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(28px,4.5vw,50px)", color: "#fff", margin: 0, lineHeight: 1.1, letterSpacing: "-.02em" }}>{props.children}</h2>
+      <div style={{ width: 38, height: 2, marginTop: 16, background: "linear-gradient(90deg,#6366f1,#a78bfa)", borderRadius: 2, boxShadow: "0 0 10px #7c3aed" }} />
+    </div>
+  );
+}
+
+
+
+function PCard(props) {
+  var p = props.p; var ref = useRef(null);
+  var sh = useState(false); var hov = sh[0]; var setHov = sh[1];
+  return (
+    <div ref={ref}
+      onMouseEnter={function () { setHov(true); }}
+      onMouseLeave={function () { setHov(false); if (ref.current) ref.current.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale(1)"; }}
+      onMouseMove={function (e) {
+        if (!ref.current) return;
+        var r = ref.current.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width - .5; var y = (e.clientY - r.top) / r.height - .5;
+        ref.current.style.transform = "perspective(800px) rotateX(" + (-y * 5) + "deg) rotateY(" + (x * 5) + "deg) scale(1.02)";
+      }}
+      style={{ background: "rgba(255,255,255,.03)", border: "1px solid " + (hov ? "rgba(167,139,250,.28)" : "rgba(255,255,255,.07)"), borderRadius: 18, overflow: "hidden", transition: "transform .18s, border-color .3s, box-shadow .3s", transformStyle: "preserve-3d", boxShadow: hov ? "0 20px 55px rgba(99,102,241,.16)" : "0 4px 20px rgba(0,0,0,.2)" }}>
+      <div style={{ height: 165, background: "linear-gradient(135deg," + p.c1 + "18," + p.c2 + "12)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+        <div style={{ fontSize: 52, filter: "drop-shadow(0 4px 14px " + p.c1 + "55)" }}>{p.emoji}</div>
+        <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 6 }}>
+          <a href={p.github} target="_blank" rel="noopener noreferrer" style={{ padding: "3px 9px", borderRadius: 20, background: "rgba(0,0,0,.5)", border: "1px solid rgba(255,255,255,.12)", color: "rgba(255,255,255,.65)", fontFamily: "'Playfair Display', serif", fontSize: 10, textDecoration: "none", cursor: "none" }}
+            onMouseEnter={function (e) { e.currentTarget.style.color = "#fff"; }} onMouseLeave={function (e) { e.currentTarget.style.color = "rgba(255,255,255,.65)"; }}>GitHub ↗</a>
+          {p.live && <a href={p.live} target="_blank" rel="noopener noreferrer" style={{ padding: "3px 9px", borderRadius: 20, background: p.c1 + "30", border: "1px solid " + p.c1 + "50", color: p.c1, fontFamily: "'Playfair Display', serif", fontSize: 10, textDecoration: "none", cursor: "none" }}>Live ↗</a>}
+        </div>
+      </div>
+      <div style={{ padding: "20px 22px 24px" }}>
+        <h3 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 18, color: "#fff", margin: "0 0 7px", letterSpacing: "-.01em" }}>{p.title}</h3>
+        <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "rgba(255,255,255,.45)", lineHeight: 1.65, margin: "0 0 16px", fontWeight: 300 }}>{p.desc}</p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+          {p.stack.map(function (s) { return <span key={s} style={{ padding: "2px 9px", borderRadius: 20, fontSize: 10, fontFamily: "'Playfair Display', serif", background: p.c1 + "14", border: "1px solid " + p.c1 + "2a", color: p.c1 }}>{s}</span>; })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ContactForm() {
+  var sf = useState({ name: "", email: "", message: "" }); var form = sf[0]; var setForm = sf[1];
+  var ss = useState("idle"); var status = ss[0]; var setStatus = ss[1];
+  var sff = useState(null); var ff = sff[0]; var setFf = sff[1];
+
+  function submit(e) {
+    e.preventDefault();
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) { setStatus("ef"); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) { setStatus("ee"); return; }
+    setStatus("sending");
+    
+    // Updated Formspree endpoint based on user earlier instructions
+    fetch("https://formspree.io/f/xvzvqgwn", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form)
+    }).then(function (r) {
+      if (r.ok) { setStatus("ok"); setForm({ name: "", email: "", message: "" }); }
+      else setStatus("es");
+    }).catch(function () { setStatus("es"); });
+  }
+
+  function iS(f) {
+    return { width: "100%", padding: "13px 16px", background: "rgba(255,255,255,.04)", border: "1px solid " + (ff === f ? "rgba(167,139,250,.5)" : "rgba(255,255,255,.08)"), borderRadius: 11, color: "#fff", fontSize: 14, fontFamily: "'Playfair Display', serif", outline: "none", transition: "border-color .25s, box-shadow .25s", boxSizing: "border-box", boxShadow: ff === f ? "0 0 0 3px rgba(124,58,237,.12)" : "none", fontWeight: 300 };
+  }
+
+  if (status === "ok") return (
+    <div style={{ textAlign: "center", padding: "40px 0", animation: "fadeup .5s both" }}>
+      <div style={{ fontSize: 52, marginBottom: 14 }}>✅</div>
+      <h3 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 22, color: "#fff", marginBottom: 8 }}>Message sent!</h3>
+      <p style={{ fontFamily: "'Playfair Display', serif", color: "rgba(255,255,255,.45)", lineHeight: 1.7, fontSize: 14, fontWeight: 300 }}>I'll get back to you at <strong style={{ color: "#a78bfa", fontWeight: 500 }}>mayurtamkhane96@gmail.com</strong> soon.</p>
+      <button onClick={function () { setStatus("idle"); }} style={{ marginTop: 24, padding: "9px 24px", borderRadius: 40, border: "1px solid rgba(167,139,250,.3)", background: "transparent", color: "#a78bfa", fontFamily: "'Playfair Display', serif", fontSize: 12, letterSpacing: ".1em", cursor: "none" }}>Send another →</button>
+    </div>
+  );
+
+  return (
+    <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {[["name", "Name", "text", "Your name"], ["email", "Email", "email", "your@email.com"]].map(function (fi) {
+        return (
+          <div key={fi[0]}>
+            <label style={{ display: "block", fontFamily: "'Playfair Display', serif", fontSize: 10, letterSpacing: ".18em", color: "rgba(255,255,255,.3)", textTransform: "uppercase", marginBottom: 7 }}>{fi[1]}</label>
+            <input type={fi[2]} name={fi[0]} value={form[fi[0]]} placeholder={fi[3]} required style={iS(fi[0])}
+              onChange={function (e) { var k = fi[0]; setForm(function (f) { var n = {}; n[k] = e.target.value; return Object.assign({}, f, n); }); }}
+              onFocus={function () { setFf(fi[0]); }} onBlur={function () { setFf(null); }} />
+          </div>
+        );
+      })}
+      <div>
+        <label style={{ display: "block", fontFamily: "'Playfair Display', serif", fontSize: 10, letterSpacing: ".18em", color: "rgba(255,255,255,.3)", textTransform: "uppercase", marginBottom: 7 }}>Message</label>
+        <textarea name="message" required rows={4} value={form.message} placeholder="Tell me about the role or project…" style={Object.assign({}, iS("message"), { resize: "vertical", minHeight: 110 })}
+          onChange={function (e) { setForm(function (f) { return Object.assign({}, f, { message: e.target.value }); }); }}
+          onFocus={function () { setFf("message"); }} onBlur={function () { setFf(null); }} />
+      </div>
+      {status === "ef" && <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "#f87171", padding: "9px 14px", borderRadius: 9, background: "rgba(248,113,113,.07)", border: "1px solid rgba(248,113,113,.18)" }}>⚠ Please fill all fields.</div>}
+      {status === "ee" && <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "#f87171", padding: "9px 14px", borderRadius: 9, background: "rgba(248,113,113,.07)", border: "1px solid rgba(248,113,113,.18)" }}>⚠ Please enter a valid email.</div>}
+      {status === "es" && <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "#f87171", padding: "9px 14px", borderRadius: 9, background: "rgba(248,113,113,.07)", border: "1px solid rgba(248,113,113,.18)" }}>⚠ Failed to send — email me at <a href="mailto:mayurtamkhane96@gmail.com" style={{ color: "#a78bfa" }}>mayurtamkhane96@gmail.com</a></div>}
+      <button type="submit" disabled={status === "sending"} style={{ padding: "13px 28px", borderRadius: 40, border: "none", background: status === "sending" ? "rgba(99,102,241,.35)" : "linear-gradient(135deg,#6366f1,#a78bfa)", color: "#fff", fontFamily: "'Playfair Display', serif", fontSize: 13, fontWeight: 600, letterSpacing: ".08em", cursor: status === "sending" ? "default" : "none", transition: "opacity .25s, transform .25s", alignSelf: "flex-start" }}
+        onMouseEnter={function (e) { if (status !== "sending") { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(99,102,241,.4)"; } }}
+        onMouseLeave={function (e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}>
+        {status === "sending" ? "Sending…" : "Send Message →"}
+      </button>
+    </form>
+  );
+}
+
+function FloatingResume() {
+  const [hov, setHov] = useState(false);
+  return (
+    <a 
+      href="/Resume_xyz.pdf" 
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        position: "fixed",
+        right: "clamp(20px, 4vw, 40px)",
+        bottom: "clamp(20px, 4vw, 40px)",
+        zIndex: 9998,
+        padding: "12px 24px",
+        borderRadius: 40,
+        background: "rgba(6, 6, 15, 0.6)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
+        border: `1px solid ${hov ? "rgba(167,139,250,0.7)" : "rgba(167,139,250,0.2)"}`,
+        color: hov ? "#fff" : "rgba(255,255,255,0.7)",
+        fontFamily: "'Playfair Display', serif",
+        fontSize: 11,
+        letterSpacing: "0.15em",
+        textTransform: "uppercase",
+        textDecoration: "none",
+        display: "flex",
+        alignItems: "center",
+        gap: 12,
+        transition: "all 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
+        boxShadow: hov ? "0 10px 40px -10px rgba(167,139,250,0.5)" : "0 4px 20px -5px rgba(0,0,0,0.5)",
+        transform: hov ? "translateY(-4px) scale(1.02)" : "translateY(0) scale(1)",
+        cursor: hov ? "pointer" : "none"
+      }}
+      onMouseEnter={() => setHov(true)}
+      onMouseLeave={() => setHov(false)}
+    >
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 26,
+        height: 26,
+        borderRadius: "50%",
+        background: hov ? "rgba(167,139,250,0.25)" : "rgba(255,255,255,0.08)",
+        transition: "background 0.4s",
+        color: hov ? "#fff" : "#a78bfa"
+      }}>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "transform 0.3s", transform: hov ? "translateY(2px)" : "translateY(0)" }}>
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      </div>
+      RESUME
+    </a>
+  );
+}
+
+export default function App() {
+  var sr = useState(false); var ready = sr[0]; var setReady = sr[1];
+  var sc = useState(false); var scrolled = sc[0]; var setScrolled = sc[1];
+  var sh = useState(false); var heroIn = sh[0]; var setHeroIn = sh[1];
+
+  useEffect(function () {
+    var h = function () { setScrolled(window.scrollY > 40); };
+    window.addEventListener("scroll", h, { passive: true });
+
+    var audio = typeof Audio !== "undefined" ? new Audio("/fahhhhh.mp3") : null;
+    var playSnd = function () {
+      if (audio) {
+        var clone = audio.cloneNode();
+        clone.volume = 0.5;
+        clone.play().catch(function () {});
+      }
+    };
+    window.addEventListener("click", playSnd);
+
+    return function () { 
+      window.removeEventListener("scroll", h); 
+      window.removeEventListener("click", playSnd);
+    };
+  }, []);
+  useEffect(function () { if (ready) setTimeout(function () { setHeroIn(true); }, 100); }, [ready]);
+
+
+
+  var projects = [
+    { emoji: "🌍", title: "BunnyTravel", c1: "#38bdf8", c2: "#6366f1", desc: "A responsive travel booking website inspired by MakeMyTrip — featuring Three.js 3D animations, an interactive globe, and mobile-optimised layouts.", stack: ["React", "Three.js", "Tailwind", "Framer Motion"], github: "https://github.com/MayurT96", live: null },
+    { emoji: "🛒", title: "E-Commerce Store", c1: "#4ade80", c2: "#38bdf8", desc: "Full-stack MERN online store with product listing, cart management, JWT authentication, and order tracking.", stack: ["MongoDB", "Express", "React", "Node.js", "JWT"], github: "https://github.com/MayurT96", live: null },
+    { emoji: "📝", title: "Task Manager App", c1: "#a78bfa", c2: "#f472b6", desc: "Drag-and-drop Kanban productivity app with task priorities, due dates, and local-storage persistence.", stack: ["React", "CSS Modules", "LocalStorage"], github: "https://github.com/MayurT96", live: null },
+    { emoji: "🌤️", title: "Weather Dashboard", c1: "#facc15", c2: "#f97316", desc: "Real-time weather app with 5-day forecast, city search, and geolocation using OpenWeatherMap API.", stack: ["JavaScript", "OpenWeatherMap API", "CSS"], github: "https://github.com/MayurT96", live: null },
+  ];
+
+  var traits = [
+    { icon: "🎯", label: "Goal-oriented", desc: "I focus on shipping working products, not just writing code." },
+    { icon: "📚", label: "Continuous learner", desc: "Deepening skills in Next.js, TypeScript, and system design." },
+    { icon: "🤝", label: "Collaborative", desc: "Comfortable in teams — I ask questions and welcome feedback." },
+    { icon: "🔍", label: "Detail-focused", desc: "I care about clean, readable code and polished experiences." },
+  ];
+
+  var contacts = [
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>, label: "Email", val: "mayurtamkhane96@gmail.com", href: "mailto:mayurtamkhane96@gmail.com" },
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>, label: "Phone", val: <span style={{ fontFamily: "'Poppins', sans-serif" }}>+91 7387553347</span>, href: "tel:+917387553347" },
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>, label: "LinkedIn", val: "Mayur Tamkhane", href: "https://www.linkedin.com/in/mayur-tamkhane-7a9726243" },
+    { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>, label: "GitHub", val: "MayurT96", href: "https://github.com/MayurT96" },
+  ];
+
+  var P = "clamp(20px,6vw,80px)";
+  var glass = { background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.07)", borderRadius: 18, backdropFilter: "blur(12px)" };
+
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Sora:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600&display=swap');
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body { background:#06060f; color:#fff; overflow-x:hidden; cursor:none; font-family:'Playfair Display', serif; }
+        ::-webkit-scrollbar { width:3px; }
+        ::-webkit-scrollbar-thumb { background:rgba(167,139,250,.4); border-radius:2px; }
+        a { cursor:none; }
+        input,textarea { caret-color:#a78bfa; }
+        @keyframes blink  { 0%,100%{opacity:1} 50%{opacity:0} }
+        @keyframes fadeup { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes pulse  { 0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.35} 50%{transform:translate(-50%,-50%) scale(1.12);opacity:.65} }
+        @keyframes sbar   { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+        @media(max-width:760px){
+          .two-col { grid-template-columns:1fr !important; gap:40px !important; }
+          .proj-grid { grid-template-columns:1fr !important; }
+          .trait-grid { grid-template-columns:1fr 1fr !important; }
+          .hero-links { flex-direction:column !important; gap:8px !important; }
+        }
+        @media(max-width:480px){
+          .trait-grid { grid-template-columns:1fr !important; }
+        }
+      `}</style>
+
+      {!ready && <Preloader onDone={function () { setReady(true); }} />}
+
+      {ready && (
+        <div>
+          <Cursor />
+          <Particles />
+          <FloatingResume />
+          <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", background: "radial-gradient(ellipse 65% 48% at 50% -2%,rgba(99,102,241,.1),transparent 62%),radial-gradient(ellipse 48% 38% at 95% 98%,rgba(139,92,246,.07),transparent 58%)" }} />
+
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <Navbar scrolled={scrolled} />
+
+            {/* ── HERO ── */}
+            <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "90px " + P + " 60px", position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", width: "min(650px,100vw)", height: "min(650px,100vw)", borderRadius: "50%", background: "radial-gradient(circle,rgba(99,102,241,.1) 0%,transparent 68%)", top: "50%", left: "50%", animation: "pulse 6s ease-in-out infinite", pointerEvents: "none" }} />
+              <div style={{ opacity: heroIn ? 1 : 0, transform: heroIn ? "translateY(0)" : "translateY(24px)", transition: "opacity 1s .1s, transform 1s .1s", width: "100%" }}>
+
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 18px", borderRadius: 40, border: "1px solid rgba(167,139,250,.25)", background: "rgba(124,58,237,.07)", fontFamily: "'Playfair Display', serif", fontSize: 11, color: "#a78bfa", letterSpacing: ".14em", marginBottom: 30 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", boxShadow: "0 0 8px #4ade80", display: "inline-block", animation: "blink 2.5s infinite" }} />
+                  OPEN TO OPPORTUNITIES
+                </div>
+
+                <h1 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 500, fontSize: "clamp(48px,10vw,108px)", lineHeight: .92, letterSpacing: "-.03em", background: "linear-gradient(145deg, #ffffff 20%, #e2e8f0 55%, #c4b5fd 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: 6 }}>
+                  Mayur<br /><span style={{ fontStyle: "italic", fontWeight: 400 }}>Tamkhane.</span>
+                </h1>
+
+                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(15px,2.2vw,21px)", color: "rgba(255,255,255,.52)", margin: "20px 0 14px", minHeight: 30, fontWeight: 300 }}>
+                  <Typewriter words={["Fresher Web Developer", "React Enthusiast", "Building Real Projects", "Open to Work"]} />
+                </div>
+
+                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.5vw,16px)", color: "rgba(255,255,255,.35)", maxWidth: 500, margin: "0 auto 42px", lineHeight: 1.8, fontWeight: 300 }}>
+                  A passionate developer learning modern web tech — focused on writing clean code and shipping real, useful projects.
+                </p>
+
+                <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginBottom: 36 }}>
+                  <a href="#projects" style={{ padding: "12px 30px", borderRadius: 40, background: "linear-gradient(135deg,#6366f1,#a78bfa)", color: "#fff", fontFamily: "'Playfair Display', serif", fontSize: 13, letterSpacing: ".08em", textDecoration: "none", transition: "transform .25s, box-shadow .25s", boxShadow: "0 4px 22px rgba(99,102,241,.35)", cursor: "none" }}
+                    onMouseEnter={function (e) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 36px rgba(99,102,241,.55)"; }}
+                    onMouseLeave={function (e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 22px rgba(99,102,241,.35)"; }}>
+                    View Projects →
+                  </a>
+                  <a href="#contact" style={{ padding: "12px 30px", borderRadius: 40, border: "1px solid rgba(255,255,255,.13)", color: "rgba(255,255,255,.68)", fontFamily: "'Playfair Display', serif", fontSize: 13, letterSpacing: ".08em", textDecoration: "none", transition: "all .25s", cursor: "none" }}
+                    onMouseEnter={function (e) { e.currentTarget.style.borderColor = "rgba(167,139,250,.45)"; e.currentTarget.style.color = "#fff"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                    onMouseLeave={function (e) { e.currentTarget.style.borderColor = "rgba(255,255,255,.13)"; e.currentTarget.style.color = "rgba(255,255,255,.68)"; e.currentTarget.style.transform = "translateY(0)"; }}>
+                    Get in Touch
+                  </a>
+                </div>
+
+                <div className="hero-links" style={{ display: "flex", gap: 24, justifyContent: "center", flexWrap: "wrap", marginTop: 4 }}>
+                  {[
+                    [<svg key="em" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>, "mayurtamkhane96@gmail.com", "mailto:mayurtamkhane96@gmail.com"], 
+                    [<svg key="ph" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>, <span style={{ fontFamily: "'Poppins', sans-serif" }}>+91 7387553347</span>, "tel:+917387553347"], 
+                    [<svg key="li" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>, "LinkedIn", "https://www.linkedin.com/in/mayur-tamkhane-7a9726243"], 
+                    [<svg key="gh" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>, "GitHub", "https://github.com/MayurT96"]
+                  ].map(function (it) {
+                    return <a key={it[1]} href={it[2]} target={it[2].startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
+                      className="hero-link-item"
+                      style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "rgba(255,255,255,.45)", textDecoration: "none", display: "flex", alignItems: "center", gap: 8, transition: "color .25s", cursor: "none" }}
+                      onMouseEnter={function (e) { 
+                        e.currentTarget.style.color = "#a78bfa"; 
+                        e.currentTarget.querySelector('.icon-circle').style.background = "rgba(167,139,250,.1)";
+                        e.currentTarget.querySelector('.icon-circle').style.borderColor = "rgba(167,139,250,.3)";
+                        e.currentTarget.querySelector('.icon-circle').style.transform = "scale(1.08)";
+                      }} 
+                      onMouseLeave={function (e) { 
+                        e.currentTarget.style.color = "rgba(255,255,255,.45)"; 
+                        e.currentTarget.querySelector('.icon-circle').style.background = "rgba(255,255,255,.03)";
+                        e.currentTarget.querySelector('.icon-circle').style.borderColor = "rgba(255,255,255,.08)";
+                        e.currentTarget.querySelector('.icon-circle').style.transform = "scale(1)";
+                      }}>
+                      <span className="icon-circle" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 34, height: 34, borderRadius: "50%", background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.08)", transition: "all .3s cubic-bezier(0.23, 1, 0.32, 1)" }}>
+                        {it[0]}
+                      </span>
+                      {it[1]}
+                    </a>;
+                  })}
+                </div>
+              </div>
+
+              <div style={{ position: "absolute", bottom: 30, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 7, opacity: heroIn ? .38 : 0, transition: "opacity 1s 2s" }}>
+                <div style={{ width: 1, height: 44, background: "linear-gradient(180deg,#a78bfa,transparent)", animation: "sbar 2.4s ease-in-out infinite" }} />
+              </div>
+            </section>
+
+            {/* ── ABOUT ── */}
+            <Fade id="about" style={{ padding: "95px " + P }}>
+              <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+                <SH tag="// about me">A Little About Me</SH>
+                <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(36px,6vw,76px)", alignItems: "start" }}>
+                  <div>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(14px,1.7vw,17px)", color: "rgba(255,255,255,.7)", lineHeight: 1.88, marginBottom: 18, fontWeight: 400 }}>
+                      Hi, I'm <span style={{ color: "#a78bfa", fontWeight: 600 }}>Mayur</span> — a fresher web developer from Dhule, Maharashtra, passionate about building clean, functional, and visually appealing web applications.
+                    </p>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.42)", lineHeight: 1.9, marginBottom: 20, fontWeight: 300 }}>
+                      I'm currently focused on mastering the MERN stack and modern frontend technologies. I believe in learning by building — every project teaches me something new.
+                    </p>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.42)", lineHeight: 1.9, fontWeight: 300 }}>
+                      I'm looking for my first professional opportunity where I can contribute meaningfully, grow alongside experienced developers, and solve real problems with code.
+                    </p>
+                    <div style={{ display: "flex", gap: 36, marginTop: 32, flexWrap: "wrap" }}>
+                      {[["4", "Projects Built"], ["6+", "Months Learning"], ["∞", "Curiosity"]].map(function (it) {
+                        return <div key={it[1]}>
+                          <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(26px,4vw,36px)", background: "linear-gradient(135deg,#a78bfa,#38bdf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{it[0]}</div>
+                          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 10, color: "rgba(255,255,255,.26)", letterSpacing: ".1em", marginTop: 2 }}>{it[1]}</div>
+                        </div>;
+                      })}
+                    </div>
+                  </div>
+                  <div className="trait-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    {traits.map(function (tr) {
+                      return <div key={tr.label} style={Object.assign({}, glass, { padding: "20px 18px", transition: "transform .25s, border-color .25s" })}
+                        onMouseEnter={function (e) { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.borderColor = "rgba(167,139,250,.2)"; }}
+                        onMouseLeave={function (e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = "rgba(255,255,255,.07)"; }}>
+                        <div style={{ fontSize: 22, marginBottom: 9 }}>{tr.icon}</div>
+                        <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 13, color: "#fff", marginBottom: 5 }}>{tr.label}</div>
+                        <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 12, color: "rgba(255,255,255,.36)", lineHeight: 1.55, fontWeight: 300 }}>{tr.desc}</div>
+                      </div>;
+                    })}
+                  </div>
+                </div>
+              </div>
+            </Fade>
+
+            {/* ── SKILLS ── */}
+            <Skills />
+
+            {/* ── PROJECTS ── */}
+            <Fade id="projects" style={{ padding: "95px " + P }}>
+              <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+                <SH tag="// projects">Things I've Built</SH>
+                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.36)", marginBottom: 44, lineHeight: 1.8, maxWidth: 520, fontWeight: 300 }}>
+                  Personal projects I've built to practice and apply what I've learned. These show how I think and approach problems.
+                </p>
+                <div className="proj-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+                  {projects.map(function (p) { return <PCard key={p.title} p={p} />; })}
+                </div>
+                <div style={{ marginTop: 36, textAlign: "center" }}>
+                  <a href="https://github.com/MayurT96" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Playfair Display', serif", fontSize: 12, letterSpacing: ".12em", color: "rgba(255,255,255,.3)", textDecoration: "none", padding: "9px 22px", borderRadius: 40, border: "1px solid rgba(255,255,255,.07)", transition: "all .25s", cursor: "none", display: "inline-block" }}
+                    onMouseEnter={function (e) { e.currentTarget.style.color = "#a78bfa"; e.currentTarget.style.borderColor = "rgba(167,139,250,.28)"; }}
+                    onMouseLeave={function (e) { e.currentTarget.style.color = "rgba(255,255,255,.3)"; e.currentTarget.style.borderColor = "rgba(255,255,255,.07)"; }}>
+                    See all on GitHub →
+                  </a>
+                </div>
+              </div>
+            </Fade>
+
+            {/* ── CONTACT ── */}
+            <Fade id="contact" style={{ padding: "95px " + P + " 70px", background: "rgba(99,102,241,.022)" }}>
+              <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+                <SH tag="// contact">Let's Connect</SH>
+                <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(36px,6vw,76px)", alignItems: "start" }}>
+                  <div>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.5vw,16px)", color: "rgba(255,255,255,.55)", lineHeight: 1.88, marginBottom: 34, fontWeight: 300 }}>
+                      I'm actively looking for my <span style={{ color: "#a78bfa", fontWeight: 500 }}>first developer role</span> — internships, junior positions, or freelance work. Let's build something together.
+                    </p>
+                    {contacts.map(function (c) {
+                      return <a key={c.label} href={c.href} target={c.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
+                        style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 18px", borderRadius: 12, border: "1px solid rgba(255,255,255,.06)", background: "rgba(255,255,255,.02)", marginBottom: 10, textDecoration: "none", transition: "all .25s", cursor: "none" }}
+                        onMouseEnter={function (e) { e.currentTarget.style.borderColor = "rgba(167,139,250,.25)"; e.currentTarget.style.background = "rgba(124,58,237,.05)"; e.currentTarget.style.transform = "translateX(4px)"; }}
+                        onMouseLeave={function (e) { e.currentTarget.style.borderColor = "rgba(255,255,255,.06)"; e.currentTarget.style.background = "rgba(255,255,255,.02)"; e.currentTarget.style.transform = "translateX(0)"; }}>
+                        <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.08)", color: "#c4b5fd" }}>{c.icon}</span>
+                        <div>
+                          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 10, letterSpacing: ".14em", color: "rgba(255,255,255,.26)", textTransform: "uppercase", marginBottom: 2 }}>{c.label}</div>
+                          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 13.5, color: "rgba(255,255,255,.7)", fontWeight: 400 }}>{c.val}</div>
+                        </div>
+                      </a>;
+                    })}
+                  </div>
+                  <div style={Object.assign({}, glass, { padding: "clamp(22px,4vw,38px)" })}>
+                    <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 19, color: "#fff", marginBottom: 5, letterSpacing: "-.01em" }}>Send a message</div>
+                    <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 12, color: "rgba(255,255,255,.28)", marginBottom: 26, fontWeight: 300 }}>I'll reply within 24 hours.</div>
+                    <ContactForm />
+                  </div>
+                </div>
+              </div>
+            </Fade>
+
+            {/* ── FOOTER ── */}
+            <footer style={{ padding: "26px " + P, borderTop: "1px solid rgba(255,255,255,.04)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
+              <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "rgba(255,255,255,.22)", fontWeight: 300 }}>
+                © 2026 <span style={{ color: "#a78bfa", fontWeight: 500 }}>Mayur Tamkhane</span>
+              </div>
+              <div style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
+                {[["GitHub", "https://github.com/MayurT96"], ["LinkedIn", "https://www.linkedin.com/in/mayur-tamkhane-7a9726243"], ["Email", "mailto:mayurtamkhane96@gmail.com"]].map(function (it) {
+                  return <a key={it[0]} href={it[1]} target={it[1].startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
+                    style={{ fontFamily: "'Playfair Display', serif", fontSize: 11, letterSpacing: ".1em", color: "rgba(255,255,255,.22)", textDecoration: "none", transition: "color .2s", cursor: "none" }}
+                    onMouseEnter={function (e) { e.currentTarget.style.color = "#a78bfa"; }} onMouseLeave={function (e) { e.currentTarget.style.color = "rgba(255,255,255,.22)"; }}>{it[0]}</a>;
+                })}
+              </div>
+            </footer>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
