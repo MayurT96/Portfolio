@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useRef, useMemo, useEffect, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Float, Sphere, MeshDistortMaterial, Points, PointMaterial } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,167 +11,142 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+const MAX_PARTICLES = 1800;
+
 /**
- * Cinematic Particle System
- * Creates a subtle "starfield" or "dust" effect for depth.
+ * Luxury Firecracker Particle System
+ * Manages pools of particles that explode in radial patterns based on scroll intensity.
  */
-function BackgroundParticles({ count = 2000, color = "#a78bfa" }) {
-  const points = useMemo(() => {
-    const p = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      p[i * 3] = (Math.random() - 0.5) * 25;
-      p[i * 3 + 1] = (Math.random() - 0.5) * 20;
-      p[i * 3 + 2] = (Math.random() - 0.5) * 20;
+function SparkSystem({ scrollVelocity }: { scrollVelocity: React.MutableRefObject<number> }) {
+  const pointsRef = useRef<THREE.Points>(null!);
+  
+  // Particle Data Pool
+  const particleData = useMemo(() => {
+    return Array.from({ length: MAX_PARTICLES }, () => ({
+      pos: new THREE.Vector3(0, 0, -100),
+      vel: new THREE.Vector3(),
+      life: 0,
+      size: Math.random() * 0.08 + 0.04,
+      hue: 0.1, // Golden base
+    }));
+  }, []);
+
+  // Buffers for Geometry
+  const [positions, colors] = useMemo(() => [
+    new Float32Array(MAX_PARTICLES * 3),
+    new Float32Array(MAX_PARTICLES * 3)
+  ], []);
+
+  /**
+   * Triggers a burst of gold sparks at a specific location
+   */
+  const spawnBurst = (x: number, y: number, z: number, intensity: number) => {
+    let count = Math.min(60, Math.floor(40 * intensity));
+    let activated = 0;
+
+    for (let i = 0; i < MAX_PARTICLES && activated < count; i++) {
+      if (particleData[i].life <= 0) {
+        particleData[i].pos.set(x, y, z);
+        
+        // Radial distribution
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        const speed = (0.04 + Math.random() * 0.12) * intensity;
+        
+        particleData[i].vel.set(
+          speed * Math.sin(phi) * Math.cos(theta),
+          speed * Math.sin(phi) * Math.sin(theta),
+          speed * Math.cos(phi)
+        );
+        
+        particleData[i].life = 1.0;
+        activated++;
+      }
     }
-    return p;
-  }, [count]);
+  };
 
-  const groupRef = useRef<any>(null!);
-
-  useFrame((state) => {
-    if (!groupRef.current) return;
-    groupRef.current.rotation.y += 0.0005;
-    groupRef.current.rotation.x += 0.0002;
-  });
-
-  return (
-    <group ref={groupRef}>
-      <Points positions={points} stride={3} frustumCulled={false}>
-        <PointMaterial
-          transparent
-          color={color}
-          size={0.012}
-          sizeAttenuation={true}
-          depthWrite={false}
-          opacity={0.3}
-          blending={THREE.AdditiveBlending}
-        />
-      </Points>
-    </group>
-  );
-}
-
-/**
- * Premium Floating Object
- */
-function FloatingObject({ position, color, size, speed, distort, opacity, emissiveIntensity, scrollProgress, parallaxFactor }: any) {
-  const meshRef = useRef<any>(null!);
-  const initialPos = useRef(position);
-
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    const p = scrollProgress.current;
+  useFrame((state, delta) => {
+    const vel = Math.abs(scrollVelocity.current);
     
-    // Parallax & Scroll-based Depth
-    const targetY = initialPos.current[1] + (p * 5 * parallaxFactor);
-    const targetZ = initialPos.current[2] + (p * 4 * parallaxFactor);
-    
-    meshRef.current.position.y = gsap.utils.interpolate(meshRef.current.position.y, targetY, 0.05);
-    meshRef.current.position.z = gsap.utils.interpolate(meshRef.current.position.z, targetZ, 0.05);
-    
-    // Rotation based on scroll
-    meshRef.current.rotation.x = p * Math.PI;
-    meshRef.current.rotation.y = p * Math.PI * 0.5;
-  });
+    // Spawn explosions based on scroll speed
+    if (vel > 0.02 && Math.random() < vel * 0.8) {
+      spawnBurst(
+        (Math.random() - 0.5) * 14,
+        (Math.random() - 0.5) * 10,
+        -Math.random() * 5 - 2,
+        Math.min(2.5, vel * 12)
+      );
+    }
 
-  return (
-    <Float speed={speed} rotationIntensity={1} floatIntensity={2}>
-      <Sphere ref={meshRef} args={[size, 64, 64]} position={position}>
-        <MeshDistortMaterial
-          color={color}
-          speed={speed}
-          distort={distort}
-          radius={1}
-          transparent
-          opacity={opacity}
-          emissive={color}
-          emissiveIntensity={emissiveIntensity}
-          roughness={0}
-          metalness={0.8}
-        />
-      </Sphere>
-    </Float>
-  );
-}
+    // Ambient drifted sparks for cinematic depth
+    if (Math.random() < 0.015) {
+      spawnBurst((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 15, -8, 0.6);
+    }
 
-function SceneContent({ scrollProgress }: { scrollProgress: React.MutableRefObject<number> }) {
-  const { camera } = useThree();
-
-  useFrame(() => {
-    const p = scrollProgress.current;
-    
-    // Smooth Camera Track
-    // Slight zoom in (decreasing Z) and lift (increasing Y)
-    camera.position.z = gsap.utils.interpolate(camera.position.z, 8 - p * 3, 0.05);
-    camera.position.y = gsap.utils.interpolate(camera.position.y, 0 + p * 1.5, 0.05);
-    camera.lookAt(0, 0, 0);
-  });
-
-  return (
-    <>
-      <BackgroundParticles count={1200} />
+    // Update Particles
+    for (let i = 0; i < MAX_PARTICLES; i++) {
+      const p = particleData[i];
       
-      {/* Foreground Element */}
-      <FloatingObject 
-        position={[2.5, -1, 1]} 
-        color="#7C3AED" 
-        size={0.8} 
-        speed={2} 
-        distort={0.4} 
-        opacity={0.12} 
-        emissiveIntensity={0.5} 
-        scrollProgress={scrollProgress}
-        parallaxFactor={1.2}
-      />
+      if (p.life > 0) {
+        // Physics: Velocity + Friction + Slight Drift
+        p.pos.add(p.vel);
+        p.vel.multiplyScalar(0.97); // Smooth friction
+        p.pos.y += 0.002; // Upward drift (heat effect)
+        p.life -= delta * 0.65; // Fade over time
 
-      {/* Midground Element */}
-      <FloatingObject 
-        position={[-3, 2, -2]} 
-        color="#6366F1" 
-        size={1.1} 
-        speed={1.5} 
-        distort={0.3} 
-        opacity={0.1} 
-        emissiveIntensity={0.3} 
-        scrollProgress={scrollProgress}
-        parallaxFactor={0.8}
-      />
+        positions[i * 3] = p.pos.x;
+        positions[i * 3 + 1] = p.pos.y;
+        positions[i * 3 + 2] = p.pos.z;
 
-      {/* Background Element */}
-      <FloatingObject 
-        position={[0, -4, -5]} 
-        color="#A78BFA" 
-        size={1.5} 
-        speed={1} 
-        distort={0.2} 
-        opacity={0.06} 
-        emissiveIntensity={0.2} 
-        scrollProgress={scrollProgress}
-        parallaxFactor={0.4}
-      />
+        // Luxury Gold Gradient (Gold to Soft Orange)
+        const alpha = Math.max(0, p.life);
+        colors[i * 3] = 1.0; // R
+        colors[i * 3 + 1] = 0.75 * alpha + 0.1; // G
+        colors[i * 3 + 2] = 0.2 * alpha; // B
+      } else {
+        positions[i * 3 + 2] = -100; // Move off-camera
+      }
+    }
 
-      {/* Atmospheric Grid (Subtle) */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -6, 0]}>
-        <planeGeometry args={[50, 50, 50, 50]} />
-        <meshStandardMaterial 
-          color="#a78bfa" 
-          wireframe 
-          transparent 
-          opacity={0.03} 
+    pointsRef.current.geometry.attributes.position.needsUpdate = true;
+    pointsRef.current.geometry.attributes.color.needsUpdate = true;
+  });
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={MAX_PARTICLES}
+          array={positions}
+          itemSize={3}
         />
-      </mesh>
-    </>
+        <bufferAttribute
+          attach="attributes-color"
+          count={MAX_PARTICLES}
+          array={colors}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.14}
+        vertexColors
+        transparent
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+        sizeAttenuation={true}
+      />
+    </points>
   );
 }
 
 export default function ThreeScene() {
   const [isMobile, setIsMobile] = useState(false);
-  const scrollProgress = useRef(0);
+  const scrollVelocity = useRef(0);
+  const lastScroll = useRef(0);
 
   useEffect(() => {
-    // Check performance profile
-    const mediaQuery = window.matchMedia("(pointer: coarse)");
-    setIsMobile(mediaQuery.matches);
+    setIsMobile(window.matchMedia("(pointer: coarse)").matches);
     
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
@@ -180,7 +154,17 @@ export default function ThreeScene() {
         start: "top top",
         end: "bottom bottom",
         onUpdate: (self) => {
-          scrollProgress.current = self.progress;
+          // Calculate scroll velocity for physics reaction
+          const delta = self.scroll() - lastScroll.current;
+          scrollVelocity.current = delta * 0.001;
+          lastScroll.current = self.scroll();
+          
+          // Reset velocity after a short delay for bursts
+          gsap.to(scrollVelocity, {
+              current: 0,
+              duration: 0.8,
+              ease: "power2.out"
+          });
         },
       });
     });
@@ -198,21 +182,13 @@ export default function ThreeScene() {
       height: "100vh", 
       zIndex: 0, 
       pointerEvents: "none",
-      background: "#06060f" // Seamless blend with existing theme
+      background: "#06060f"
     }}>
       <Canvas camera={{ position: [0, 0, 8], fov: 35 }} dpr={[1, 2]}>
-        <fog attach="fog" args={["#06060f", 6, 16]} />
-        <ambientLight intensity={0.8} />
-        <pointLight position={[10, 10, 10]} intensity={1.5} color="#a78bfa" />
-        <spotLight 
-          position={[-15, 20, 10]} 
-          angle={0.25} 
-          penumbra={1} 
-          intensity={2} 
-          color="#6366f1" 
-          castShadow 
-        />
-        <SceneContent scrollProgress={scrollProgress} />
+        <fog attach="fog" args={["#06060f", 5, 20]} />
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} intensity={1.5} color="#FFD700" />
+        <SparkSystem scrollVelocity={scrollVelocity} />
       </Canvas>
     </div>
   );
