@@ -7,8 +7,6 @@ export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (window.matchMedia("(pointer: coarse)").matches) return;
-
     ensureGsap();
     const dot = dotRef.current;
     if (!dot) return;
@@ -32,7 +30,6 @@ export default function CustomCursor() {
       spark.style.pointerEvents = "none";
       spark.style.zIndex = "9999";
 
-      // 🔥 Fire gradient color
       spark.style.background =
         "radial-gradient(circle, #fffb00, #ff7b00, #ff0000)";
       spark.style.boxShadow =
@@ -45,7 +42,7 @@ export default function CustomCursor() {
 
       gsap.to(spark, {
         x: Math.cos(angle) * distance,
-        y: Math.sin(angle) * distance - 20, // 🔥 upward fire motion
+        y: Math.sin(angle) * distance - 20,
         scale: 0,
         opacity: 0,
         duration: 0.7,
@@ -54,6 +51,7 @@ export default function CustomCursor() {
       });
     };
 
+    // 💻 DESKTOP
     const onMove = (e: PointerEvent) => {
       qDotX(e.clientX);
       qDotY(e.clientY);
@@ -62,7 +60,6 @@ export default function CustomCursor() {
       const dy = e.clientY - lastY;
       const speed = Math.sqrt(dx * dx + dy * dy);
 
-      // 🔥 Speed based sparks
       if (speed > 3) {
         for (let i = 0; i < 3; i++) {
           createFireSpark(e.clientX, e.clientY);
@@ -73,10 +70,20 @@ export default function CustomCursor() {
       lastY = e.clientY;
     };
 
+    // 📱 MOBILE (🔥 FIX)
+    const onTouch = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      if (!touch) return;
+
+      createFireSpark(touch.clientX, touch.clientY);
+    };
+
     window.addEventListener("pointermove", onMove);
+    window.addEventListener("touchstart", onTouch);
 
     return () => {
       window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("touchstart", onTouch);
     };
   }, []);
 
