@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Skills from "../components/Skills";
-import ThreeScene from "../components/ui/ThreeScene";
+import ThreeScene from "../components/ThreeScene";
 
 function useInView(thr) {
   var t = thr === undefined ? 0.1 : thr;
