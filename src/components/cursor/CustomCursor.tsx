@@ -5,61 +5,86 @@ import { ensureGsap, gsap } from "@/lib/gsap";
 
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement | null>(null);
-  const ringRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
     ensureGsap();
     const dot = dotRef.current;
-    const ring = ringRef.current;
-    if (!dot || !ring) return;
+    if (!dot) return;
 
-    const cx = window.innerWidth / 2;
-    const cy = window.innerHeight / 2;
-    gsap.set([dot, ring], { x: cx, y: cy });
+    const qDotX = gsap.quickTo(dot, "x", { duration: 0.1 });
+    const qDotY = gsap.quickTo(dot, "y", { duration: 0.1 });
 
-    const qDotX = gsap.quickTo(dot, "x", { duration: 0.07, ease: "power2.out" });
-    const qDotY = gsap.quickTo(dot, "y", { duration: 0.07, ease: "power2.out" });
-    const qRingX = gsap.quickTo(ring, "x", { duration: 0.28, ease: "power3.out" });
-    const qRingY = gsap.quickTo(ring, "y", { duration: 0.28, ease: "power3.out" });
+    let lastX = window.innerWidth / 2;
+    let lastY = window.innerHeight / 2;
 
-    const onMove = (e: PointerEvent) => {
-      qDotX(e.clientX); qDotY(e.clientY);
-      qRingX(e.clientX); qRingY(e.clientY);
+    // 🔥 FIRE SPARK FUNCTION
+    const createFireSpark = (x: number, y: number) => {
+      const spark = document.createElement("div");
 
-      const isInteractive = (document.elementsFromPoint(e.clientX, e.clientY) as Element[])
-        .some(el => el.matches("button, a, [role='button'], input, textarea"));
-      ring.classList.toggle("cursor-hover", isInteractive);
+      spark.style.position = "fixed";
+      spark.style.left = x + "px";
+      spark.style.top = y + "px";
+      spark.style.width = "6px";
+      spark.style.height = "6px";
+      spark.style.borderRadius = "50%";
+      spark.style.pointerEvents = "none";
+      spark.style.zIndex = "9999";
+
+      // 🔥 Fire gradient color
+      spark.style.background =
+        "radial-gradient(circle, #fffb00, #ff7b00, #ff0000)";
+      spark.style.boxShadow =
+        "0 0 10px #ff7b00, 0 0 20px #ff0000";
+
+      document.body.appendChild(spark);
+
+      const angle = Math.random() * Math.PI * 2;
+      const distance = Math.random() * 40 + 20;
+
+      gsap.to(spark, {
+        x: Math.cos(angle) * distance,
+        y: Math.sin(angle) * distance - 20, // 🔥 upward fire motion
+        scale: 0,
+        opacity: 0,
+        duration: 0.7,
+        ease: "power2.out",
+        onComplete: () => spark.remove(),
+      });
     };
 
-    const onDown = () => gsap.to(ring, { scale: 0.85, duration: 0.15, ease: "power2.out" });
-    const onUp   = () => gsap.to(ring, { scale: 1,    duration: 0.3,  ease: "power3.out" });
+    const onMove = (e: PointerEvent) => {
+      qDotX(e.clientX);
+      qDotY(e.clientY);
 
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerdown", onDown, { passive: true });
-    window.addEventListener("pointerup",   onUp,   { passive: true });
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
+      const speed = Math.sqrt(dx * dx + dy * dy);
+
+      // 🔥 Speed based sparks
+      if (speed > 3) {
+        for (let i = 0; i < 3; i++) {
+          createFireSpark(e.clientX, e.clientY);
+        }
+      }
+
+      lastX = e.clientX;
+      lastY = e.clientY;
+    };
+
+    window.addEventListener("pointermove", onMove);
+
     return () => {
       window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerdown", onDown);
-      window.removeEventListener("pointerup",   onUp);
     };
   }, []);
 
   return (
-    <>
-      <div
-        ref={dotRef}
-        id="cursor-dot"
-        aria-hidden="true"
-        style={{ position: "fixed", top: 0, left: 0, transform: "translate(-50%,-50%)", zIndex: 9999, pointerEvents: "none" }}
-      />
-      <div
-        ref={ringRef}
-        id="cursor-ring"
-        aria-hidden="true"
-        style={{ position: "fixed", top: 0, left: 0, transform: "translate(-50%,-50%)", zIndex: 9998, pointerEvents: "none" }}
-      />
-    </>
+    <div
+      ref={dotRef}
+      className="w-2 h-2 bg-white rounded-full fixed top-0 left-0 z-[9999]"
+      style={{ transform: "translate(-50%, -50%)" }}
+    />
   );
 }
