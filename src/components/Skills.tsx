@@ -3,8 +3,8 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { FaReact, FaNodeJs, FaHtml5, FaCss3Alt, FaDocker, FaGithub } from "react-icons/fa";
-import { SiNextdotjs, SiTailwindcss, SiJavascript, SiTypescript, SiMongodb, SiExpress, SiThreedotjs, SiFigma } from "react-icons/si";
+import { FaReact, FaNodeJs, FaHtml5, FaCss3Alt, FaDocker, FaGithub, FaAws } from "react-icons/fa";
+import { SiNextdotjs, SiTailwindcss, SiJavascript, SiTypescript, SiMongodb, SiExpress, SiThreedotjs, SiFigma, SiPostgresql, SiFirebase, SiGraphql, SiVercel, SiPostman } from "react-icons/si";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,7 +13,7 @@ const skillCategories = [
     title: "Frontend",
     icon: <FaReact size={24} color="#38bdf8" />,
     color: "#38bdf8",
-    description: "Building responsive, interactive, and performant user interfaces with modern tech.",
+    description: "Building responsive, interactive, and performant user interfaces using modern frameworks and cutting-edge frontend technologies.",
     skills: [
       { name: "React.js", icon: <FaReact /> },
       { name: "Next.js", icon: <SiNextdotjs /> },
@@ -29,11 +29,14 @@ const skillCategories = [
     title: "Backend",
     icon: <FaNodeJs size={24} color="#4ade80" />,
     color: "#4ade80",
-    description: "Developing robust APIs and managing database structures for full-stack apps.",
+    description: "Developing robust, scalable APIs and managing complex database architectures to power modern, data-driven applications.",
     skills: [
       { name: "Node.js", icon: <FaNodeJs /> },
       { name: "Express.js", icon: <SiExpress /> },
       { name: "MongoDB", icon: <SiMongodb /> },
+      { name: "PostgreSQL", icon: <SiPostgresql /> },
+      { name: "Firebase", icon: <SiFirebase /> },
+      { name: "GraphQL", icon: <SiGraphql /> },
       { name: "REST APIs", icon: <span style={{fontFamily:"monospace", fontSize: 10}}>{"{ }"}</span> },
     ]
   },
@@ -41,12 +44,15 @@ const skillCategories = [
     title: "Tools & Tech",
     icon: <FaGithub size={24} color="#a78bfa" />,
     color: "#a78bfa",
-    description: "Utilizing modern workflows, version control, and design tools to ship faster.",
+    description: "Utilizing modern dev workflows, version control systems, and professional design tools to streamline the entire development cycle.",
     skills: [
       { name: "Git", icon: <FaGithub /> },
       { name: "GitHub", icon: <FaGithub /> },
       { name: "Figma", icon: <SiFigma /> },
-      { name: "Docker (Basics)", icon: <FaDocker /> },
+      { name: "Docker", icon: <FaDocker /> },
+      { name: "Vercel", icon: <SiVercel /> },
+      { name: "Postman", icon: <SiPostman /> },
+      { name: "AWS", icon: <FaAws /> },
     ]
   }
 ];
@@ -98,7 +104,7 @@ export default function Skills() {
         </div>
 
         {/* Categories Grid (Glassmorphism Awwwards Style) */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 24 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32, alignItems: "start" }}>
           {skillCategories.map((category, idx) => (
             <div 
               key={category.title}
@@ -163,7 +169,7 @@ export default function Skills() {
               </p>
 
               {/* Skills Tags */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: "auto" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 12 }}>
                 {category.skills.map((skill) => (
                   <div 
                     key={skill.name}
