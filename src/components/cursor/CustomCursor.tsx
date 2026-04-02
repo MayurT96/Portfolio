@@ -90,7 +90,7 @@ export default function CustomCursor() {
   return (
     <div
       ref={dotRef}
-      className="w-2 h-2 bg-white rounded-full fixed top-0 left-0 z-[9999]"
+      className="w-2 h-2 bg-white rounded-full fixed top-0 left-0 z-[9999] pointer-events-none"
       style={{ transform: "translate(-50%, -50%)" }}
     />
   );

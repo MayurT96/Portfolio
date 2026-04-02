@@ -341,3 +341,14 @@ a, button, [role='button'], input, textarea, select {
   border-color: rgba(56, 189, 248, 0.3);
   box-shadow: inset 0 0 20px rgba(79, 70, 229, 0.1), 0 12px 48px rgba(0,0,0,0.6);
 }
+
+/* ─── Next.js Dev Tools Overlay (Force Hide) ────────────────────────────── */
+nextjs-portal, 
+#nextjs-dev-overlay, 
+.nextjs-static-indicator-container,
+[data-nextjs-toast-wrapper] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

@@ -2,9 +2,13 @@
 "use client";
 
 
+
+
+
 import { useState, useEffect, useRef } from "react";
 import Skills from "../components/Skills";
-import ThreeScene from "../components/ThreeScene";
+import AIChatbot from "../components/AIChatbot";
+import Fireworks from "../components/background/Fireworks";
 
 function useInView(thr) {
   var t = thr === undefined ? 0.1 : thr;
@@ -45,27 +49,65 @@ function Typewriter(props) {
 }
 
 function Cursor() {
-  var ring = useRef(null); var dot = useRef(null);
+  var ring = useRef(null);
   var trails = useRef([null,null,null,null,null]);
   var rx = useRef(0); var ry = useRef(0); var mx = useRef(0); var my = useRef(0);
   var tx = useRef([0,0,0,0,0]); var ty = useRef([0,0,0,0,0]);
+  var [isHovering, setIsHovering] = useState(false);
+  var [isMouseDown, setIsMouseDown] = useState(false);
+  var hasMoved = useRef(false);
 
   useEffect(function () {
-    var onM = function (e) { mx.current = e.clientX; my.current = e.clientY; };
+    var onM = function (e) { 
+      mx.current = e.clientX; 
+      my.current = e.clientY; 
+      // Fix fly-in glitch: Initialize position on first move
+      if (!hasMoved.current) {
+        rx.current = mx.current;
+        ry.current = my.current;
+        for(var i=0; i<5; i++) {
+          tx.current[i] = mx.current;
+          ty.current[i] = my.current;
+        }
+        hasMoved.current = true;
+      }
+
+      // Link/Button Detection
+      var target = e.target;
+      var hover = false;
+      while (target && target !== document.body) {
+        if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.getAttribute('role') === 'button' || target.style.cursor === 'pointer') {
+          hover = true;
+          break;
+        }
+        target = target.parentElement;
+      }
+      setIsHovering(hover);
+    };
     window.addEventListener("mousemove", onM);
+    
     var raf;
     function tick() {
       var dx = mx.current - rx.current;
       var dy = my.current - ry.current;
-      rx.current += dx * 0.12;
-      ry.current += dy * 0.12;
+      
+      // Smoothing
+      rx.current += dx * 0.15;
+      ry.current += dy * 0.15;
       
       var speed = Math.sqrt(dx*dx + dy*dy);
       var angle = Math.atan2(dy, dx) * 180 / Math.PI;
-      var sx = Math.min(2.5, 1 + speed * 0.015);
-      var sy = Math.max(0.3, 1 - speed * 0.005);
-      if (ring.current) ring.current.style.transform = "translate(" + (rx.current - 18) + "px," + (ry.current - 18) + "px) rotate(" + angle + "deg) scale(" + sx + "," + sy + ")";
-      if (dot.current) dot.current.style.transform = "translate(" + (mx.current - 3) + "px," + (my.current - 3) + "px)";
+      
+      // Dynamic scaling based on speed + hover state
+      var baseScale = isHovering ? 1.8 : 1;
+      var sx = Math.min(2.5, baseScale + speed * 0.015);
+      var sy = Math.max(0.3, baseScale - speed * 0.005);
+      
+      if (ring.current) {
+        ring.current.style.transform = "translate(" + (rx.current - 18) + "px," + (ry.current - 18) + "px) rotate(" + angle + "deg) scale(" + sx + "," + sy + ")";
+        ring.current.style.borderColor = isHovering ? "rgba(255, 255, 255, 0.9)" : "rgba(255, 255, 255, 0.45)";
+        ring.current.style.background = isHovering ? "rgba(255, 255, 255, 0.08)" : "transparent";
+      }
 
       tx.current[0] += (mx.current - tx.current[0]) * 0.35;
       ty.current[0] += (my.current - ty.current[0]) * 0.35;
@@ -74,70 +116,48 @@ function Cursor() {
         ty.current[i] += (ty.current[i-1] - ty.current[i]) * 0.45;
       }
       for(var j=0; j<5; j++) {
-        if (trails.current[j]) trails.current[j].style.transform = "translate(" + (tx.current[j] - 2) + "px," + (ty.current[j] - 2) + "px)";
+        if (trails.current[j]) {
+          trails.current[j].style.transform = "translate(" + (tx.current[j] - 2) + "px," + (ty.current[j] - 2) + "px)";
+          trails.current[j].style.opacity = isHovering ? "0" : (0.5 - j*0.08).toString();
+        }
       }
       raf = requestAnimationFrame(tick);
     }
     tick();
 
-    var onD = function() {
-      if(ring.current) {
-        ring.current.style.transition = "transform 0.1s cubic-bezier(0,0,0.2,1), opacity 0.1s";
-        ring.current.style.transform += " scale(1.5)";
-        ring.current.style.opacity = "0.2";
-        setTimeout(() => {
-          if(ring.current) {
-            ring.current.style.transition = "none";
-            ring.current.style.opacity = "1";
-          }
-        }, 150);
-      }
-    };
+    var onD = function() { setIsMouseDown(true); };
+    var onU = function() { setIsMouseDown(false); };
     window.addEventListener("mousedown", onD);
-    return function () { window.removeEventListener("mousemove", onM); window.removeEventListener("mousedown", onD); cancelAnimationFrame(raf); };
-  }, []);
+    window.addEventListener("mouseup", onU);
+    
+    return function () { 
+      window.removeEventListener("mousemove", onM); 
+      window.removeEventListener("mousedown", onD); 
+      window.removeEventListener("mouseup", onU); 
+      cancelAnimationFrame(raf); 
+    };
+  }, [isHovering]);
 
   return (
-    <div style={{ pointerEvents: "none", zIndex: 9999 }}>
+    <div style={{ pointerEvents: "none", zIndex: 10000000, mixBlendMode: "difference" }}>
       {[0, 1, 2, 3, 4].map(i => (
-        <div key={i} ref={el => trails.current[i] = el} style={{ position: "fixed", top: 0, left: 0, width: 4, height: 4, borderRadius: "50%", background: "rgba(167,139,250," + (0.5 - i*0.08) + ")", filter: "blur(0.5px)" }} />
+        <div key={i} ref={el => trails.current[i] = el} style={{ 
+          position: "fixed", top: 0, left: 0, width: 6, height: 6, 
+          borderRadius: "50%", background: "#fff", filter: "blur(2px)", 
+          pointerEvents: "none", transition: "opacity 0.4s",
+          opacity: 0
+        }} />
       ))}
-      <div ref={ring} style={{ position: "fixed", top: 0, left: 0, width: 36, height: 36, borderRadius: "50%", border: "1.5px solid rgba(167,139,250,0.5)" }} />
-      <div ref={dot} style={{ position: "fixed", top: 0, left: 0, width: 6, height: 6, borderRadius: "50%", background: "#fff", boxShadow: "0 0 12px #a78bfa" }} />
+      <div ref={ring} style={{ 
+        position: "fixed", top: 0, left: 0, width: 36, height: 36, 
+        borderRadius: "50%", border: "2px solid #fff", 
+        pointerEvents: "none", transition: "border-color 0.3s, background 0.3s",
+        boxShadow: "0 0 15px rgba(255,255,255,0.2)"
+      }} />
     </div>
   );
 }
 
-function Particles() {
-  var cvs = useRef(null);
-  useEffect(function () {
-    var c = cvs.current; var ctx = c.getContext("2d");
-    var W = c.width = window.innerWidth; var H = c.height = window.innerHeight;
-    var N = Math.min(55, Math.floor(W * H / 18000));
-    var pts = [];
-    for (var i = 0; i < N; i++) pts.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22, r: Math.random() * 1.2 + .3, hue: Math.random() * 50 + 220 });
-    var raf;
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      for (var i = 0; i < pts.length; i++) {
-        var p = pts[i]; p.vx *= .99; p.vy *= .99; p.x = (p.x + p.vx + W) % W; p.y = (p.y + p.vy + H) % H;
-        var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
-        g.addColorStop(0, "hsla(" + p.hue + ",90%,70%,.5)"); g.addColorStop(1, "hsla(" + p.hue + ",90%,60%,0)");
-        ctx.beginPath(); ctx.fillStyle = g; ctx.arc(p.x, p.y, p.r * 4, 0, 6.28); ctx.fill();
-      }
-      for (var i = 0; i < pts.length; i++) for (var j = i + 1; j < pts.length; j++) {
-        var dx = pts[i].x - pts[j].x; var dy = pts[i].y - pts[j].y; var d = Math.sqrt(dx * dx + dy * dy);
-        if (d < 80) { ctx.beginPath(); ctx.strokeStyle = "rgba(120,100,255," + (.09 * (1 - d / 80)) + ")"; ctx.lineWidth = .4; ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke(); }
-      }
-      raf = requestAnimationFrame(draw);
-    }
-    draw();
-    var onR = function () { W = c.width = window.innerWidth; H = c.height = window.innerHeight; };
-    window.addEventListener("resize", onR);
-    return function () { cancelAnimationFrame(raf); window.removeEventListener("resize", onR); };
-  }, []);
-  return <canvas ref={cvs} style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", opacity: .45 }} />;
-}
 
 function Preloader(props) {
   var s1 = useState(0); var pct = s1[0]; var setPct = s1[1];
@@ -221,7 +241,7 @@ function PCard(props) {
         <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 6 }}>
           <a href={p.github} target="_blank" rel="noopener noreferrer" style={{ padding: "3px 9px", borderRadius: 20, background: "rgba(0,0,0,.5)", border: "1px solid rgba(255,255,255,.12)", color: "rgba(255,255,255,.65)", fontFamily: "'Playfair Display', serif", fontSize: 10, textDecoration: "none", cursor: "none" }}
             onMouseEnter={function (e) { e.currentTarget.style.color = "#fff"; }} onMouseLeave={function (e) { e.currentTarget.style.color = "rgba(255,255,255,.65)"; }}>GitHub ↗</a>
-          {p.live && <a href={p.live} target="_blank" rel="noopener noreferrer" style={{ padding: "3px 9px", borderRadius: 20, background: p.c1 + "30", border: "1px solid " + p.c1 + "50", color: p.c1, fontFamily: "'Playfair Display', serif", fontSize: 10, textDecoration: "none", cursor: "none" }}>Live ↗</a>}
+          {p.live && <a href={p.live} target="_blank" rel="noopener noreferrer" style={{ padding: "3px 9px", borderRadius: 20, background: p.c1 + "30", border: "1px solid " + p.c1 + "50", color: p.c1, fontFamily: "'Playfair Display', serif", fontSize: 10, textDecoration: "none", cursor: "pointer" }}>Live ↗</a>}
         </div>
       </div>
       <div style={{ padding: "20px 22px 24px" }}>
@@ -265,7 +285,7 @@ function ContactForm() {
       <div style={{ fontSize: 52, marginBottom: 14 }}>✅</div>
       <h3 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 22, color: "#fff", marginBottom: 8 }}>Message sent!</h3>
       <p style={{ fontFamily: "'Playfair Display', serif", color: "rgba(255,255,255,.45)", lineHeight: 1.7, fontSize: 14, fontWeight: 300 }}>I'll get back to you at <strong style={{ color: "#a78bfa", fontWeight: 500 }}>mayurtamkhane96@gmail.com</strong> soon.</p>
-      <button onClick={function () { setStatus("idle"); }} style={{ marginTop: 24, padding: "9px 24px", borderRadius: 40, border: "1px solid rgba(167,139,250,.3)", background: "transparent", color: "#a78bfa", fontFamily: "'Playfair Display', serif", fontSize: 12, letterSpacing: ".1em", cursor: "none" }}>Send another →</button>
+      <button onClick={function () { setStatus("idle"); }} style={{ marginTop: 24, padding: "9px 24px", borderRadius: 40, border: "1px solid rgba(167,139,250,.3)", background: "transparent", color: "#a78bfa", fontFamily: "'Playfair Display', serif", fontSize: 12, letterSpacing: ".1em", cursor: "pointer" }}>Send another →</button>
     </div>
   );
 
@@ -290,7 +310,7 @@ function ContactForm() {
       {status === "ef" && <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "#f87171", padding: "9px 14px", borderRadius: 9, background: "rgba(248,113,113,.07)", border: "1px solid rgba(248,113,113,.18)" }}>⚠ Please fill all fields.</div>}
       {status === "ee" && <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "#f87171", padding: "9px 14px", borderRadius: 9, background: "rgba(248,113,113,.07)", border: "1px solid rgba(248,113,113,.18)" }}>⚠ Please enter a valid email.</div>}
       {status === "es" && <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "#f87171", padding: "9px 14px", borderRadius: 9, background: "rgba(248,113,113,.07)", border: "1px solid rgba(248,113,113,.18)" }}>⚠ Failed to send — email me at <a href="mailto:mayurtamkhane96@gmail.com" style={{ color: "#a78bfa" }}>mayurtamkhane96@gmail.com</a></div>}
-      <button type="submit" disabled={status === "sending"} style={{ padding: "13px 28px", borderRadius: 40, border: "none", background: status === "sending" ? "rgba(99,102,241,.35)" : "linear-gradient(135deg,#6366f1,#a78bfa)", color: "#fff", fontFamily: "'Playfair Display', serif", fontSize: 13, fontWeight: 600, letterSpacing: ".08em", cursor: status === "sending" ? "default" : "none", transition: "opacity .25s, transform .25s", alignSelf: "flex-start" }}
+      <button type="submit" disabled={status === "sending"} style={{ padding: "13px 28px", borderRadius: 40, border: "none", background: status === "sending" ? "rgba(99,102,241,.35)" : "linear-gradient(135deg,#6366f1,#a78bfa)", color: "#fff", fontFamily: "'Playfair Display', serif", fontSize: 13, fontWeight: 600, letterSpacing: ".08em", cursor: status === "sending" ? "default" : "pointer", transition: "opacity .25s, transform .25s", alignSelf: "flex-start" }}
         onMouseEnter={function (e) { if (status !== "sending") { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(99,102,241,.4)"; } }}
         onMouseLeave={function (e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}>
         {status === "sending" ? "Sending…" : "Send Message →"}
@@ -308,7 +328,7 @@ function FloatingResume() {
       rel="noopener noreferrer"
       style={{
         position: "fixed",
-        right: "clamp(20px, 4vw, 40px)",
+        left: "clamp(20px, 4vw, 40px)",
         bottom: "clamp(20px, 4vw, 40px)",
         zIndex: 9998,
         padding: "12px 24px",
@@ -359,10 +379,17 @@ function FloatingResume() {
 export default function App() {
   var sr = useState(false); var ready = sr[0]; var setReady = sr[1];
   var sc = useState(false); var scrolled = sc[0]; var setScrolled = sc[1];
+  var sp = useState(0); var scrollProgress = sp[0]; var setScrollProgress = sp[1];
   var sh = useState(false); var heroIn = sh[0]; var setHeroIn = sh[1];
 
   useEffect(function () {
-    var h = function () { setScrolled(window.scrollY > 40); };
+    var h = function () { 
+      var sy = window.scrollY;
+      setScrolled(sy > 40);
+      var dh = document.documentElement.scrollHeight;
+      var wh = window.innerHeight;
+      if (dh > wh) setScrollProgress(sy / (dh - wh));
+    };
     window.addEventListener("scroll", h, { passive: true });
 
     var audio = typeof Audio !== "undefined" ? new Audio("/fahhhhh.mp3") : null;
@@ -437,14 +464,19 @@ export default function App() {
       {!ready && <Preloader onDone={function () { setReady(true); }} />}
 
       {ready && (
-        <div>
+        <div style={{ position: "relative", zIndex: 0 }}>
           <Cursor />
-          <Particles />
-          <ThreeScene />
+          {/* Background Layers */}
+          <div style={{ position: "fixed", inset: 0, zIndex: -10, background: "#06060f" }} />
+          <div style={{ position: "fixed", inset: 0, zIndex: -9 }}>
+             <Fireworks />
+          </div>
+          <div style={{ position: "fixed", inset: 0, zIndex: -8, pointerEvents: "none", background: "radial-gradient(ellipse 65% 48% at 50% -2%,rgba(99,102,241,.18),transparent 62%),radial-gradient(ellipse 48% 38% at 95% 98%,rgba(139,92,246,.12),transparent 58%)" }} />
+          
+          <AIChatbot />
           <FloatingResume />
-          <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", background: "radial-gradient(ellipse 65% 48% at 50% -2%,rgba(99,102,241,.1),transparent 62%),radial-gradient(ellipse 48% 38% at 95% 98%,rgba(139,92,246,.07),transparent 58%)" }} />
 
-          <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ position: "relative", zIndex: 1, pointerEvents: "auto" }}>
             <Navbar scrolled={scrolled} />
 
             {/* ── HERO ── */}
@@ -513,8 +545,8 @@ export default function App() {
                 </div>
               </div>
 
-              <div style={{ position: "absolute", bottom: 30, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 7, opacity: heroIn ? .38 : 0, transition: "opacity 1s 2s" }}>
-                <div style={{ width: 1, height: 44, background: "linear-gradient(180deg,#a78bfa,transparent)", animation: "sbar 2.4s ease-in-out infinite" }} />
+              <div style={{ position: "absolute", bottom: 30, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 7, opacity: heroIn ? .38 : 0, transition: "opacity 1s 2s", pointerEvents: "none" }}>
+                <div style={{ width: 1, height: 44, background: "linear-gradient(180deg,#a78bfa,transparent)", animation: "sbar 2.4s ease-in-out infinite", pointerEvents: "none" }} />
               </div>
             </section>
 
@@ -610,6 +642,21 @@ export default function App() {
                 </div>
               </div>
             </Fade>
+
+            {/* ── LUXURY CREDIT ── */}
+            <div style={{ padding: "120px 0 60px", textAlign: "center", position: "relative" }}>
+              <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: "200px", height: "1px", background: "linear-gradient(90deg, transparent, rgba(167,139,250,0.15), transparent)" }} />
+              <div style={{ position: "relative", zIndex: 1, display: "inline-block" }}>
+                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 11, letterSpacing: "0.25em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}>
+                  Handcrafted with 
+                  <span style={{ margin: "0 10px", fontSize: 12, color: "#a78bfa", filter: "drop-shadow(0 0 5px rgba(167,139,250,0.5))", verticalAlign: "middle", animation: "pulse 2s ease-in-out infinite" }}>
+                    ♥
+                  </span>
+                  by <span style={{ color: "rgba(255,255,255,0.7)", fontWeight: 500 }}>Bunny96</span>
+                </div>
+                <div style={{ marginTop: 8, height: "1px", width: "30px", background: "#a78bfa", margin: "8px auto 0", opacity: 0.3 }} />
+              </div>
+            </div>
 
             {/* ── FOOTER ── */}
             <footer style={{ padding: "26px " + P, borderTop: "1px solid rgba(255,255,255,.04)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
