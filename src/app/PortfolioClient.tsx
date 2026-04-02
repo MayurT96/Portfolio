@@ -138,6 +138,9 @@ function Cursor() {
     };
   }, [isHovering]);
 
+  // Hide custom cursor on touch devices
+  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) return null;
+
   return (
     <div style={{ pointerEvents: "none", zIndex: 10000000, mixBlendMode: "difference" }}>
       {[0, 1, 2, 3, 4].map(i => (
@@ -188,12 +191,15 @@ function Navbar(props) {
   return (
     <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, height: 62, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(18px,6vw,80px)", background: props.scrolled ? "rgba(6,6,15,.9)" : "transparent", backdropFilter: props.scrolled ? "blur(22px)" : "none", borderBottom: props.scrolled ? "1px solid rgba(255,255,255,.05)" : "none", transition: "all .4s" }}>
       <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 19, background: "linear-gradient(120deg,#fff,rgba(167,139,250,.8))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Bunny96</div>
-      <div style={{ display: "flex", gap: "clamp(14px,3vw,38px)", alignItems: "center" }}>
+      <div className="nav-links-container" style={{ display: "flex", gap: "clamp(14px,3vw,38px)", alignItems: "center" }}>
         {links.map(function (l) {
+          var isMain = l === "About" || l === "Projects";
           return <a key={l} href={"#" + l.toLowerCase()} onMouseEnter={function () { setHov(l); }} onMouseLeave={function () { setHov(null); }}
+            className={"nav-link" + (isMain ? " active-on-mobile" : "")}
             style={{ fontFamily: "'Playfair Display', serif", fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: hov === l ? "#fff" : "rgba(255,255,255,.42)", textDecoration: "none", transition: "color .25s", cursor: "none" }}>{l}</a>;
         })}
         <a href="https://github.com/MayurT96" target="_blank" rel="noopener noreferrer"
+          className="nav-link active-on-mobile"
           style={{ fontFamily: "'Playfair Display', serif", fontSize: 11, letterSpacing: ".1em", padding: "6px 16px", borderRadius: 40, border: "1px solid rgba(167,139,250,.3)", color: "rgba(167,139,250,.75)", textDecoration: "none", transition: "all .25s", cursor: "none" }}
           onMouseEnter={function (e) { e.currentTarget.style.background = "rgba(139,92,246,.12)"; e.currentTarget.style.color = "#c4b5fd"; }}
           onMouseLeave={function (e) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(167,139,250,.75)"; }}>
@@ -321,11 +327,21 @@ function ContactForm() {
 
 function FloatingResume() {
   const [hov, setHov] = useState(false);
+  
+  const playSnd = () => {
+    if (typeof Audio !== "undefined") {
+      const audio = new Audio("/fahhhhh.mp3");
+      audio.volume = 0.5;
+      audio.play().catch(() => {});
+    }
+  };
+
   return (
     <a 
       href="/Resume_xyz.pdf" 
       target="_blank"
       rel="noopener noreferrer"
+      onClick={playSnd}
       style={{
         position: "fixed",
         left: "clamp(20px, 4vw, 40px)",
@@ -351,6 +367,7 @@ function FloatingResume() {
         transform: hov ? "translateY(-4px) scale(1.02)" : "translateY(0) scale(1)",
         cursor: hov ? "pointer" : "none"
       }}
+      className="floating-resume"
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
     >
@@ -392,19 +409,8 @@ export default function App() {
     };
     window.addEventListener("scroll", h, { passive: true });
 
-    var audio = typeof Audio !== "undefined" ? new Audio("/fahhhhh.mp3") : null;
-    var playSnd = function () {
-      if (audio) {
-        var clone = audio.cloneNode();
-        clone.volume = 0.5;
-        clone.play().catch(function () {});
-      }
-    };
-    window.addEventListener("click", playSnd);
-
     return function () { 
       window.removeEventListener("scroll", h); 
-      window.removeEventListener("click", playSnd);
     };
   }, []);
   useEffect(function () { if (ready) setTimeout(function () { setHeroIn(true); }, 100); }, [ready]);
@@ -451,13 +457,22 @@ export default function App() {
         @keyframes pulse  { 0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.35} 50%{transform:translate(-50%,-50%) scale(1.12);opacity:.65} }
         @keyframes sbar   { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
         @media(max-width:760px){
-          .two-col { grid-template-columns:1fr !important; gap:40px !important; }
+          .two-col { grid-template-columns:1fr !important; gap:32px !important; }
           .proj-grid { grid-template-columns:1fr !important; }
           .trait-grid { grid-template-columns:1fr 1fr !important; }
           .hero-links { flex-direction:column !important; gap:8px !important; }
+          .nav-links-container { gap: 10px !important; }
+          .nav-link { font-size: 10px !important; letter-spacing: 0.05em !important; }
         }
         @media(max-width:480px){
           .trait-grid { grid-template-columns:1fr !important; }
+          .nav-link { display: none !important; }
+          .nav-link.active-on-mobile { display: block !important; }
+          .floating-resume { padding: 8px 16px !important; font-size: 10px !important; left: 15px !important; bottom: 15px !important; }
+          html, body { overflow-x: hidden !important; width: 100% !important; position: relative !important; }
+        }
+        @media (pointer: coarse) {
+          body, a, button, [role="button"] { cursor: auto !important; }
         }
       `}</style>
 
@@ -489,7 +504,7 @@ export default function App() {
                   OPEN TO OPPORTUNITIES
                 </div>
 
-                <h1 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 500, fontSize: "clamp(48px,10vw,108px)", lineHeight: .92, letterSpacing: "-.03em", background: "linear-gradient(145deg, #ffffff 20%, #e2e8f0 55%, #c4b5fd 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: 6 }}>
+                <h1 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 500, fontSize: "clamp(34px,10vw,108px)", lineHeight: .92, letterSpacing: "-.03em", background: "linear-gradient(145deg, #ffffff 20%, #e2e8f0 55%, #c4b5fd 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: 6 }}>
                   Mayur<br /><span style={{ fontStyle: "italic", fontWeight: 400 }}>Tamkhane.</span>
                 </h1>
 

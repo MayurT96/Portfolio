@@ -98,7 +98,7 @@ export default function Skills() {
         </div>
 
         {/* Categories Grid (Glassmorphism Awwwards Style) */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 24 }}>
           {skillCategories.map((category, idx) => (
             <div 
               key={category.title}
@@ -107,7 +107,7 @@ export default function Skills() {
                 background: "rgba(255,255,255,.025)",
                 border: "1px solid rgba(255,255,255,.05)",
                 borderRadius: 24,
-                padding: "36px 28px",
+                padding: "clamp(24px, 5vw, 36px) clamp(18px, 4vw, 28px)",
                 backdropFilter: "blur(24px)",
                 WebkitBackdropFilter: "blur(24px)",
                 transition: "all 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
