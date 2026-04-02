@@ -338,7 +338,7 @@ function FloatingResume() {
 
   return (
     <a 
-      href="/Resume_xyz.pdf" 
+      href="/Mayur_Resume.pdf" 
       target="_blank"
       rel="noopener noreferrer"
       onClick={playSnd}
