@@ -26,12 +26,11 @@ const PI_2 = Math.PI * 2;
 const GRAVITY = 0.9;
 
 const LUXURY_COLORS = {
-  Indigo: "#6366f1",
-  Purple: "#e879f9",
-  Gold:   "#fcd34d",
-  White:  "#ffffff",
-  Blue:   "#38bdf8",
-  Neon:   "#4ade80"
+  Indigo: "#4338ca", // Deeper indigo
+  Purple: "#7c3aed", // Richer purple
+  Gold:   "#b45309", // Bronze-gold
+  White:  "#cbd5e1", // Slate-white
+  Blue:   "#0ea5e9"
 };
 
 const COLOR_CODES = Object.values(LUXURY_COLORS);
@@ -157,10 +156,8 @@ export default function Fireworks() {
 
     const tick = (now: number) => {
       const delta = 16; 
-      const w = stageW;
-      const h = stageH;
 
-      if (now - lastLaunch > 1200) {
+      if (now - lastLaunch > 3500) {
         launchShell();
         lastLaunch = now;
       }
@@ -201,7 +198,7 @@ export default function Fireworks() {
       // Trails render
       trailsCtx.globalCompositeOperation = "source-over";
       trailsCtx.fillStyle = "rgba(0, 0, 0, 0.15)";
-      trailsCtx.fillRect(0, 0, w, h);
+      trailsCtx.fillRect(0, 0, stageW, stageH);
       trailsCtx.globalCompositeOperation = "lighten";
 
       COLOR_CODES.forEach(color => {
@@ -219,13 +216,13 @@ export default function Fireworks() {
       });
 
       // Main render (Heads)
-      mainCtx.clearRect(0, 0, w, h);
+      mainCtx.clearRect(0, 0, stageW, stageH);
       COLOR_CODES.forEach(color => {
-        mainCtx.fillStyle = "#fff";
+        mainCtx.fillStyle = "rgba(255, 255, 255, 0.7)";
         activeStars[color].forEach(s => {
           if (s.color !== INVISIBLE) {
             mainCtx.beginPath();
-            mainCtx.arc(s.x, s.y, 1.5, 0, PI_2);
+            mainCtx.arc(s.x, s.y, 0.8, 0, PI_2);
             mainCtx.fill();
           }
         });
@@ -258,9 +255,9 @@ export default function Fireworks() {
   }, []);
 
   return (
-    <div ref={containerRef} className="pointer-events-none fixed inset-0 overflow-hidden" style={{ zIndex: 5 }}>
-      <canvas ref={trailsCanvasRef} className="absolute inset-0 w-full h-full" style={{ mixBlendMode: "screen", opacity: 0.95 }} />
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+    <div ref={containerRef} className="pointer-events-none fixed inset-0 overflow-hidden" style={{ zIndex: 0 }}>
+      <canvas ref={trailsCanvasRef} className="absolute inset-0 w-full h-full" style={{ mixBlendMode: "screen", opacity: 0.35 }} />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" style={{ opacity: 0.4 }} />
     </div>
   );
 }
