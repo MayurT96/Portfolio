@@ -327,21 +327,29 @@ function ContactForm() {
 
 function FloatingResume() {
   const [hov, setHov] = useState(false);
+  const [status, setStatus] = useState("RESUME");
   
-  const playSnd = () => {
+  const handleClick = (e) => {
+    e.preventDefault();
+    
+    // Play sound
     if (typeof Audio !== "undefined") {
       const audio = new Audio("/fahhhhh.mp3");
       audio.volume = 0.5;
       audio.play().catch(() => {});
     }
+
+    // Show 'Not Uploaded' status
+    setStatus("NOT UPLOADED");
+    setTimeout(() => {
+      setStatus("RESUME");
+    }, 2500);
   };
 
   return (
     <a 
-      href="/Mayur_Resume.pdf" 
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={playSnd}
+      href="#" 
+      onClick={handleClick}
       style={{
         position: "fixed",
         left: "clamp(20px, 4vw, 40px)",
@@ -349,11 +357,11 @@ function FloatingResume() {
         zIndex: 9998,
         padding: "12px 24px",
         borderRadius: 40,
-        background: "rgba(6, 6, 15, 0.6)",
+        background: status === "NOT UPLOADED" ? "rgba(239, 68, 68, 0.1)" : "rgba(6, 6, 15, 0.6)",
         backdropFilter: "blur(16px)",
         WebkitBackdropFilter: "blur(16px)",
-        border: `1px solid ${hov ? "rgba(167,139,250,0.7)" : "rgba(167,139,250,0.2)"}`,
-        color: hov ? "#fff" : "rgba(255,255,255,0.7)",
+        border: `1px solid ${status === "NOT UPLOADED" ? "rgba(239, 68, 68, 0.5)" : (hov ? "rgba(167,139,250,0.7)" : "rgba(167,139,250,0.2)")}`,
+        color: status === "NOT UPLOADED" ? "#f87171" : (hov ? "#fff" : "rgba(255,255,255,0.7)"),
         fontFamily: "'Playfair Display', serif",
         fontSize: 11,
         letterSpacing: "0.15em",
@@ -378,17 +386,25 @@ function FloatingResume() {
         width: 26,
         height: 26,
         borderRadius: "50%",
-        background: hov ? "rgba(167,139,250,0.25)" : "rgba(255,255,255,0.08)",
+        background: status === "NOT UPLOADED" ? "rgba(239, 68, 68, 0.2)" : (hov ? "rgba(167,139,250,0.25)" : "rgba(255,255,255,0.08)"),
         transition: "background 0.4s",
-        color: hov ? "#fff" : "#a78bfa"
+        color: status === "NOT UPLOADED" ? "#f87171" : (hov ? "#fff" : "#a78bfa")
       }}>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "transform 0.3s", transform: hov ? "translateY(2px)" : "translateY(0)" }}>
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
+        {status === "NOT UPLOADED" ? (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>
+        ) : (
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ transition: "transform 0.3s", transform: hov ? "translateY(2px)" : "translateY(0)" }}>
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        )}
       </div>
-      RESUME
+      {status}
     </a>
   );
 }
