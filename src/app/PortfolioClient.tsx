@@ -9,6 +9,7 @@ import { useState, useEffect, useRef } from "react";
 import Skills from "../components/Skills";
 import AIChatbot from "../components/AIChatbot";
 import Fireworks from "../components/background/Fireworks";
+import GlitchText from "../components/GlitchText";
 
 function useInView(thr) {
   var t = thr === undefined ? 0.1 : thr;
@@ -190,7 +191,7 @@ function Navbar(props) {
   var s = useState(null); var hov = s[0]; var setHov = s[1];
   return (
     <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, height: 62, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(18px,6vw,80px)", background: props.scrolled ? "rgba(6,6,15,.9)" : "transparent", backdropFilter: props.scrolled ? "blur(22px)" : "none", borderBottom: props.scrolled ? "1px solid rgba(255,255,255,.05)" : "none", transition: "all .4s" }}>
-      <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 19, background: "linear-gradient(120deg,#fff,rgba(167,139,250,.8))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Bunny96</div>
+      <GlitchText as="div" trigger="mount" delay={200} speed={22} style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 19, background: "linear-gradient(120deg,#fff,rgba(167,139,250,.8))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Bunny96</GlitchText>
       <div className="nav-links-container" style={{ display: "flex", gap: "clamp(14px,3vw,38px)", alignItems: "center" }}>
         {links.map(function (l) {
           var isMain = l === "About" || l === "Projects";
@@ -219,7 +220,9 @@ function Fade(props) {
 function SH(props) {
   return (
     <div style={{ marginBottom: 52 }}>
-      <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 10, letterSpacing: ".3em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 10 }}>{props.tag}</div>
+      <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 10, letterSpacing: ".3em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 10 }}>
+        <GlitchText trigger="inview" speed={16}>{props.tag}</GlitchText>
+      </div>
       <h2 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(28px,4.5vw,50px)", color: "#fff", margin: 0, lineHeight: 1.1, letterSpacing: "-.02em" }}>{props.children}</h2>
       <div style={{ width: 38, height: 2, marginTop: 16, background: "linear-gradient(90deg,#6366f1,#a78bfa)", borderRadius: 2, boxShadow: "0 0 10px #7c3aed" }} />
     </div>
@@ -251,7 +254,7 @@ function PCard(props) {
         </div>
       </div>
       <div style={{ padding: "20px 22px 24px" }}>
-        <h3 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 18, color: "#fff", margin: "0 0 7px", letterSpacing: "-.01em" }}>{p.title}</h3>
+        <h3 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 18, color: "#fff", margin: "0 0 7px", letterSpacing: "-.01em" }}><GlitchText trigger="inview" speed={20}>{p.title}</GlitchText></h3>
         <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "rgba(255,255,255,.45)", lineHeight: 1.65, margin: "0 0 16px", fontWeight: 300 }}>{p.desc}</p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
           {p.stack.map(function (s) { return <span key={s} style={{ padding: "2px 9px", borderRadius: 20, fontSize: 10, fontFamily: "'Playfair Display', serif", background: p.c1 + "14", border: "1px solid " + p.c1 + "2a", color: p.c1 }}>{s}</span>; })}
@@ -517,11 +520,11 @@ export default function App() {
 
                 <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 18px", borderRadius: 40, border: "1px solid rgba(167,139,250,.25)", background: "rgba(124,58,237,.07)", fontFamily: "'Playfair Display', serif", fontSize: 11, color: "#a78bfa", letterSpacing: ".14em", marginBottom: 30 }}>
                   <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", boxShadow: "0 0 8px #4ade80", display: "inline-block", animation: "blink 2.5s infinite" }} />
-                  OPEN TO OPPORTUNITIES
+                  <GlitchText trigger="mount" delay={400} speed={20} style={{ fontSize: 11, color: "#a78bfa", letterSpacing: ".14em", fontFamily: "'Playfair Display', serif" }}>OPEN TO OPPORTUNITIES</GlitchText>
                 </div>
 
                 <h1 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 500, fontSize: "clamp(34px,10vw,108px)", lineHeight: .92, letterSpacing: "-.03em", background: "linear-gradient(145deg, #ffffff 20%, #e2e8f0 55%, #c4b5fd 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: 6 }}>
-                  Mayur<br /><span style={{ fontStyle: "italic", fontWeight: 400 }}>Tamkhane.</span>
+                  <GlitchText trigger="mount" delay={600} speed={18}>Mayur</GlitchText><br /><span style={{ fontStyle: "italic", fontWeight: 400 }}><GlitchText trigger="mount" delay={900} speed={18}>Tamkhane.</GlitchText></span>
                 </h1>
 
                 <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(15px,2.2vw,21px)", color: "rgba(255,255,255,.52)", margin: "20px 0 14px", minHeight: 30, fontWeight: 300 }}>
@@ -584,11 +587,11 @@ export default function App() {
             {/* ── ABOUT ── */}
             <Fade id="about" style={{ padding: "95px " + P }}>
               <div style={{ maxWidth: 1080, margin: "0 auto" }}>
-                <SH tag="// about me">A Little About Me</SH>
+                <SH tag="// about me"><GlitchText trigger="inview" speed={22}>A Little About Me</GlitchText></SH>
                 <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(36px,6vw,76px)", alignItems: "start" }}>
                   <div>
                     <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(14px,1.7vw,17px)", color: "rgba(255,255,255,.7)", lineHeight: 1.88, marginBottom: 18, fontWeight: 400 }}>
-                      Hi, I'm <span style={{ color: "#a78bfa", fontWeight: 600 }}>Mayur</span> — a fresher web developer from Dhule, Maharashtra, passionate about building clean, functional, and visually appealing web applications.
+                      Hi, I'm <span style={{ color: "#a78bfa", fontWeight: 600 }}><GlitchText trigger="inview" delay={100} speed={18}>Mayur</GlitchText></span> — a fresher web developer from Dhule, Maharashtra, passionate about building clean, functional, and visually appealing web applications.
                     </p>
                     <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.42)", lineHeight: 1.9, marginBottom: 20, fontWeight: 300 }}>
                       I'm currently focused on mastering the MERN stack and modern frontend technologies. I believe in learning by building — every project teaches me something new.
@@ -611,7 +614,7 @@ export default function App() {
                         onMouseEnter={function (e) { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.borderColor = "rgba(167,139,250,.2)"; }}
                         onMouseLeave={function (e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = "rgba(255,255,255,.07)"; }}>
                         <div style={{ fontSize: 22, marginBottom: 9 }}>{tr.icon}</div>
-                        <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 13, color: "#fff", marginBottom: 5 }}>{tr.label}</div>
+                        <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 13, color: "#fff", marginBottom: 5 }}><GlitchText trigger="inview" speed={20}>{tr.label}</GlitchText></div>
                         <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 12, color: "rgba(255,255,255,.36)", lineHeight: 1.55, fontWeight: 300 }}>{tr.desc}</div>
                       </div>;
                     })}
@@ -626,7 +629,7 @@ export default function App() {
             {/* ── PROJECTS ── */}
             <Fade id="projects" style={{ padding: "95px " + P }}>
               <div style={{ maxWidth: 1080, margin: "0 auto" }}>
-                <SH tag="// projects">Things I've Built</SH>
+                <SH tag="// projects"><GlitchText trigger="inview" speed={22}>Things I've Built</GlitchText></SH>
                 <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.36)", marginBottom: 44, lineHeight: 1.8, maxWidth: 520, fontWeight: 300 }}>
                   Personal projects I've built to practice and apply what I've learned. These show how I think and approach problems.
                 </p>
@@ -646,7 +649,7 @@ export default function App() {
             {/* ── CONTACT ── */}
             <Fade id="contact" style={{ padding: "95px " + P + " 70px", background: "rgba(99,102,241,.022)" }}>
               <div style={{ maxWidth: 1080, margin: "0 auto" }}>
-                <SH tag="// contact">Let's Connect</SH>
+                <SH tag="// contact"><GlitchText trigger="inview" speed={22}>Let's Connect</GlitchText></SH>
                 <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(36px,6vw,76px)", alignItems: "start" }}>
                   <div>
                     <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.5vw,16px)", color: "rgba(255,255,255,.55)", lineHeight: 1.88, marginBottom: 34, fontWeight: 300 }}>
@@ -666,7 +669,7 @@ export default function App() {
                     })}
                   </div>
                   <div style={Object.assign({}, glass, { padding: "clamp(22px,4vw,38px)" })}>
-                    <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 19, color: "#fff", marginBottom: 5, letterSpacing: "-.01em" }}>Send a message</div>
+                    <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 19, color: "#fff", marginBottom: 5, letterSpacing: "-.01em" }}><GlitchText trigger="inview" speed={22}>Send a message</GlitchText></div>
                     <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 12, color: "rgba(255,255,255,.28)", marginBottom: 26, fontWeight: 300 }}>I'll reply within 24 hours.</div>
                     <ContactForm />
                   </div>

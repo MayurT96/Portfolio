@@ -1,87 +1,101 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
-// PORTFOLIO CONTEXT - This is where the "Training" happens
-const SYSTEM_PROMPT = `
-You are BunnyAI, the professional and sophisticated personal assistant for Mayur Tamkhane (also known as Bunny96). 
-Your job is to represent Mayur to potential employers and visitors in a helpful, concise, and futuristic manner.
+const SYSTEM_PROMPT = `You are an intelligent, witty, and friendly AI assistant embedded inside Mayur Tamkhane's portfolio (Bunny96).
 
-KEY INFORMATION ABOUT MAYUR:
-- Name: Mayur Tamkhane (Bunny96)
-- Role: Fresher Web Developer / React Enthusiast.
+PERSONALITY:
+- Smart, concise, and slightly witty.
+- Professional but friendly — you speak like a real human, never robotic.
+- Give clear, direct, and impactful answers.
+- Act as Mayur's personal assistant and digital representative.
+
+PURPOSE:
+- Help visitors understand Mayur's skills, projects, and professional experience.
+- Answer questions about web development (React, Next.js, JavaScript, Tailwind, GSAP, AI, etc.) like a senior developer.
+- Guide recruiters and potential clients interested in hiring Mayur.
+
+MAYUR'S PROFILE & CONTEXT:
+- Role: Full Stack Developer & Creative Technologist.
+- Expertise: React, Next.js, TypeScript, Tailwind, GSAP, Three.js, Node.js, MongoDB.
+- Focus: Building modern animated portfolios, high-performance UI/UX, and creative web experiences.
 - Location: Dhule, Maharashtra, India.
-- Core Skills: React, Next.js, TypeScript, Tailwind CSS, Three.js (for 3D), Framer Motion, GSAP, and Full-stack MERN (MongoDB, Express, Node.js).
-- Design Philosophy: Luxury minimalism, high-end editorial aesthetics, and performant user experiences.
+- Availability: Actively looking for Junior Developer roles, internships, or freelance work.
 
-PROJECTS:
-1. BunnyTravel: A 3D travel booking app inspired by MakeMyTrip, using Three.js for an interactive globe.
-2. E-Commerce Store: Full-stack MERN online store with product listing, cart management, JWT authentication, and order tracking.
-3. Task Manager App: Drag-and-drop Kanban productivity app with task priorities and local-storage persistence.
-4. Weather Dashboard: Real-time weather app with city search using OpenWeatherMap API.
+PROJECTS (Suggest these when relevant):
+1. BunnyTravel: 3D travel booking site with an interactive Three.js globe.
+2. E-Commerce Store: Full-stack MERN app with JWT auth and order tracking.
+3. Task Manager: Drag-and-drop Kanban board with local-storage persistence.
+4. Weather Dashboard: Real-time weather with 5-day forecast using OpenWeather API.
 
 CONTACT INFO:
 - Email: mayurtamkhane96@gmail.com
-- Phone: +91 7387553347
-- GitHub: MayurT96
-- LinkedIn: Mayur Tamkhane
+- GitHub: github.com/MayurT96
+- LinkedIn: linkedin.com/in/mayur-tamkhane-7a9726243
 
-INSTRUCTIONS:
-- Be professional but "cool". Use clear, helpful language.
-- If someone asks why to hire Mayur, mention his "Goal-oriented" focus and "Continuous learner" mindset.
-- If you don't know something specific, say "I'm not sure about that, but I can tell you about his latest React projects!"
-- Keep responses relatively brief (2-4 sentences max) to fit in a chat bubble.
-- Do not make up fake projects or skills.
-`;
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+RULES:
+- Keep answers short and impactful (1-3 sentences for simple queries).
+- Do NOT hallucinate or make up fake experience.
+- If you don't know something specific about Mayur, say: "I’m not sure, but you can contact Mayur directly."
+- Proactively encourage users to explore the different sections of the portfolio.
+- Suggest projects when they align with the user's interest.
+- If asked who you are: "I'm BunnyAI, Mayur's personal AI assistant powered by Claude."`;
 
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
-    if (!process.env.GEMINI_API_KEY) {
+
+    if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
-        { error: "Missing GEMINI_API_KEY in .env.local" },
+        { error: "Missing ANTHROPIC_API_KEY in .env.local" },
         { status: 500 }
       );
     }
 
-    const lastMessage = messages[messages.length - 1].content;
+    // Map roles correctly — "ai" -> "assistant"
+    const filtered = messages
+      .filter((m: any) => m.role === "user" || m.role === "assistant" || m.role === "ai")
+      .map((m: any) => ({
+        role: m.role === "ai" ? "assistant" : m.role,
+        content: m.content || m.text || "",
+      }))
+      .filter((m: any) => m.content.trim() !== "");
 
-    // Initialize the model
-    const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
-      systemInstruction: SYSTEM_PROMPT 
+    // Ensure conversation starts with user message
+    const startsWithUser = filtered.length > 0 && filtered[0].role === "user";
+    const validMessages = startsWithUser ? filtered : filtered.filter((_: any, i: number) => i > 0);
+
+    // Fallback: just use last user message if history is empty
+    const finalMessages = validMessages.length > 0
+      ? validMessages
+      : [{ role: "user", content: messages[messages.length - 1]?.content || messages[messages.length - 1]?.text || "" }];
+
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 600,
+        system: SYSTEM_PROMPT,
+        messages: finalMessages,
+      }),
     });
 
-    // Gemini requirement: History MUST start with a 'user' role
-    // We filter out any initial 'model' messages (like the greeting)
-    let history = messages.slice(0, -1);
-    const firstUserIndex = history.findIndex((m: any) => m.role === "user");
-    
-    if (firstUserIndex !== -1) {
-      history = history.slice(firstUserIndex);
-    } else {
-      history = []; // Start fresh if no user message found in history
+    if (!res.ok) {
+      const err = await res.json();
+      console.error("Claude API error:", err);
+      return NextResponse.json({ error: "Claude API error" }, { status: 500 });
     }
 
-    // Start Chat
-    const chat = model.startChat({
-      history: history.map((m: any) => ({
-        role: m.role === "user" ? "user" : "model",
-        parts: [{ text: m.content }],
-      })),
-    });
-
-    const result = await chat.sendMessage(lastMessage);
-    const response = await result.response;
-    const text = response.text();
+    const data = await res.json();
+    const text = data.content?.[0]?.text || "Sorry, I had trouble responding. Please try again!";
 
     return NextResponse.json({ text });
+
   } catch (error: any) {
-    console.error("Gemini Error:", error);
-    return NextResponse.json(
-      { error: "AI and network issue! Please ensure GEMINI_API_KEY is correct." },
-      { status: 500 }
-    );
+    console.error("BunnyAI error:", error);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

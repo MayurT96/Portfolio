@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { ensureGsap, gsap } from "@/lib/gsap";
 import ThreeBackground from "@/components/background/ThreeBackground";
 import Magnetic from "@/components/ui/Magnetic";
+import AnimatedText from "@/components/typography/AnimatedText";
 
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -20,7 +21,7 @@ export default function HeroSection() {
     const tl = gsap.timeline({ delay: 3.2 }); // wait for loading screen + buffer
 
     gsap.set(
-      [headlineRef1.current, headlineRef2.current, subtextRef.current, ctaRef.current],
+      [headlineRef1.current, headlineRef2.current, ctaRef.current],
       { yPercent: 120, opacity: 0 }
     );
     gsap.set(lineRef.current, { scaleX: 0 });
@@ -45,13 +46,12 @@ export default function HeroSection() {
         "-=1.8"
       )
       .to(
-        [subtextRef.current, ctaRef.current],
+        ctaRef.current,
         {
           yPercent: 0,
           opacity: 1,
           duration: 1.5,
           ease: "power3.out",
-          stagger: 0.1,
         },
         "-=1.2"
       );
@@ -103,13 +103,12 @@ export default function HeroSection() {
           />
 
           <div className="overflow-hidden max-w-xl">
-            <p
-              ref={subtextRef}
+            <AnimatedText
+              text="Creative Developer engineer of Awwwards-caliber digital experiences built on clean architecture, immersive 3D, and highly interactive motion."
+              type="hero"
               className="font-space-grotesk text-lg md:text-xl text-muted font-light leading-relaxed"
-            >
-              Creative Developer engineer of Awwwards-caliber digital experiences
-              built on clean architecture, immersive 3D, and highly interactive motion.
-            </p>
+              delay={4.2} // 3.2s loading + 1s for main headlines
+            />
           </div>
 
           <div ref={ctaRef} className="flex gap-6 items-center">

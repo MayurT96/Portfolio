@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import GlitchText from "./GlitchText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FaReact, FaNodeJs, FaHtml5, FaCss3Alt, FaDocker, FaGithub, FaAws } from "react-icons/fa";
 import { SiNextdotjs, SiTailwindcss, SiJavascript, SiTypescript, SiMongodb, SiExpress, SiThreedotjs, SiFigma, SiPostgresql, SiFirebase, SiGraphql, SiVercel, SiPostman } from "react-icons/si";
@@ -98,8 +99,12 @@ export default function Skills() {
         
         {/* Section Heading */}
         <div style={{ marginBottom: 52 }}>
-          <div style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".3em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 10 }}>// skills</div>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(28px,4.5vw,50px)", color: "#fff", margin: 0, lineHeight: 1.1, letterSpacing: "-.02em" }}>What I Work With</h2>
+          <div style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".3em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 10 }}>
+            <GlitchText trigger="inview" speed={16}>// skills</GlitchText>
+          </div>
+          <h2 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(28px,4.5vw,50px)", color: "#fff", margin: 0, lineHeight: 1.1, letterSpacing: "-.02em" }}>
+            <GlitchText trigger="inview" speed={18}>What I Work With</GlitchText>
+          </h2>
           <div style={{ width: 38, height: 2, marginTop: 16, background: "linear-gradient(90deg,#6366f1,#a78bfa)", borderRadius: 2, boxShadow: "0 0 10px #7c3aed" }} />
         </div>
 

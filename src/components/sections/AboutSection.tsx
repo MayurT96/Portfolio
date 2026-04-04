@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { ensureGsap, gsap, ScrollTrigger } from "@/lib/gsap";
+import AnimatedText from "@/components/typography/AnimatedText";
 
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -42,9 +43,11 @@ export default function AboutSection() {
           <p className="font-syne text-sm tracking-[0.2em] text-accent-neon uppercase">
             01. Background
           </p>
-          <h2 className="font-syne text-4xl md:text-5xl lg:text-7xl text-white font-bold tracking-tight uppercase neon-text">
-            About Me
-          </h2>
+          <AnimatedText
+            text="About Me"
+            type="heading"
+            className="font-syne text-4xl md:text-5xl lg:text-7xl text-white font-bold tracking-tight uppercase neon-text"
+          />
           <div className="w-px h-24 bg-gradient-to-b from-accent-neon to-transparent mt-4" />
         </div>
 
@@ -56,17 +59,23 @@ export default function AboutSection() {
           <div ref={el => { cardRefs.current[0] = el; }} className="relative p-8 md:p-12 deep-glass deep-glass-hover rounded-3xl w-full">
             <div className="absolute top-12 -left-10 md:-left-18 w-4 h-4 rounded-full bg-accent-neon shadow-[0_0_15px_rgba(56,189,248,0.8)] border-2 border-black" />
             <h3 className="font-syne text-2xl md:text-3xl font-bold text-white mb-4">Intentional Design</h3>
-            <p className="font-space-grotesk text-white/70 leading-relaxed font-light">
-              I am a full-stack developer with a focus on crafting high-end digital experiences. I believe that performance and design are not mutually exclusive, but rather depend on one another to create something exceptional.
-            </p>
+            <AnimatedText
+              text="I am a full-stack developer with a focus on crafting high-end digital experiences. I believe that performance and design are not mutually exclusive, but rather depend on one another to create something exceptional."
+              type="paragraph"
+              className="font-space-grotesk text-white/70 leading-relaxed font-light"
+              delay={0.2}
+            />
           </div>
 
           <div ref={el => { cardRefs.current[1] = el; }} className="relative p-8 md:p-12 deep-glass deep-glass-hover rounded-3xl w-full">
             <div className="absolute top-12 -left-10 md:-left-18 w-4 h-4 rounded-full bg-accent border-2 border-black" />
             <h3 className="font-syne text-2xl md:text-3xl font-bold text-white mb-4">Clean Architecture</h3>
-            <p className="font-space-grotesk text-white/70 leading-relaxed font-light">
-              My approach to development is rooted in simplicity and restraint. Whether architecting a robust MERN backend or fine-tuning WebGL animations, I prioritize clarity, maintainability, and user experience above all else. Every line of code, like every pixel, must serve a purpose.
-            </p>
+            <AnimatedText
+              text="My approach to development is rooted in simplicity and restraint. Whether architecting a robust MERN backend or fine-tuning WebGL animations, I prioritize clarity, maintainability, and user experience above all else. Every line of code, like every pixel, must serve a purpose."
+              type="paragraph"
+              className="font-space-grotesk text-white/70 leading-relaxed font-light"
+              delay={0.2}
+            />
           </div>
 
           <div ref={el => { cardRefs.current[2] = el; }} className="relative p-8 md:p-12 deep-glass deep-glass-hover rounded-3xl w-full">
