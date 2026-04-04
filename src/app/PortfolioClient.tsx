@@ -12,11 +12,11 @@ import Fireworks from "../components/background/Fireworks";
 import GlitchText from "../components/GlitchText";
 
 function useInView(thr) {
-  var t = thr === undefined ? 0.1 : thr;
-  var ref = useRef(null);
-  var s = useState(false); var vis = s[0]; var setVis = s[1];
+  const t = thr === undefined ? 0.1 : thr;
+  const ref = useRef(null);
+  const s = useState(false); const vis = s[0]; const setVis = s[1];
   useEffect(function () {
-    var obs = new IntersectionObserver(function (en) { if (en[0].isIntersecting) setVis(true); }, { threshold: t });
+    const obs = new IntersectionObserver(function (en) { if (en[0].isIntersecting) setVis(true); }, { threshold: t });
     if (ref.current) obs.observe(ref.current);
     return function () { obs.disconnect(); };
   }, [t]);
@@ -24,18 +24,18 @@ function useInView(thr) {
 }
 
 function Typewriter(props) {
-  var words = props.words;
-  var s1 = useState(""); var txt = s1[0]; var setTxt = s1[1];
-  var s2 = useState(0); var wi = s2[0]; var setWi = s2[1];
-  var s3 = useState(false); var del = s3[0]; var setDel = s3[1];
+  const words = props.words;
+  const s1 = useState(""); const txt = s1[0]; const setTxt = s1[1];
+  const s2 = useState(0); const wi = s2[0]; const setWi = s2[1];
+  const s3 = useState(false); const del = s3[0]; const setDel = s3[1];
   useEffect(function () {
-    var word = words[wi % words.length];
-    var id = setTimeout(function () {
+    const word = words[wi % words.length];
+    const id = setTimeout(function () {
       if (!del) {
-        var n = word.slice(0, txt.length + 1); setTxt(n);
+        const n = word.slice(0, txt.length + 1); setTxt(n);
         if (n.length === word.length) setTimeout(function () { setDel(true); }, 2000);
       } else {
-        var n2 = word.slice(0, txt.length - 1); setTxt(n2);
+        const n2 = word.slice(0, txt.length - 1); setTxt(n2);
         if (n2.length === 0) { setDel(false); setWi(function (i) { return i + 1; }); }
       }
     }, del ? 35 : 85);
@@ -50,23 +50,23 @@ function Typewriter(props) {
 }
 
 function Cursor() {
-  var ring = useRef(null);
-  var trails = useRef([null,null,null,null,null]);
-  var rx = useRef(0); var ry = useRef(0); var mx = useRef(0); var my = useRef(0);
-  var tx = useRef([0,0,0,0,0]); var ty = useRef([0,0,0,0,0]);
-  var [isHovering, setIsHovering] = useState(false);
-  var [isMouseDown, setIsMouseDown] = useState(false);
-  var hasMoved = useRef(false);
+  const ring = useRef(null);
+  const trails = useRef([null,null,null,null,null]);
+  const rx = useRef(0); const ry = useRef(0); const mx = useRef(0); const my = useRef(0);
+  const tx = useRef([0,0,0,0,0]); const ty = useRef([0,0,0,0,0]);
+  const [isHovering, setIsHovering] = useState(false);
+  const [isMouseDown, setIsMouseDown] = useState(false);
+  const hasMoved = useRef(false);
 
   useEffect(function () {
-    var onM = function (e) { 
+    const onM = function (e) { 
       mx.current = e.clientX; 
       my.current = e.clientY; 
       // Fix fly-in glitch: Initialize position on first move
       if (!hasMoved.current) {
         rx.current = mx.current;
         ry.current = my.current;
-        for(var i=0; i<5; i++) {
+        for(let i=0; i<5; i++) {
           tx.current[i] = mx.current;
           ty.current[i] = my.current;
         }
@@ -74,8 +74,8 @@ function Cursor() {
       }
 
       // Link/Button Detection
-      var target = e.target;
-      var hover = false;
+      let target = e.target;
+      let hover = false;
       while (target && target !== document.body) {
         if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.getAttribute('role') === 'button' || target.style.cursor === 'pointer') {
           hover = true;
@@ -87,22 +87,22 @@ function Cursor() {
     };
     window.addEventListener("mousemove", onM);
     
-    var raf;
+    let raf;
     function tick() {
-      var dx = mx.current - rx.current;
-      var dy = my.current - ry.current;
+      const dx = mx.current - rx.current;
+      const dy = my.current - ry.current;
       
       // Smoothing
       rx.current += dx * 0.15;
       ry.current += dy * 0.15;
       
-      var speed = Math.sqrt(dx*dx + dy*dy);
-      var angle = Math.atan2(dy, dx) * 180 / Math.PI;
+      const speed = Math.sqrt(dx*dx + dy*dy);
+      const angle = Math.atan2(dy, dx) * 180 / Math.PI;
       
       // Dynamic scaling based on speed + hover state
-      var baseScale = isHovering ? 1.8 : 1;
-      var sx = Math.min(2.5, baseScale + speed * 0.015);
-      var sy = Math.max(0.3, baseScale - speed * 0.005);
+      const baseScale = isHovering ? 1.8 : 1;
+      const sx = Math.min(2.5, baseScale + speed * 0.015);
+      const sy = Math.max(0.3, baseScale - speed * 0.005);
       
       if (ring.current) {
         ring.current.style.transform = "translate(" + (rx.current - 18) + "px," + (ry.current - 18) + "px) rotate(" + angle + "deg) scale(" + sx + "," + sy + ")";
@@ -112,11 +112,11 @@ function Cursor() {
 
       tx.current[0] += (mx.current - tx.current[0]) * 0.35;
       ty.current[0] += (my.current - ty.current[0]) * 0.35;
-      for(var i=1; i<5; i++) {
+      for(let i=1; i<5; i++) {
         tx.current[i] += (tx.current[i-1] - tx.current[i]) * 0.45;
         ty.current[i] += (ty.current[i-1] - ty.current[i]) * 0.45;
       }
-      for(var j=0; j<5; j++) {
+      for(let j=0; j<5; j++) {
         if (trails.current[j]) {
           trails.current[j].style.transform = "translate(" + (tx.current[j] - 2) + "px," + (ty.current[j] - 2) + "px)";
           trails.current[j].style.opacity = isHovering ? "0" : (0.5 - j*0.08).toString();
@@ -126,8 +126,8 @@ function Cursor() {
     }
     tick();
 
-    var onD = function() { setIsMouseDown(true); };
-    var onU = function() { setIsMouseDown(false); };
+    const onD = function() { setIsMouseDown(true); };
+    const onU = function() { setIsMouseDown(false); };
     window.addEventListener("mousedown", onD);
     window.addEventListener("mouseup", onU);
     
@@ -164,10 +164,10 @@ function Cursor() {
 
 
 function Preloader(props) {
-  var s1 = useState(0); var pct = s1[0]; var setPct = s1[1];
-  var s2 = useState(false); var out = s2[0]; var setOut = s2[1];
+  const s1 = useState(0); const pct = s1[0]; const setPct = s1[1];
+  const s2 = useState(false); const out = s2[0]; const setOut = s2[1];
   useEffect(function () {
-    var v = 0;
+    let v = 0;
     var id = setInterval(function () {
       v += Math.random() * 8 + 3;
       if (v >= 100) { v = 100; clearInterval(id); setTimeout(function () { setOut(true); setTimeout(props.onDone, 500); }, 400); }
@@ -187,14 +187,14 @@ function Preloader(props) {
 }
 
 function Navbar(props) {
-  var links = ["About", "Skills", "Projects", "Contact"];
-  var s = useState(null); var hov = s[0]; var setHov = s[1];
+  const links = ["About", "Skills", "Projects", "Contact"];
+  const s = useState(null); const hov = s[0]; const setHov = s[1];
   return (
     <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, height: 62, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(18px,6vw,80px)", background: props.scrolled ? "rgba(6,6,15,.9)" : "transparent", backdropFilter: props.scrolled ? "blur(22px)" : "none", borderBottom: props.scrolled ? "1px solid rgba(255,255,255,.05)" : "none", transition: "all .4s" }}>
       <GlitchText as="div" trigger="mount" delay={200} speed={22} style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 19, background: "linear-gradient(120deg,#fff,rgba(167,139,250,.8))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Bunny96</GlitchText>
       <div className="nav-links-container" style={{ display: "flex", gap: "clamp(14px,3vw,38px)", alignItems: "center" }}>
         {links.map(function (l) {
-          var isMain = l === "About" || l === "Projects";
+          const isMain = l === "About" || l === "Projects";
           return <a key={l} href={"#" + l.toLowerCase()} onMouseEnter={function () { setHov(l); }} onMouseLeave={function () { setHov(null); }}
             className={"nav-link" + (isMain ? " active-on-mobile" : "")}
             style={{ fontFamily: "'Playfair Display', serif", fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: hov === l ? "#fff" : "rgba(255,255,255,.42)", textDecoration: "none", transition: "color .25s", cursor: "none" }}>{l}</a>;
@@ -212,8 +212,8 @@ function Navbar(props) {
 }
 
 function Fade(props) {
-  var v = useInView(0.08); var ref = v[0]; var vis = v[1];
-  var base = { opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(28px)", transition: "opacity .82s cubic-bezier(.23,1,.32,1), transform .82s cubic-bezier(.23,1,.32,1)" };
+  const v = useInView(0.08); const ref = v[0]; const vis = v[1];
+  const base = { opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(28px)", transition: "opacity .82s cubic-bezier(.23,1,.32,1), transform .82s cubic-bezier(.23,1,.32,1)" };
   return <section id={props.id} ref={ref} style={Object.assign({}, base, props.style || {})}>{props.children}</section>;
 }
 
@@ -232,16 +232,16 @@ function SH(props) {
 
 
 function PCard(props) {
-  var p = props.p; var ref = useRef(null);
-  var sh = useState(false); var hov = sh[0]; var setHov = sh[1];
+  const p = props.p; const ref = useRef(null);
+  const sh = useState(false); const hov = sh[0]; const setHov = sh[1];
   return (
     <div ref={ref}
       onMouseEnter={function () { setHov(true); }}
       onMouseLeave={function () { setHov(false); if (ref.current) ref.current.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale(1)"; }}
       onMouseMove={function (e) {
         if (!ref.current) return;
-        var r = ref.current.getBoundingClientRect();
-        var x = (e.clientX - r.left) / r.width - .5; var y = (e.clientY - r.top) / r.height - .5;
+        const r = ref.current.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - .5; const y = (e.clientY - r.top) / r.height - .5;
         ref.current.style.transform = "perspective(800px) rotateX(" + (-y * 5) + "deg) rotateY(" + (x * 5) + "deg) scale(1.02)";
       }}
       style={{ background: "rgba(255,255,255,.03)", border: "1px solid " + (hov ? "rgba(167,139,250,.28)" : "rgba(255,255,255,.07)"), borderRadius: 18, overflow: "hidden", transition: "transform .18s, border-color .3s, box-shadow .3s", transformStyle: "preserve-3d", boxShadow: hov ? "0 20px 55px rgba(99,102,241,.16)" : "0 4px 20px rgba(0,0,0,.2)" }}>
@@ -265,9 +265,9 @@ function PCard(props) {
 }
 
 function ContactForm() {
-  var sf = useState({ name: "", email: "", message: "" }); var form = sf[0]; var setForm = sf[1];
-  var ss = useState("idle"); var status = ss[0]; var setStatus = ss[1];
-  var sff = useState(null); var ff = sff[0]; var setFf = sff[1];
+  const sf = useState({ name: "", email: "", message: "" }); const form = sf[0]; const setForm = sf[1];
+  const ss = useState("idle"); const status = ss[0]; const setStatus = ss[1];
+  const sff = useState(null); const ff = sff[0]; const setFf = sff[1];
 
   function submit(e) {
     e.preventDefault();
@@ -305,7 +305,7 @@ function ContactForm() {
           <div key={fi[0]}>
             <label style={{ display: "block", fontFamily: "'Playfair Display', serif", fontSize: 10, letterSpacing: ".18em", color: "rgba(255,255,255,.3)", textTransform: "uppercase", marginBottom: 7 }}>{fi[1]}</label>
             <input type={fi[2]} name={fi[0]} value={form[fi[0]]} placeholder={fi[3]} required style={iS(fi[0])}
-              onChange={function (e) { var k = fi[0]; setForm(function (f) { var n = {}; n[k] = e.target.value; return Object.assign({}, f, n); }); }}
+              onChange={function (e) { const k = fi[0]; setForm(function (f) { const n = {}; n[k] = e.target.value; return Object.assign({}, f, n); }); }}
               onFocus={function () { setFf(fi[0]); }} onBlur={function () { setFf(null); }} />
           </div>
         );
@@ -413,17 +413,17 @@ function FloatingResume() {
 }
 
 export default function App() {
-  var sr = useState(false); var ready = sr[0]; var setReady = sr[1];
-  var sc = useState(false); var scrolled = sc[0]; var setScrolled = sc[1];
-  var sp = useState(0); var scrollProgress = sp[0]; var setScrollProgress = sp[1];
-  var sh = useState(false); var heroIn = sh[0]; var setHeroIn = sh[1];
+  const sr = useState(false); const ready = sr[0]; const setReady = sr[1];
+  const sc = useState(false); const scrolled = sc[0]; const setScrolled = sc[1];
+  const sp = useState(0); const scrollProgress = sp[0]; const setScrollProgress = sp[1];
+  const sh = useState(false); const heroIn = sh[0]; const setHeroIn = sh[1];
 
   useEffect(function () {
-    var h = function () { 
-      var sy = window.scrollY;
+    const h = function () { 
+      const sy = window.scrollY;
       setScrolled(sy > 40);
-      var dh = document.documentElement.scrollHeight;
-      var wh = window.innerHeight;
+      const dh = document.documentElement.scrollHeight;
+      const wh = window.innerHeight;
       if (dh > wh) setScrollProgress(sy / (dh - wh));
     };
     window.addEventListener("scroll", h, { passive: true });
@@ -436,29 +436,29 @@ export default function App() {
 
 
 
-  var projects = [
+  const projects = [
     { emoji: "🌍", title: "BunnyTravel", c1: "#38bdf8", c2: "#6366f1", desc: "A responsive travel booking website inspired by MakeMyTrip — featuring Three.js 3D animations, an interactive globe, and mobile-optimised layouts.", stack: ["React", "Three.js", "Tailwind", "Framer Motion"], github: "https://github.com/MayurT96", live: null },
     { emoji: "🛒", title: "E-Commerce Store", c1: "#4ade80", c2: "#38bdf8", desc: "Full-stack MERN online store with product listing, cart management, JWT authentication, and order tracking.", stack: ["MongoDB", "Express", "React", "Node.js", "JWT"], github: "https://github.com/MayurT96", live: null },
     { emoji: "📝", title: "Task Manager App", c1: "#a78bfa", c2: "#f472b6", desc: "Drag-and-drop Kanban productivity app with task priorities, due dates, and local-storage persistence.", stack: ["React", "CSS Modules", "LocalStorage"], github: "https://github.com/MayurT96", live: null },
     { emoji: "🌤️", title: "Weather Dashboard", c1: "#facc15", c2: "#f97316", desc: "Real-time weather app with 5-day forecast, city search, and geolocation using OpenWeatherMap API.", stack: ["JavaScript", "OpenWeatherMap API", "CSS"], github: "https://github.com/MayurT96", live: null },
   ];
 
-  var traits = [
+  const traits = [
     { icon: "🎯", label: "Goal-oriented", desc: "I focus on shipping working products, not just writing code." },
     { icon: "📚", label: "Continuous learner", desc: "Deepening skills in Next.js, TypeScript, and system design." },
     { icon: "🤝", label: "Collaborative", desc: "Comfortable in teams — I ask questions and welcome feedback." },
     { icon: "🔍", label: "Detail-focused", desc: "I care about clean, readable code and polished experiences." },
   ];
 
-  var contacts = [
+  const contacts = [
     { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>, label: "Email", val: "mayurtamkhane96@gmail.com", href: "mailto:mayurtamkhane96@gmail.com" },
     { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>, label: "Phone", val: <span style={{ fontFamily: "'Poppins', sans-serif" }}>+91 7387553347</span>, href: "tel:+917387553347" },
     { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>, label: "LinkedIn", val: "Mayur Tamkhane", href: "https://www.linkedin.com/in/mayur-tamkhane-7a9726243" },
     { icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>, label: "GitHub", val: "MayurT96", href: "https://github.com/MayurT96" },
   ];
 
-  var P = "clamp(20px,6vw,80px)";
-  var glass = { background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.07)", borderRadius: 18, backdropFilter: "blur(12px)" };
+  const P = "clamp(20px,6vw,80px)";
+  const glass = { background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.07)", borderRadius: 18, backdropFilter: "blur(12px)" };
 
   return (
     <>

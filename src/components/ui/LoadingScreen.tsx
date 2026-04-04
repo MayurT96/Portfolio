@@ -22,7 +22,7 @@ export default function LoadingScreen() {
       },
     });
 
-    let progress = { val: 0 };
+    const progress = { val: 0 };
     
     tl.to(progress, {
       val: 100,

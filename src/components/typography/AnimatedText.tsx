@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, type Variants } from "framer-motion";
 import { useRef } from "react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -27,7 +27,7 @@ export default function AnimatedText({
   const ref = useRef(null);
   const isInView = useInView(ref, { once, amount: 0.5 });
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -38,7 +38,7 @@ export default function AnimatedText({
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { 
       opacity: 0, 
       y: type === "heading" ? 20 : 0 
@@ -48,7 +48,7 @@ export default function AnimatedText({
       y: 0,
       transition: {
         duration: 0.8,
-        ease: [0.22, 1, 0.36, 1], // Custom Quart.out
+        ease: [0.22, 1, 0.36, 1] as const, // Custom Quart.out
       },
     },
   };
