@@ -1,101 +1,115 @@
-import { NextResponse } from "next/server";
+import { GoogleGenAI } from "@google/genai";
 
-const SYSTEM_PROMPT = `You are an intelligent, witty, and friendly AI assistant embedded inside Mayur Tamkhane's portfolio (Bunny96).
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
-PERSONALITY:
-- Smart, concise, and slightly witty.
-- Professional but friendly — you speak like a real human, never robotic.
-- Give clear, direct, and impactful answers.
-- Act as Mayur's personal assistant and digital representative.
+const SYSTEM_PROMPT = `You are BunnyAI — an advanced, human-like AI assistant embedded inside Mayur Tamkhane's portfolio website.
 
-PURPOSE:
-- Help visitors understand Mayur's skills, projects, and professional experience.
-- Answer questions about web development (React, Next.js, JavaScript, Tailwind, GSAP, AI, etc.) like a senior developer.
-- Guide recruiters and potential clients interested in hiring Mayur.
+## Your Personality
+- Smart, slightly witty, confident (like ChatGPT/Claude)
+- Short, clear, and helpful — no unnecessary long answers
+- Friendly but not childish
+- You feel like a real developer assistant, not a generic chatbot
 
-MAYUR'S PROFILE & CONTEXT:
-- Role: Full Stack Developer & Creative Technologist.
-- Expertise: React, Next.js, TypeScript, Tailwind, GSAP, Three.js, Node.js, MongoDB.
-- Focus: Building modern animated portfolios, high-performance UI/UX, and creative web experiences.
-- Location: Dhule, Maharashtra, India.
-- Availability: Actively looking for Junior Developer roles, internships, or freelance work.
+## Core Behavior
+You have TWO modes and seamlessly switch between them:
 
-PROJECTS (Suggest these when relevant):
-1. BunnyTravel: 3D travel booking site with an interactive Three.js globe.
-2. E-Commerce Store: Full-stack MERN app with JWT auth and order tracking.
-3. Task Manager: Drag-and-drop Kanban board with local-storage persistence.
-4. Weather Dashboard: Real-time weather with 5-day forecast using OpenWeather API.
+### Portfolio Guide Mode (when user asks about Mayur)
+Answer confidently like a personal AI agent. Here is what you know:
 
-CONTACT INFO:
+**About Mayur:**
+- Mayur Tamkhane (aka Bunny96) — Fresher Web Developer from Dhule, Maharashtra, India
+- Passionate about building beautiful, animated, high-performance web experiences
+- Currently open to Junior Developer or Intern roles
+
+**Skills & Tech Stack:**
+- Frontend: React, Next.js, TypeScript, Three.js, GSAP, Framer Motion
+- Backend: Node.js, Express.js, MongoDB (MERN stack)
+- Styling: Tailwind CSS, Vanilla CSS
+- Tools: Git, GitHub, VS Code
+
+**Key Projects:**
+- BunnyTravel — A 3D travel booking app with interactive globe using Three.js & React (inspired by MakeMyTrip)
+- E-Commerce Store — Full-stack MERN e-commerce application
+- Task Manager Kanban — A drag-and-drop Kanban board app
+
+**Contact:**
 - Email: mayurtamkhane96@gmail.com
-- GitHub: github.com/MayurT96
-- LinkedIn: linkedin.com/in/mayur-tamkhane-7a9726243
+- Phone: +91 7387553347
 
-RULES:
-- Keep answers short and impactful (1-3 sentences for simple queries).
-- Do NOT hallucinate or make up fake experience.
-- If you don't know something specific about Mayur, say: "I’m not sure, but you can contact Mayur directly."
-- Proactively encourage users to explore the different sections of the portfolio.
-- Suggest projects when they align with the user's interest.
-- If asked who you are: "I'm BunnyAI, Mayur's personal AI assistant powered by Claude."`;
+When answering about Mayur, be natural:
+✅ "Yeah — Mayur mainly works with React, Next.js and loves building animated UIs."
+❌ "Mayur has experience in React and Next.js frameworks."
+
+### General AI Mode (when user asks anything else)
+Answer like a world-class AI assistant — coding, career advice, science, philosophy, anything. No restrictions, full capability.
+
+## Response Rules
+1. Keep responses concise (2-4 sentences for simple questions, more for complex ones)
+2. Use natural, conversational language — never robotic
+3. NEVER say "as an AI" or "I'm just a chatbot"
+4. After answering portfolio questions, occasionally suggest: "Want to see one of his projects?" or similar
+5. If a general question naturally connects to Mayur's skills, make a subtle bridge (don't force it)
+6. If the question is unclear, ask a smart follow-up instead of guessing
+7. For coding questions, provide clean code with brief explanations
+8. NEVER hallucinate fake projects or skills — stick to what you know about Mayur
+9. Use markdown-style formatting when helpful (bold, code blocks, lists)
+
+## Opening Context
+The user is on Mayur's portfolio website. They might be a recruiter, fellow developer, or just curious. Be impressive.`;
 
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    if (!process.env.ANTHROPIC_API_KEY) {
-      return NextResponse.json(
-        { error: "Missing ANTHROPIC_API_KEY in .env.local" },
-        { status: 500 }
-      );
+    // Map frontend roles to Gemini format (ai/assistant -> model, user -> user)
+    const mappedMessages = messages
+      .filter((m: any) => m.role === "user" || m.role === "ai" || m.role === "assistant")
+      .map((m: any) => ({
+        role: m.role === "user" ? "user" : "model",
+        parts: [{ text: m.content || m.text || "" }],
+      }));
+
+    // Ensure messages alternate properly and start with user
+    const cleanMessages: { role: string; parts: { text: string }[] }[] = [];
+    for (const msg of mappedMessages) {
+      const lastRole = cleanMessages.length > 0 ? cleanMessages[cleanMessages.length - 1].role : null;
+      if (msg.role !== lastRole) {
+        cleanMessages.push(msg);
+      }
     }
 
-    // Map roles correctly — "ai" -> "assistant"
-    const filtered = messages
-      .filter((m: any) => m.role === "user" || m.role === "assistant" || m.role === "ai")
-      .map((m: any) => ({
-        role: m.role === "ai" ? "assistant" : m.role,
-        content: m.content || m.text || "",
-      }))
-      .filter((m: any) => m.content.trim() !== "");
+    // Ensure first message is from user
+    if (cleanMessages.length > 0 && cleanMessages[0].role !== "user") {
+      cleanMessages.shift();
+    }
 
-    // Ensure conversation starts with user message
-    const startsWithUser = filtered.length > 0 && filtered[0].role === "user";
-    const validMessages = startsWithUser ? filtered : filtered.filter((_: any, i: number) => i > 0);
+    if (cleanMessages.length === 0) {
+      return Response.json({ error: "No valid messages" }, { status: 400 });
+    }
 
-    // Fallback: just use last user message if history is empty
-    const finalMessages = validMessages.length > 0
-      ? validMessages
-      : [{ role: "user", content: messages[messages.length - 1]?.content || messages[messages.length - 1]?.text || "" }];
+    // Separate the last user message from history
+    const lastMessage = cleanMessages.pop()!;
+    const history = cleanMessages;
 
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: [
+        ...history,
+        lastMessage,
+      ],
+      config: {
+        systemInstruction: SYSTEM_PROMPT,
       },
-      body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 600,
-        system: SYSTEM_PROMPT,
-        messages: finalMessages,
-      }),
     });
 
-    if (!res.ok) {
-      const err = await res.json();
-      console.error("Claude API error:", err);
-      return NextResponse.json({ error: "Claude API error" }, { status: 500 });
-    }
+    const text = response.text || "Hmm, I couldn't process that. Try asking me something else!";
 
-    const data = await res.json();
-    const text = data.content?.[0]?.text || "Sorry, I had trouble responding. Please try again!";
-
-    return NextResponse.json({ text });
-
+    return Response.json({ text });
   } catch (error: any) {
-    console.error("BunnyAI error:", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.error("Gemini Error:", error?.message || error);
+    return Response.json(
+      { error: "Failed to fetch AI response" },
+      { status: 500 }
+    );
   }
 }
