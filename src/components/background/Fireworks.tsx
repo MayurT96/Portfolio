@@ -147,7 +147,8 @@ export default function Fireworks() {
       const comet = addStar(x, y, color, Math.PI, velocity, velocity * 400);
       comet.heavy = true;
       comet.onDeath = (s) => {
-        createBurst(45, s.x, s.y, color, 300, 1000);
+        const burstCount = stageW < 768 ? 20 : 45;
+        createBurst(burstCount, s.x, s.y, color, 300, 1000);
       };
     };
 
@@ -157,7 +158,8 @@ export default function Fireworks() {
     const tick = (now: number) => {
       const delta = 16; 
 
-      if (now - lastLaunch > 3500) {
+      const launchDelay = stageW < 768 ? 7000 : 3500;
+      if (now - lastLaunch > launchDelay) {
         launchShell();
         lastLaunch = now;
       }
@@ -242,7 +244,10 @@ export default function Fireworks() {
       const velocity = Math.pow((y - targetY) * 0.04, 0.64);
       const comet = addStar(x, y, color, Math.PI, velocity, velocity * 400);
       comet.heavy = true;
-      comet.onDeath = (s) => createBurst(55, s.x, s.y, color, 350, 1200);
+      comet.onDeath = (s) => {
+        const burstCount = stageW < 768 ? 25 : 55;
+        createBurst(burstCount, s.x, s.y, color, 350, 1200);
+      };
     };
 
     window.addEventListener("pointerdown", handlePointerDown);
