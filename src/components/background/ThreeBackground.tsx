@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, Sphere, MeshTransmissionMaterial } from "@react-three/drei";
 import * as THREE from "three";
@@ -78,10 +78,10 @@ export default function ThreeBackground() {
       >
         <color attach="background" args={["#000000"]} />
         <ambientLight intensity={0.1} />
-        <React.Suspense fallback={null}>
+        <Suspense fallback={null}>
           <Environment preset="night" />
           <FloatingObjects />
-        </React.Suspense>
+        </Suspense>
         <fog attach="fog" args={["#000000", 12, 40]} />
       </Canvas>
     </div>
