@@ -71,11 +71,17 @@ function FloatingObjects() {
 export default function ThreeBackground() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 bg-black">
-      <Canvas camera={{ position: [0, 0, 12], fov: 45 }} dpr={[1, 2]}>
+      <Canvas 
+        camera={{ position: [0, 0, 12], fov: 45 }} 
+        dpr={1}
+        gl={{ antialias: false, alpha: false, powerPreference: "high-performance", stencil: false, depth: false }}
+      >
         <color attach="background" args={["#000000"]} />
         <ambientLight intensity={0.1} />
-        <Environment preset="night" />
-        <FloatingObjects />
+        <React.Suspense fallback={null}>
+          <Environment preset="night" />
+          <FloatingObjects />
+        </React.Suspense>
         <fog attach="fog" args={["#000000", 12, 40]} />
       </Canvas>
     </div>

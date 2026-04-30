@@ -212,8 +212,12 @@ function Navbar(props) {
 }
 
 function Fade(props) {
-  const v = useInView(0.08); const ref = v[0]; const vis = v[1];
-  const base = { opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(28px)", transition: "opacity .82s cubic-bezier(.23,1,.32,1), transform .82s cubic-bezier(.23,1,.32,1)" };
+  const v = useInView(0.12); const ref = v[0]; const vis = v[1];
+  const base = { 
+    opacity: vis ? 1 : 0, 
+    transform: vis ? "translateY(0)" : "translateY(40px)", 
+    transition: "opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)" 
+  };
   return <section id={props.id} ref={ref} style={Object.assign({}, base, props.style || {})}>{props.children}</section>;
 }
 
@@ -234,20 +238,54 @@ function SH(props) {
 function PCard(props) {
   const p = props.p; const ref = useRef(null);
   const sh = useState(false); const hov = sh[0]; const setHov = sh[1];
+  const [glare, setGlare] = useState({ x: 50, y: 50, o: 0 });
+
   return (
     <div ref={ref}
-      onMouseEnter={function () { setHov(true); }}
-      onMouseLeave={function () { setHov(false); if (ref.current) ref.current.style.transform = "perspective(800px) rotateX(0) rotateY(0) scale(1)"; }}
+      onMouseEnter={function () { setHov(true); setGlare((prev) => ({ ...prev, o: 1 })); }}
+      onMouseLeave={function () { 
+        setHov(false); 
+        setGlare((prev) => ({ ...prev, o: 0 }));
+        if (ref.current) ref.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)"; 
+      }}
       onMouseMove={function (e) {
         if (!ref.current) return;
         const r = ref.current.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width - .5; const y = (e.clientY - r.top) / r.height - .5;
-        ref.current.style.transform = "perspective(800px) rotateX(" + (-y * 5) + "deg) rotateY(" + (x * 5) + "deg) scale(1.02)";
+        const x = (e.clientX - r.left) / r.width;
+        const y = (e.clientY - r.top) / r.height;
+        // Premium Apple-like 3D tilt
+        const tiltX = (0.5 - y) * 12; // Adjusted tilt intensity
+        const tiltY = (x - 0.5) * 12;
+        ref.current.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.02)`;
+        
+        // Dynamic Glare
+        setGlare({ x: x * 100, y: y * 100, o: 1 });
       }}
-      style={{ background: "rgba(255,255,255,.03)", border: "1px solid " + (hov ? "rgba(167,139,250,.28)" : "rgba(255,255,255,.07)"), borderRadius: 18, overflow: "hidden", transition: "transform .18s, border-color .3s, box-shadow .3s", transformStyle: "preserve-3d", boxShadow: hov ? "0 20px 55px rgba(99,102,241,.16)" : "0 4px 20px rgba(0,0,0,.2)" }}>
+      style={{ 
+        position: "relative",
+        background: "rgba(255,255,255,.02)", 
+        border: "1px solid " + (hov ? "rgba(167,139,250,.4)" : "rgba(255,255,255,.05)"), 
+        borderRadius: 22, 
+        overflow: "hidden", 
+        transition: "transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2), border-color 0.4s ease, box-shadow 0.4s ease", 
+        transformStyle: "preserve-3d", 
+        boxShadow: hov ? "0 20px 40px -10px rgba(124,58,237,.2)" : "0 4px 20px rgba(0,0,0,.3)" 
+      }}>
+      
+      {/* Dynamic Cursor Glare */}
+      <div style={{
+        position: "absolute",
+        top: 0, left: 0, right: 0, bottom: 0,
+        background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(167,139,250, 0.15) 0%, transparent 60%)`,
+        opacity: glare.o,
+        transition: "opacity 0.4s ease",
+        pointerEvents: "none",
+        zIndex: 10
+      }} />
+
       <div style={{ height: 165, background: "linear-gradient(135deg," + p.c1 + "18," + p.c2 + "12)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-        <div style={{ fontSize: 52, filter: "drop-shadow(0 4px 14px " + p.c1 + "55)" }}>{p.emoji}</div>
-        <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 6 }}>
+        <div style={{ fontSize: 52, filter: "drop-shadow(0 4px 14px " + p.c1 + "55)", transform: "translateZ(30px)", transition: "transform 0.4s ease" }}>{p.emoji}</div>
+        <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 6, zIndex: 11 }}>
           <a href={p.github} target="_blank" rel="noopener noreferrer" style={{ padding: "3px 9px", borderRadius: 20, background: "rgba(0,0,0,.5)", border: "1px solid rgba(255,255,255,.12)", color: "rgba(255,255,255,.65)", fontFamily: "'Playfair Display', serif", fontSize: 10, textDecoration: "none", cursor: "none" }}
             onMouseEnter={function (e) { e.currentTarget.style.color = "#fff"; }} onMouseLeave={function (e) { e.currentTarget.style.color = "rgba(255,255,255,.65)"; }}>GitHub ↗</a>
           {p.live && <a href={p.live} target="_blank" rel="noopener noreferrer" style={{ padding: "3px 9px", borderRadius: 20, background: p.c1 + "30", border: "1px solid " + p.c1 + "50", color: p.c1, fontFamily: "'Playfair Display', serif", fontSize: 10, textDecoration: "none", cursor: "pointer" }}>Live ↗</a>}
@@ -415,19 +453,14 @@ function FloatingResume() {
 export default function App() {
   const sr = useState(false); const ready = sr[0]; const setReady = sr[1];
   const sc = useState(false); const scrolled = sc[0]; const setScrolled = sc[1];
-  const sp = useState(0); const scrollProgress = sp[0]; const setScrollProgress = sp[1];
   const sh = useState(false); const heroIn = sh[0]; const setHeroIn = sh[1];
 
   useEffect(function () {
     const h = function () { 
       const sy = window.scrollY;
       setScrolled(sy > 40);
-      const dh = document.documentElement.scrollHeight;
-      const wh = window.innerHeight;
-      if (dh > wh) setScrollProgress(sy / (dh - wh));
     };
     window.addEventListener("scroll", h, { passive: true });
-
     return function () { 
       window.removeEventListener("scroll", h); 
     };
@@ -439,6 +472,7 @@ export default function App() {
   const projects = [
     { emoji: "🌍", title: "BunnyTravel", c1: "#38bdf8", c2: "#6366f1", desc: "A responsive travel booking website inspired by MakeMyTrip — featuring Three.js 3D animations, an interactive globe, and mobile-optimised layouts.", stack: ["React", "Three.js", "Tailwind", "Framer Motion"], github: "https://github.com/MayurT96", live: null },
     { emoji: "🛒", title: "E-Commerce Store", c1: "#4ade80", c2: "#38bdf8", desc: "Full-stack MERN online store with product listing, cart management, JWT authentication, and order tracking.", stack: ["MongoDB", "Express", "React", "Node.js", "JWT"], github: "https://github.com/MayurT96", live: null },
+    { emoji: "📱", title: "VPN Android App", c1: "#f43f5e", c2: "#8b5cf6", desc: "A secure and robust VPN application for Android devices, providing private and unrestricted internet access.", stack: ["Android", "Java", "Kotlin"], github: "https://github.com/MayurT96/VPN-android-app", live: null },
     { emoji: "📝", title: "Task Manager App", c1: "#a78bfa", c2: "#f472b6", desc: "Drag-and-drop Kanban productivity app with task priorities, due dates, and local-storage persistence.", stack: ["React", "CSS Modules", "LocalStorage"], github: "https://github.com/MayurT96", live: null },
     { emoji: "🌤️", title: "Weather Dashboard", c1: "#facc15", c2: "#f97316", desc: "Real-time weather app with 5-day forecast, city search, and geolocation using OpenWeatherMap API.", stack: ["JavaScript", "OpenWeatherMap API", "CSS"], github: "https://github.com/MayurT96", live: null },
   ];
@@ -502,8 +536,8 @@ export default function App() {
           <Cursor />
           {/* Background Layers */}
           <div style={{ position: "fixed", inset: 0, zIndex: -10, background: "#06060f" }} />
-          <div style={{ position: "fixed", inset: 0, zIndex: -9 }}>
-             <Fireworks />
+          <div style={{ position: "fixed", inset: 0, zIndex: -9, pointerEvents: "none" }}>
+            <Fireworks />
           </div>
           <div style={{ position: "fixed", inset: 0, zIndex: -8, pointerEvents: "none", background: "radial-gradient(ellipse 65% 48% at 50% -2%,rgba(99,102,241,.18),transparent 62%),radial-gradient(ellipse 48% 38% at 95% 98%,rgba(139,92,246,.12),transparent 58%)" }} />
           

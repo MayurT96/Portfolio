@@ -30,6 +30,7 @@ Answer confidently like a personal AI agent. Here is what you know:
 **Key Projects:**
 - BunnyTravel — A 3D travel booking app with interactive globe using Three.js & React (inspired by MakeMyTrip)
 - E-Commerce Store — Full-stack MERN e-commerce application
+- VPN Android App — A secure VPN application for Android devices
 - Task Manager Kanban — A drag-and-drop Kanban board app
 
 **Contact:**

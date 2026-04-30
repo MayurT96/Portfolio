@@ -71,7 +71,7 @@ function NeuralOrb({ isActive }: { isActive: boolean }) {
   return (
     <group ref={groupRef}>
       <mesh ref={coreRef}>
-        <icosahedronGeometry args={[0.85, 4]} />
+        <icosahedronGeometry args={[0.85, 2]} />
         <meshPhongMaterial
           color="#a78bfa"
           emissive={isActive ? "#22d3ee" : "#7c3aed"}
@@ -112,9 +112,12 @@ export default function AIOrbScene({ isActive }: { isActive: boolean }) {
     <Canvas
       camera={{ position: [0, 0, 3], fov: 45 }}
       style={{ width: "56px", height: "56px" }}
-      gl={{ alpha: true, antialias: true }}
+      dpr={[1, 1.5]}
+      gl={{ alpha: true, antialias: false, powerPreference: "high-performance" }}
     >
-      <NeuralOrb isActive={isActive} />
+      <React.Suspense fallback={null}>
+        <NeuralOrb isActive={isActive} />
+      </React.Suspense>
     </Canvas>
   );
 }

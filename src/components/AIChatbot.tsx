@@ -16,7 +16,7 @@ const getSmartFallback = (input: string) => {
   if (msg.includes("skill") || msg.includes("tech") || msg.includes("stack") || msg.includes("know"))
     return "Mayur's core stack: React, Next.js, TypeScript, Three.js, GSAP on the frontend, and Node.js, Express, MongoDB (MERN) on the backend. He's also solid with Tailwind CSS and Framer Motion ✨";
   if (msg.includes("project") || msg.includes("work") || msg.includes("built") || msg.includes("portfolio"))
-    return "His standout projects: 🌍 BunnyTravel (3D globe travel app), 🛒 E-Commerce Store (full-stack MERN), and 📋 Kanban Task Manager. Check out the Projects section!";
+    return "His standout projects: 🌍 BunnyTravel (3D globe travel app), 🛒 E-Commerce Store (full-stack MERN), 📱 VPN Android App, and 📋 Kanban Task Manager. Check out the Projects section!";
   if (msg.includes("hire") || msg.includes("job") || msg.includes("available") || msg.includes("intern"))
     return "Yep — Mayur is actively looking for Junior Developer or Intern roles! Reach him at mayurtamkhane96@gmail.com or +91 7387553347.";
   if (msg.includes("contact") || msg.includes("email") || msg.includes("phone") || msg.includes("reach"))
