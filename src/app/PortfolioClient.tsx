@@ -454,6 +454,23 @@ export default function App() {
   const sr = useState(false); const ready = sr[0]; const setReady = sr[1];
   const sc = useState(false); const scrolled = sc[0]; const setScrolled = sc[1];
   const sh = useState(false); const heroIn = sh[0]; const setHeroIn = sh[1];
+  const projectsOverlayRef = useRef<HTMLDivElement>(null);
+  const [isProjectsMouseOver, setIsProjectsMouseOver] = useState(false);
+
+  const handleProjectsMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!projectsOverlayRef.current) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    projectsOverlayRef.current.style.setProperty('--mouse-x', `${x}px`);
+    projectsOverlayRef.current.style.setProperty('--mouse-y', `${y}px`);
+  };
+
+  const handleProjectsMouseLeave = () => {
+    if (!projectsOverlayRef.current) return;
+    projectsOverlayRef.current.style.setProperty('--mouse-x', `-999px`);
+    projectsOverlayRef.current.style.setProperty('--mouse-y', `-999px`);
+  };
 
   useEffect(function () {
     const h = function () { 
@@ -474,7 +491,6 @@ export default function App() {
     { emoji: "🛒", title: "E-Commerce Store", c1: "#4ade80", c2: "#38bdf8", desc: "Full-stack MERN online store with product listing, cart management, JWT authentication, and order tracking.", stack: ["MongoDB", "Express", "React", "Node.js", "JWT"], github: "https://github.com/MayurT96", live: null },
     { emoji: "📱", title: "VPN Android App", c1: "#f43f5e", c2: "#8b5cf6", desc: "A secure and robust VPN application for Android devices, providing private and unrestricted internet access.", stack: ["Android", "Java", "Kotlin"], github: "https://github.com/MayurT96/VPN-android-app", live: null },
     { emoji: "📝", title: "Task Manager App", c1: "#a78bfa", c2: "#f472b6", desc: "Drag-and-drop Kanban productivity app with task priorities, due dates, and local-storage persistence.", stack: ["React", "CSS Modules", "LocalStorage"], github: "https://github.com/MayurT96", live: null },
-    { emoji: "🌤️", title: "Weather Dashboard", c1: "#facc15", c2: "#f97316", desc: "Real-time weather app with 5-day forecast, city search, and geolocation using OpenWeatherMap API.", stack: ["JavaScript", "OpenWeatherMap API", "CSS"], github: "https://github.com/MayurT96", live: null },
   ];
 
   const traits = [
@@ -667,15 +683,99 @@ export default function App() {
                 <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.36)", marginBottom: 44, lineHeight: 1.8, maxWidth: 520, fontWeight: 300 }}>
                   Personal projects I've built to practice and apply what I've learned. These show how I think and approach problems.
                 </p>
-                <div className="proj-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-                  {projects.map(function (p) { return <PCard key={p.title} p={p} />; })}
+
+                {/* Status Block */}
+                <div style={{ 
+                  background: "rgba(167, 139, 250, 0.03)", 
+                  border: "1px solid rgba(167, 139, 250, 0.12)", 
+                  borderRadius: 16, 
+                  padding: "20px 24px", 
+                  marginBottom: 44,
+                  maxWidth: 720,
+                  display: "flex",
+                  gap: 16,
+                  alignItems: "flex-start"
+                }}>
+                  <span style={{ fontSize: 24 }}>🚀</span>
+                  <div>
+                    <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 14, color: "#fff", marginBottom: 6, letterSpacing: "0.02em" }}>
+                      Project Building & Application Crafting Phase
+                    </div>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "rgba(255,255,255,.5)", lineHeight: 1.7, margin: 0, fontWeight: 300 }}>
+                      I believe true software craftsmanship comes from hands-on creation. I am currently coding practice applications and starting to build full-stack projects in MERN and Java stack to gain solid practical skills. This area showcases my active development workspace. Hover with your cursor to see the projects I am currently constructing and refining.
+                    </p>
+                  </div>
                 </div>
-                <div style={{ marginTop: 36, textAlign: "center" }}>
-                  <a href="https://github.com/MayurT96" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Playfair Display', serif", fontSize: 12, letterSpacing: ".12em", color: "rgba(255,255,255,.3)", textDecoration: "none", padding: "9px 22px", borderRadius: 40, border: "1px solid rgba(255,255,255,.07)", transition: "all .25s", cursor: "none", display: "inline-block" }}
-                    onMouseEnter={function (e) { e.currentTarget.style.color = "#a78bfa"; e.currentTarget.style.borderColor = "rgba(167,139,250,.28)"; }}
-                    onMouseLeave={function (e) { e.currentTarget.style.color = "rgba(255,255,255,.3)"; e.currentTarget.style.borderColor = "rgba(255,255,255,.07)"; }}>
-                    See all on GitHub →
-                  </a>
+
+                {/* Grid container with Spotlight Blur Reveal */}
+                <div 
+                  onMouseMove={handleProjectsMouseMove}
+                  onMouseEnter={() => setIsProjectsMouseOver(true)}
+                  onMouseLeave={() => { setIsProjectsMouseOver(false); handleProjectsMouseLeave(); }}
+                  style={{ position: "relative", borderRadius: 22, overflow: "hidden" }}
+                >
+                  {/* Spotlight Blur Overlay */}
+                  <div 
+                    ref={projectsOverlayRef}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      zIndex: 5,
+                      pointerEvents: "none",
+                      backdropFilter: "blur(16px)",
+                      WebkitBackdropFilter: "blur(16px)",
+                      background: "rgba(6, 6, 15, 0.45)",
+                      WebkitMaskImage: "radial-gradient(circle 140px at var(--mouse-x, -999px) var(--mouse-y, -999px), transparent 0%, rgba(0,0,0,1) 80%)",
+                      maskImage: "radial-gradient(circle 140px at var(--mouse-x, -999px) var(--mouse-y, -999px), transparent 0%, rgba(0,0,0,1) 80%)"
+                    }}
+                  />
+
+                  {/* Hover Discovery Hint Badge */}
+                  <div style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 6,
+                    pointerEvents: "none",
+                    opacity: isProjectsMouseOver ? 0 : 1,
+                    transition: "opacity 0.4s ease",
+                  }}>
+                    <div style={{
+                      background: "rgba(6, 6, 15, 0.85)",
+                      border: "1px solid rgba(167, 139, 250, 0.25)",
+                      borderRadius: 40,
+                      padding: "16px 28px",
+                      color: "#fff",
+                      fontFamily: "'Playfair Display', serif",
+                      fontSize: "clamp(12px, 1.5vw, 15px)",
+                      textAlign: "center",
+                      boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+                      backdropFilter: "blur(8px)",
+                      WebkitBackdropFilter: "blur(8px)",
+                      letterSpacing: "0.05em",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10
+                    }}>
+                      <span>🔍</span> Move cursor here to inspect projects
+                    </div>
+                  </div>
+
+                  {/* Projects Grid Content */}
+                  <div className="proj-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+                    {projects.map(function (p) { 
+                      return <PCard key={p.title} p={p} />; 
+                    })}
+                  </div>
+                  <div style={{ marginTop: 36, textAlign: "center" }}>
+                    <a href="https://github.com/MayurT96" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Playfair Display', serif", fontSize: 12, letterSpacing: ".12em", color: "rgba(255,255,255,.3)", textDecoration: "none", padding: "9px 22px", borderRadius: 40, border: "1px solid rgba(255,255,255,.07)", transition: "all .25s", cursor: "none", display: "inline-block" }}
+                      onMouseEnter={function (e) { e.currentTarget.style.color = "#a78bfa"; e.currentTarget.style.borderColor = "rgba(167,139,250,.28)"; }}
+                      onMouseLeave={function (e) { e.currentTarget.style.color = "rgba(255,255,255,.3)"; e.currentTarget.style.borderColor = "rgba(255,255,255,.07)"; }}>
+                      See all on GitHub →
+                    </a>
+                  </div>
                 </div>
               </div>
             </Fade>
