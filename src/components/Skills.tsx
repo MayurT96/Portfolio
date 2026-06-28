@@ -4,41 +4,43 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import GlitchText from "./GlitchText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { FaReact, FaNodeJs, FaHtml5, FaCss3Alt, FaDocker, FaGithub, FaAws } from "react-icons/fa";
-import { SiNextdotjs, SiTailwindcss, SiJavascript, SiTypescript, SiMongodb, SiExpress, SiThreedotjs, SiFigma, SiPostgresql, SiFirebase, SiGraphql, SiVercel, SiPostman } from "react-icons/si";
+import { FaReact, FaNodeJs, FaHtml5, FaCss3Alt, FaDocker, FaGithub, FaAws, FaJava, FaLock } from "react-icons/fa";
+import { SiNextdotjs, SiTailwindcss, SiJavascript, SiTypescript, SiMongodb, SiExpress, SiThreedotjs, SiFigma, SiPostgresql, SiFirebase, SiGraphql, SiVercel, SiPostman, SiSpringboot, SiHibernate, SiMysql, SiApachemaven } from "react-icons/si";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const skillCategories = [
   {
-    title: "Frontend",
+    title: "MERN Full Stack",
     icon: <FaReact size={24} color="#38bdf8" />,
     color: "#38bdf8",
-    description: "Building responsive, interactive, and performant user interfaces using modern frameworks and cutting-edge frontend technologies.",
+    description: "Building highly interactive, scalable end-to-end web applications using React, Next.js, Node.js, Express, and MongoDB.",
     skills: [
       { name: "React.js", icon: <FaReact /> },
       { name: "Next.js", icon: <SiNextdotjs /> },
-      { name: "HTML5", icon: <FaHtml5 /> },
-      { name: "CSS3", icon: <FaCss3Alt /> },
-      { name: "Tailwind CSS", icon: <SiTailwindcss /> },
-      { name: "JavaScript", icon: <SiJavascript /> },
+      { name: "Node.js", icon: <FaNodeJs /> },
+      { name: "Express.js", icon: <SiExpress /> },
+      { name: "MongoDB", icon: <SiMongodb /> },
       { name: "TypeScript", icon: <SiTypescript /> },
+      { name: "JavaScript", icon: <SiJavascript /> },
+      { name: "Tailwind CSS", icon: <SiTailwindcss /> },
       { name: "Three.js", icon: <SiThreedotjs /> },
     ]
   },
   {
-    title: "Backend",
-    icon: <FaNodeJs size={24} color="#4ade80" />,
-    color: "#4ade80",
-    description: "Developing robust, scalable APIs and managing complex database architectures to power modern, data-driven applications.",
+    title: "Java Full Stack",
+    icon: <FaJava size={24} color="#f97316" />,
+    color: "#f97316",
+    description: "Developing robust, enterprise-grade backends using Java and Spring Boot, integrated with databases and microservices architectures.",
     skills: [
-      { name: "Node.js", icon: <FaNodeJs /> },
-      { name: "Express.js", icon: <SiExpress /> },
-      { name: "MongoDB", icon: <SiMongodb /> },
+      { name: "Java", icon: <FaJava /> },
+      { name: "Spring Boot", icon: <SiSpringboot /> },
+      { name: "Spring Security", icon: <FaLock /> },
+      { name: "Hibernate / JPA", icon: <SiHibernate /> },
+      { name: "MySQL", icon: <SiMysql /> },
       { name: "PostgreSQL", icon: <SiPostgresql /> },
-      { name: "Firebase", icon: <SiFirebase /> },
-      { name: "GraphQL", icon: <SiGraphql /> },
-      { name: "REST APIs", icon: <span style={{fontFamily:"monospace", fontSize: 10}}>{"{ }"}</span> },
+      { name: "Maven", icon: <SiApachemaven /> },
+      { name: "Microservices", icon: <span style={{fontFamily:"monospace", fontSize: 10}}>{"[ μS ]"}</span> },
     ]
   },
   {
