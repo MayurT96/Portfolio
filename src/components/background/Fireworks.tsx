@@ -235,26 +235,8 @@ export default function Fireworks() {
 
     raf = requestAnimationFrame(tick);
 
-    const handlePointerDown = (e: PointerEvent) => {
-      // Manual launch on click
-      const x = e.clientX;
-      const y = stageH;
-      const targetY = e.clientY;
-      const color = MyMath.randomChoice(COLOR_CODES);
-      const velocity = Math.pow((y - targetY) * 0.04, 0.64);
-      const comet = addStar(x, y, color, Math.PI, velocity, velocity * 400);
-      comet.heavy = true;
-      comet.onDeath = (s) => {
-        const burstCount = stageW < 768 ? 25 : 55;
-        createBurst(burstCount, s.x, s.y, color, 350, 1200);
-      };
-    };
-
-    window.addEventListener("pointerdown", handlePointerDown);
-
     return () => {
       window.removeEventListener("resize", resize);
-      window.removeEventListener("pointerdown", handlePointerDown);
       cancelAnimationFrame(raf);
     };
   }, []);

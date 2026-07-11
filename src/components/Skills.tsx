@@ -63,23 +63,6 @@ const skillCategories = [
 export default function Skills() {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const [isMouseOver, setIsMouseOver] = useState(false);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!overlayRef.current) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    overlayRef.current.style.setProperty('--mouse-x', `${x}px`);
-    overlayRef.current.style.setProperty('--mouse-y', `${y}px`);
-  };
-
-  const handleMouseLeave = () => {
-    if (!overlayRef.current) return;
-    overlayRef.current.style.setProperty('--mouse-x', `-999px`);
-    overlayRef.current.style.setProperty('--mouse-y', `-999px`);
-  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -127,185 +110,105 @@ export default function Skills() {
           <div style={{ width: 38, height: 2, marginTop: 16, background: "linear-gradient(90deg,#6366f1,#a78bfa)", borderRadius: 2, boxShadow: "0 0 10px #7c3aed" }} />
         </div>
 
-        {/* Status Block */}
-        <div style={{ 
-          background: "rgba(167, 139, 250, 0.03)", 
-          border: "1px solid rgba(167, 139, 250, 0.12)", 
-          borderRadius: 16, 
-          padding: "20px 24px", 
-          marginBottom: 44,
-          maxWidth: 720,
-          display: "flex",
-          gap: 16,
-          alignItems: "flex-start"
-        }}>
-          <span style={{ fontSize: 24 }}>🌱</span>
-          <div>
-            <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 14, color: "#fff", marginBottom: 6, letterSpacing: "0.02em" }}>
-              Core Development & Stack Training Phase
-            </div>
-            <p style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "rgba(255,255,255,.5)", lineHeight: 1.7, margin: 0, fontWeight: 300 }}>
-              I am currently dedicated to mastering the MERN stack (MongoDB, Express.js, React.js, Node.js) and the Java Development ecosystem. Rather than showcasing tools I haven't fully absorbed, I am training daily to build solid engineering fundamentals, write clean code, and develop professional software capabilities. Hover with your cursor to inspect the technologies I am currently learning.
-            </p>
-          </div>
-        </div>
-
-        {/* Categories Grid (Glassmorphism Awwwards Style) with Spotlight Blur Reveal */}
-        <div 
-          onMouseMove={handleMouseMove}
-          onMouseEnter={() => setIsMouseOver(true)}
-          onMouseLeave={() => { setIsMouseOver(false); handleMouseLeave(); }}
-          style={{ position: "relative", borderRadius: 24, overflow: "hidden" }}
-        >
-          {/* Spotlight Blur Overlay */}
-          <div 
-            ref={overlayRef}
-            style={{
-              position: "absolute",
-              inset: 0,
-              zIndex: 5,
-              pointerEvents: "none",
-              backdropFilter: "blur(16px)",
-              WebkitBackdropFilter: "blur(16px)",
-              background: "rgba(6, 6, 15, 0.45)",
-              WebkitMaskImage: "radial-gradient(circle 140px at var(--mouse-x, -999px) var(--mouse-y, -999px), transparent 0%, rgba(0,0,0,1) 80%)",
-              maskImage: "radial-gradient(circle 140px at var(--mouse-x, -999px) var(--mouse-y, -999px), transparent 0%, rgba(0,0,0,1) 80%)"
-            }}
-          />
-
-          {/* Hover Discovery Hint Badge */}
-          <div style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 6,
-            pointerEvents: "none",
-            opacity: isMouseOver ? 0 : 1,
-            transition: "opacity 0.4s ease",
-          }}>
-            <div style={{
-              background: "rgba(6, 6, 15, 0.85)",
-              border: "1px solid rgba(167, 139, 250, 0.25)",
-              borderRadius: 40,
-              padding: "16px 28px",
-              color: "#fff",
-              fontFamily: "'Playfair Display', serif",
-              fontSize: "clamp(12px, 1.5vw, 15px)",
-              textAlign: "center",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
-              backdropFilter: "blur(8px)",
-              WebkitBackdropFilter: "blur(8px)",
-              letterSpacing: "0.05em",
-              display: "flex",
-              alignItems: "center",
-              gap: 10
-            }}>
-              <span>🔍</span> Move cursor here to inspect skills
-            </div>
-          </div>
-
-          {/* Categories Grid Content */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32, alignItems: "start" }}>
-            {skillCategories.map((category, idx) => (
+        {/* Categories Grid (Glassmorphism Awwwards Style) */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32, alignItems: "start" }}>
+          {skillCategories.map((category, idx) => (
+            <div 
+              key={category.title}
+              ref={el => { cardsRef.current[idx] = el; }}
+              style={{
+                background: "rgba(255,255,255,.025)",
+                border: "1px solid rgba(255,255,255,.05)",
+                borderRadius: 24,
+                padding: "clamp(24px, 5vw, 36px) clamp(18px, 4vw, 28px)",
+                backdropFilter: "blur(24px)",
+                WebkitBackdropFilter: "blur(24px)",
+                transition: "all 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
+                transformStyle: "preserve-3d",
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+                overflow: "hidden",
+                cursor: "pointer",
+                boxShadow: "0 10px 30px -10px rgba(0,0,0,0.3)"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-6px) scale(1.02)";
+                e.currentTarget.style.borderColor = category.color;
+                e.currentTarget.style.background = "rgba(255,255,255,.035)";
+                e.currentTarget.style.boxShadow = `0 20px 40px -10px ${category.color}33`;
+                const glow = e.currentTarget.querySelector('.glow-blob') as HTMLElement;
+                if(glow) { glow.style.opacity = "1"; glow.style.transform = "scale(1.5)"; }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0) scale(1)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,.05)";
+                e.currentTarget.style.background = "rgba(255,255,255,.025)";
+                e.currentTarget.style.boxShadow = "0 10px 30px -10px rgba(0,0,0,0.3)";
+                const glow = e.currentTarget.querySelector('.glow-blob') as HTMLElement;
+                if(glow) { glow.style.opacity = "0"; glow.style.transform = "scale(1)"; }
+              }}
+            >
+              {/* Internal Glow on Hover */}
               <div 
-                key={category.title}
-                ref={el => { cardsRef.current[idx] = el; }}
+                className="glow-blob"
                 style={{
-                  background: "rgba(255,255,255,.025)",
-                  border: "1px solid rgba(255,255,255,.05)",
-                  borderRadius: 24,
-                  padding: "clamp(24px, 5vw, 36px) clamp(18px, 4vw, 28px)",
-                  backdropFilter: "blur(24px)",
-                  WebkitBackdropFilter: "blur(24px)",
-                  transition: "all 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
-                  transformStyle: "preserve-3d",
-                  display: "flex",
-                  flexDirection: "column",
-                  position: "relative",
-                  overflow: "hidden",
-                  cursor: "pointer",
-                  boxShadow: "0 10px 30px -10px rgba(0,0,0,0.3)"
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-6px) scale(1.02)";
-                  e.currentTarget.style.borderColor = category.color;
-                  e.currentTarget.style.background = "rgba(255,255,255,.035)";
-                  e.currentTarget.style.boxShadow = `0 20px 40px -10px ${category.color}33`;
-                  const glow = e.currentTarget.querySelector('.glow-blob') as HTMLElement;
-                  if(glow) { glow.style.opacity = "1"; glow.style.transform = "scale(1.5)"; }
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0) scale(1)";
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,.05)";
-                  e.currentTarget.style.background = "rgba(255,255,255,.025)";
-                  e.currentTarget.style.boxShadow = "0 10px 30px -10px rgba(0,0,0,0.3)";
-                  const glow = e.currentTarget.querySelector('.glow-blob') as HTMLElement;
-                  if(glow) { glow.style.opacity = "0"; glow.style.transform = "scale(1)"; }
-                }}
-              >
-                {/* Internal Glow on Hover */}
-                <div 
-                  className="glow-blob"
-                  style={{
-                    position: "absolute", top: -50, right: -50, width: 140, height: 140,
-                    background: `radial-gradient(circle, ${category.color}33 0%, transparent 70%)`,
-                    borderRadius: "50%", opacity: 0, transition: "all 0.6s cubic-bezier(0.23, 1, 0.32, 1)",
-                    pointerEvents: "none"
-                  }} 
-                />
+                  position: "absolute", top: -50, right: -50, width: 140, height: 140,
+                  background: `radial-gradient(circle, ${category.color}33 0%, transparent 70%)`,
+                  borderRadius: "50%", opacity: 0, transition: "all 0.6s cubic-bezier(0.23, 1, 0.32, 1)",
+                  pointerEvents: "none"
+                }} 
+              />
 
-                {/* Card Header */}
-                <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.08)" }}>
-                    {category.icon}
-                  </div>
-                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 600, color: "#fff", letterSpacing: "-0.01em", margin: 0 }}>
-                    {category.title}
-                  </h3>
+              {/* Card Header */}
+              <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.08)" }}>
+                  {category.icon}
                 </div>
-
-                {/* Description */}
-                <p style={{ fontFamily: "'Poppins', sans-serif", fontSize: 13, color: "rgba(255,255,255,.45)", lineHeight: 1.6, marginBottom: 26, fontWeight: 300 }}>
-                  {category.description}
-                </p>
-
-                {/* Skills Tags */}
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 12 }}>
-                  {category.skills.map((skill) => (
-                    <div 
-                      key={skill.name}
-                      style={{
-                        display: "flex", alignItems: "center", gap: 8,
-                        padding: "8px 14px", borderRadius: 40,
-                        background: "rgba(255,255,255,.03)", 
-                        border: "1px solid rgba(255,255,255,.08)",
-                        fontFamily: "'Poppins', sans-serif", fontSize: 11, color: "rgba(255,255,255,.65)",
-                        transition: "all 0.3s ease",
-                        cursor: "default"
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = category.color;
-                        e.currentTarget.style.color = "#fff";
-                        e.currentTarget.style.background = `${category.color}15`;
-                        e.currentTarget.style.boxShadow = `0 0 10px ${category.color}35`;
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = "rgba(255,255,255,.08)";
-                        e.currentTarget.style.color = "rgba(255,255,255,.65)";
-                        e.currentTarget.style.background = "rgba(255,255,255,.03)";
-                        e.currentTarget.style.boxShadow = "none";
-                      }}
-                    >
-                      <span style={{ color: category.color, display: "flex", alignItems: "center" }}>{skill.icon}</span>
-                      <span style={{ paddingTop: 1 }}>{skill.name}</span>
-                    </div>
-                  ))}
-                </div>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 600, color: "#fff", letterSpacing: "-0.01em", margin: 0 }}>
+                  {category.title}
+                </h3>
               </div>
-            ))}
-          </div>
+
+              {/* Description */}
+              <p style={{ fontFamily: "'Poppins', sans-serif", fontSize: 13, color: "rgba(255,255,255,.45)", lineHeight: 1.6, marginBottom: 26, fontWeight: 300 }}>
+                {category.description}
+              </p>
+
+              {/* Skills Tags */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 12 }}>
+                {category.skills.map((skill) => (
+                  <div 
+                    key={skill.name}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 8,
+                      padding: "8px 14px", borderRadius: 40,
+                      background: "rgba(255,255,255,.03)", 
+                      border: "1px solid rgba(255,255,255,.08)",
+                      fontFamily: "'Poppins', sans-serif", fontSize: 11, color: "rgba(255,255,255,.65)",
+                      transition: "all 0.3s ease",
+                      cursor: "default"
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = category.color;
+                      e.currentTarget.style.color = "#fff";
+                      e.currentTarget.style.background = `${category.color}15`;
+                      e.currentTarget.style.boxShadow = `0 0 10px ${category.color}35`;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = "rgba(255,255,255,.08)";
+                      e.currentTarget.style.color = "rgba(255,255,255,.65)";
+                      e.currentTarget.style.background = "rgba(255,255,255,.03)";
+                      e.currentTarget.style.boxShadow = "none";
+                    }}
+                  >
+                    <span style={{ color: category.color, display: "flex", alignItems: "center" }}>{skill.icon}</span>
+                    <span style={{ paddingTop: 1 }}>{skill.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

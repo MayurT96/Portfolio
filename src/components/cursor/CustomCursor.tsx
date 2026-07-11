@@ -7,6 +7,16 @@ export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    // 📱 HIDE AND DISABLE ON TOUCH/MOBILE DEVICES FOR BEST PERFORMANCE
+    const isTouch = window.matchMedia("(pointer: coarse)").matches || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    
+    if (isTouch) {
+      if (dotRef.current) {
+        dotRef.current.style.display = "none";
+      }
+      return;
+    }
+
     ensureGsap();
     const dot = dotRef.current;
     if (!dot) return;
@@ -51,8 +61,10 @@ export default function CustomCursor() {
       });
     };
 
-    // 💻 DESKTOP
+    // 💻 DESKTOP ONLY
     const onMove = (e: PointerEvent) => {
+      if (e.pointerType === "touch") return;
+
       qDotX(e.clientX);
       qDotY(e.clientY);
 
@@ -70,20 +82,10 @@ export default function CustomCursor() {
       lastY = e.clientY;
     };
 
-    // 📱 MOBILE (🔥 FIX)
-    const onTouch = (e: TouchEvent) => {
-      const touch = e.touches[0];
-      if (!touch) return;
-
-      createFireSpark(touch.clientX, touch.clientY);
-    };
-
     window.addEventListener("pointermove", onMove);
-    window.addEventListener("touchstart", onTouch);
 
     return () => {
       window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("touchstart", onTouch);
     };
   }, []);
 
