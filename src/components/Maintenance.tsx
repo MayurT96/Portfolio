@@ -82,9 +82,9 @@ export default function Maintenance() {
         </motion.div>
 
         {/* Headline */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-display font-black tracking-tight text-white mb-4 sm:mb-6 uppercase leading-[1.1] break-words">
+        <h1 className="text-2xl sm:text-5xl md:text-6xl font-display font-black tracking-tight text-white mb-4 sm:mb-6 uppercase leading-[1.2]">
           Crafting Something{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-400 to-indigo-400 bg-300% animate-gradient-shift">
+          <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-400 to-indigo-400 bg-300% animate-gradient-shift whitespace-nowrap">
             Extraordinary
           </span>
         </h1>
