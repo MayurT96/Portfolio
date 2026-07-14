@@ -52,7 +52,7 @@ export default function Maintenance() {
   }, [currentLogIndex]);
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center bg-black px-6 py-12 overflow-hidden select-none">
+    <div className="relative min-h-[100dvh] w-full flex items-center justify-center bg-black px-4 py-8 sm:px-6 sm:py-12 overflow-y-auto overflow-x-hidden select-none">
       {/* Dynamic Starfield Canvas Background */}
       <AmbientBackground />
 
@@ -72,7 +72,7 @@ export default function Maintenance() {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-950/20 backdrop-blur-md text-[10px] md:text-xs font-mono uppercase tracking-widest text-indigo-400 mb-8 shadow-[0_0_20px_rgba(79,70,229,0.15)]"
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-950/20 backdrop-blur-md text-[10px] md:text-xs font-mono uppercase tracking-widest text-indigo-400 mb-6 sm:mb-8 shadow-[0_0_20px_rgba(79,70,229,0.15)]"
         >
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -82,7 +82,7 @@ export default function Maintenance() {
         </motion.div>
 
         {/* Headline */}
-        <h1 className="text-4xl md:text-6xl font-display font-black tracking-tight text-white mb-6 uppercase leading-[1.1]">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl font-display font-black tracking-tight text-white mb-4 sm:mb-6 uppercase leading-[1.1] break-words">
           Crafting Something{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-sky-400 to-indigo-400 bg-300% animate-gradient-shift">
             Extraordinary
@@ -90,14 +90,14 @@ export default function Maintenance() {
         </h1>
 
         {/* Message */}
-        <p className="text-sm md:text-base font-sans text-neutral-400 max-w-xl mx-auto mb-10 leading-relaxed">
+        <p className="text-xs sm:text-sm md:text-base font-sans text-neutral-400 max-w-xl mx-auto mb-6 sm:mb-10 leading-relaxed px-2">
           Hi! I&apos;m <span className="text-neutral-200 font-semibold">Mayur</span>. I am currently upgrading my portfolio with exciting new features, projects, and a fully polished user experience. 
           The website is temporarily undergoing scheduled maintenance to push these updates. 
           I will be back online shortly!
         </p>
 
         {/* Interactive Simulated Terminal Logs */}
-        <div className="w-full max-w-lg mx-auto bg-neutral-950/80 border border-neutral-800/80 rounded-xl p-5 mb-10 text-left font-mono text-xs text-neutral-500 shadow-2xl backdrop-blur-xl relative group">
+        <div className="w-full max-w-lg mx-auto bg-neutral-950/80 border border-neutral-800/80 rounded-xl p-4 sm:p-5 mb-6 sm:mb-10 text-left font-mono text-xs text-neutral-500 shadow-2xl backdrop-blur-xl relative group">
           <div className="absolute top-3 right-4 flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-neutral-800"></span>
             <span className="w-1.5 h-1.5 rounded-full bg-neutral-800"></span>
@@ -129,23 +129,23 @@ export default function Maintenance() {
         </div>
 
         {/* Live Status Pinger */}
-        <div className="flex items-center justify-center gap-2 text-xs font-mono text-neutral-500 mb-12">
+        <div className="flex items-center justify-center gap-2 text-xs font-mono text-neutral-500 mb-6 sm:mb-10">
           <FiActivity className="text-indigo-400 animate-pulse" />
           <span>Status: Calibrating engines{dots}</span>
         </div>
 
         {/* Divider */}
-        <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-neutral-700 to-transparent mx-auto mb-10" />
+        <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-neutral-700 to-transparent mx-auto mb-6 sm:mb-8" />
 
         {/* Social Connection Channels */}
-        <div className="flex items-center justify-center gap-5">
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 max-w-md mx-auto">
           <motion.a
             href="https://github.com/MayurT96"
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 hover:border-neutral-700 hover:text-white transition-all text-xs font-mono text-neutral-400"
+            className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 hover:border-neutral-700 hover:text-white transition-all text-xs font-mono text-neutral-400 whitespace-nowrap"
           >
             <FaGithub className="text-base" />
             <span>GitHub</span>
@@ -157,7 +157,7 @@ export default function Maintenance() {
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 hover:border-neutral-700 hover:text-white transition-all text-xs font-mono text-neutral-400"
+            className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 hover:border-neutral-700 hover:text-white transition-all text-xs font-mono text-neutral-400 whitespace-nowrap"
           >
             <FaLinkedinIn className="text-base text-sky-400" />
             <span>LinkedIn</span>
@@ -167,7 +167,7 @@ export default function Maintenance() {
             href="mailto:mayurtamkhane96@gmail.com"
             whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 hover:border-neutral-700 hover:text-white transition-all text-xs font-mono text-neutral-400"
+            className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-neutral-950 border border-neutral-800 hover:border-neutral-700 hover:text-white transition-all text-xs font-mono text-neutral-400 whitespace-nowrap"
           >
             <FiMail className="text-base text-indigo-400" />
             <span>Email</span>
