@@ -307,21 +307,46 @@ function ContactForm() {
   const ss = useState("idle"); const status = ss[0]; const setStatus = ss[1];
   const sff = useState(null); const ff = sff[0]; const setFf = sff[1];
 
-  function submit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name.trim() || !form.email.trim() || !form.message.trim()) { setStatus("ef"); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) { setStatus("ee"); return; }
     setStatus("sending");
-    
-    // Updated Formspree endpoint based on user earlier instructions
-    fetch("https://formspree.io/f/xvzvqgwn", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form)
-    }).then(function (r) {
-      if (r.ok) { setStatus("ok"); setForm({ name: "", email: "", message: "" }); }
-      else setStatus("es");
-    }).catch(function () { setStatus("es"); });
-  }
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: form.name,         // Tera state variable name
+          email: form.email,       // Tera state variable email
+          message: form.message,   // Tera state variable message
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.ok) {
+        setStatus("ok");
+        setForm({ name: "", email: "", message: "" });
+        setTimeout(() => {
+          alert("Message MySQL me save ho gaya! 🎉");
+        }, 50);
+      } else {
+        setStatus("es");
+        setTimeout(() => {
+          alert("Error aaya: " + (data.error || "Failed to send"));
+        }, 50);
+      }
+    } catch (error) {
+      setStatus("es");
+      setTimeout(() => {
+        alert("Error aaya: Failed to send");
+      }, 50);
+    }
+  };
 
   function iS(f) {
     return { width: "100%", padding: "13px 16px", background: "rgba(255,255,255,.04)", border: "1px solid " + (ff === f ? "rgba(167,139,250,.5)" : "rgba(255,255,255,.08)"), borderRadius: 11, color: "#fff", fontSize: 14, fontFamily: "'Playfair Display', serif", outline: "none", transition: "border-color .25s, box-shadow .25s", boxSizing: "border-box", boxShadow: ff === f ? "0 0 0 3px rgba(124,58,237,.12)" : "none", fontWeight: 300 };
@@ -337,7 +362,7 @@ function ContactForm() {
   );
 
   return (
-    <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {[["name", "Name", "text", "Your name"], ["email", "Email", "email", "your@email.com"]].map(function (fi) {
         return (
           <div key={fi[0]}>
