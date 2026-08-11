@@ -5,6 +5,13 @@ import { NextResponse } from "next/server";
 import { db } from "../../../../lib/db";
 import nodemailer from "nodemailer";
 
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Database query timed out")), ms))
+  ]);
+}
+
 export async function POST(request: Request) {
   try {
     const json = await request.json();
@@ -14,13 +21,27 @@ export async function POST(request: Request) {
     const contactEmail = email || "No Email";
     const contactMessage = message || "No Message";
 
-    // 1. Direct MySQL me save karo
-    await db.query(
-      "INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)",
-      [contactName, contactEmail, contactMessage]
-    );
+    // 1. Direct MySQL me save karo (wrapped in try/catch and timeout so it doesn't block emails in production)
+    const isProd = process.env.NODE_ENV === "production";
+    const dbHost = process.env.DB_HOST;
+    const isLocalDB = dbHost === "localhost" || dbHost === "127.0.0.1";
 
-    console.log("✅ Message saved to MySQL Workbench successfully!");
+    if (isProd && isLocalDB) {
+      console.warn("⚠️ Skipping MySQL database logging in production because DB_HOST is localhost.");
+    } else {
+      try {
+        await withTimeout(
+          db.query(
+            "INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)",
+            [contactName, contactEmail, contactMessage]
+          ),
+          2000
+        );
+        console.log("✅ Message saved to MySQL Workbench successfully!");
+      } catch (dbError) {
+        console.error("❌ MySQL database error in contact route:", dbError);
+      }
+    }
 
     // 2. Email notification send karo
     const smtpUser = process.env.SMTP_USER;

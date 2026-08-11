@@ -5,6 +5,13 @@ import { NextResponse } from "next/server";
 import { db } from "../../../../lib/db";
 import nodemailer from "nodemailer";
 
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) => setTimeout(() => reject(new Error("Database query timed out")), ms))
+  ]);
+}
+
 function parseUserAgent(uaString: string) {
   const ua = uaString.toLowerCase();
   let browser = "Unknown Browser";
@@ -95,46 +102,54 @@ export async function POST(request: Request) {
     };
     const visitedAtIST = new Intl.DateTimeFormat("en-IN", timeOptions).format(new Date());
 
-    // 1. MySQL database insert (wrapped in try/catch to make sure database errors don't stop the email)
-    try {
-      await db.query(`
-        CREATE TABLE IF NOT EXISTS portfolio_visits (
-          id INT AUTO_INCREMENT PRIMARY KEY,
-          ip_address VARCHAR(45) NOT NULL,
-          country VARCHAR(100) DEFAULT 'Unknown',
-          region VARCHAR(100) DEFAULT 'Unknown',
-          city VARCHAR(100) DEFAULT 'Unknown',
-          zip_code VARCHAR(20) DEFAULT 'Unknown',
-          isp VARCHAR(150) DEFAULT 'Unknown',
-          latitude VARCHAR(50),
-          longitude VARCHAR(50),
-          referrer TEXT,
-          user_agent TEXT,
-          screen_resolution VARCHAR(50),
-          visited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-      `);
+    // 1. MySQL database insert (wrapped in try/catch and timeout to make sure database errors or hanging connections don't stop the email)
+    const isProd = process.env.NODE_ENV === "production";
+    const dbHost = process.env.DB_HOST;
+    const isLocalDB = dbHost === "localhost" || dbHost === "127.0.0.1";
 
-      await db.query(`
-        INSERT INTO portfolio_visits (
-          ip_address, country, region, city, zip_code, isp, latitude, longitude, referrer, user_agent, screen_resolution
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `, [
-        ip,
-        country,
-        region,
-        city,
-        zip,
-        isp,
-        lat ? String(lat) : null,
-        lon ? String(lon) : null,
-        referrer || "Direct",
-        userAgent,
-        screenResolution || "Unknown"
-      ]);
-      console.log("✅ Visit successfully saved to MySQL database!");
-    } catch (dbError) {
-      console.error("❌ MySQL Error in portfolio_visits:", dbError);
+    if (isProd && isLocalDB) {
+      console.warn("⚠️ Skipping MySQL database logging in production because DB_HOST is localhost.");
+    } else {
+      try {
+        await withTimeout(db.query(`
+          CREATE TABLE IF NOT EXISTS portfolio_visits (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            ip_address VARCHAR(45) NOT NULL,
+            country VARCHAR(100) DEFAULT 'Unknown',
+            region VARCHAR(100) DEFAULT 'Unknown',
+            city VARCHAR(100) DEFAULT 'Unknown',
+            zip_code VARCHAR(20) DEFAULT 'Unknown',
+            isp VARCHAR(150) DEFAULT 'Unknown',
+            latitude VARCHAR(50),
+            longitude VARCHAR(50),
+            referrer TEXT,
+            user_agent TEXT,
+            screen_resolution VARCHAR(50),
+            visited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          )
+        `), 2000);
+
+        await withTimeout(db.query(`
+          INSERT INTO portfolio_visits (
+            ip_address, country, region, city, zip_code, isp, latitude, longitude, referrer, user_agent, screen_resolution
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+          ip,
+          country,
+          region,
+          city,
+          zip,
+          isp,
+          lat ? String(lat) : null,
+          lon ? String(lon) : null,
+          referrer || "Direct",
+          userAgent,
+          screenResolution || "Unknown"
+        ]), 2000);
+        console.log("✅ Visit successfully saved to MySQL database!");
+      } catch (dbError) {
+        console.error("❌ MySQL Error in portfolio_visits:", dbError);
+      }
     }
 
     // 2. Email notification using nodemailer
