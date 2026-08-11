@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import PortfolioClient from "@/app/PortfolioClient";
 import Maintenance from "@/components/Maintenance";
 
-const SHOW_404_ERROR = true; // Set to false to restore the website
+const SHOW_404_ERROR = false; // Set to false to restore the website
 const UNDER_MAINTENANCE = false;
 
 export default function Page() {

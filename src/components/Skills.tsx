@@ -11,16 +11,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 const skillCategories = [
   {
-    title: "MERN Full Stack",
+    title: "Frontend Development",
     icon: <FaReact size={24} color="#38bdf8" />,
     color: "#38bdf8",
-    description: "Building highly interactive, scalable end-to-end web applications using React, Next.js, Node.js, Express, and MongoDB.",
+    description: "Crafting immersive, high-performance user interfaces and responsive web layouts with clean animations and modern typography.",
     skills: [
       { name: "React.js", icon: <FaReact /> },
       { name: "Next.js", icon: <SiNextdotjs /> },
-      { name: "Node.js", icon: <FaNodeJs /> },
-      { name: "Express.js", icon: <SiExpress /> },
-      { name: "MongoDB", icon: <SiMongodb /> },
       { name: "TypeScript", icon: <SiTypescript /> },
       { name: "JavaScript", icon: <SiJavascript /> },
       { name: "Tailwind CSS", icon: <SiTailwindcss /> },
@@ -28,34 +25,34 @@ const skillCategories = [
     ]
   },
   {
-    title: "Java Full Stack",
-    icon: <FaJava size={24} color="#f97316" />,
-    color: "#f97316",
-    description: "Developing robust, enterprise-grade backends using Java and Spring Boot, integrated with databases and microservices architectures.",
+    title: "Backend & Databases",
+    icon: <FaNodeJs size={24} color="#22c55e" />,
+    color: "#22c55e",
+    description: "Architecting secure, scalable backend services, RESTful APIs, and database structures to power robust applications.",
     skills: [
+      { name: "Node.js", icon: <FaNodeJs /> },
+      { name: "Express.js", icon: <SiExpress /> },
       { name: "Java", icon: <FaJava /> },
       { name: "Spring Boot", icon: <SiSpringboot /> },
       { name: "Spring Security", icon: <FaLock /> },
-      { name: "Hibernate / JPA", icon: <SiHibernate /> },
+      { name: "MongoDB", icon: <SiMongodb /> },
       { name: "MySQL", icon: <SiMysql /> },
       { name: "PostgreSQL", icon: <SiPostgresql /> },
-      { name: "Maven", icon: <SiApachemaven /> },
-      { name: "Microservices", icon: <span style={{fontFamily:"monospace", fontSize: 10}}>{"[ μS ]"}</span> },
     ]
   },
   {
-    title: "Tools & Tech",
+    title: "DevOps & Tools",
     icon: <FaGithub size={24} color="#a78bfa" />,
     color: "#a78bfa",
-    description: "Utilizing modern dev workflows, version control systems, and professional design tools to streamline the entire development cycle.",
+    description: "Leveraging industry-standard version control, deployment pipelines, cloud hosting, and design collaboration platforms.",
     skills: [
       { name: "Git", icon: <FaGithub /> },
       { name: "GitHub", icon: <FaGithub /> },
-      { name: "Figma", icon: <SiFigma /> },
       { name: "Docker", icon: <FaDocker /> },
       { name: "Vercel", icon: <SiVercel /> },
-      { name: "Postman", icon: <SiPostman /> },
       { name: "AWS", icon: <FaAws /> },
+      { name: "Postman", icon: <SiPostman /> },
+      { name: "Figma", icon: <SiFigma /> },
     ]
   }
 ];
