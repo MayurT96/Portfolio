@@ -90,98 +90,119 @@ export default function Skills() {
   }, []);
 
   return (
-    <section ref={containerRef} id="skills" style={{ padding: "clamp(50px, 7vw, 90px) clamp(16px, 4vw, 80px)", background: "rgba(255,255,255,.01)", position: "relative", overflow: "hidden", width: "100%", maxWidth: "100vw" }}>
+    <section ref={containerRef} id="skills" style={{ padding: "clamp(60px, 8vw, 95px) clamp(16px, 5vw, 80px)", background: "rgba(255,255,255,.013)", position: "relative", overflow: "hidden", width: "100%", maxWidth: "100vw" }}>
       {/* Subtle Background Glow */}
-      <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "min(500px, 80vw)", height: "min(350px, 50vh)", background: "radial-gradient(ellipse, rgba(167,139,250,0.06) 0%, transparent 60%)", pointerEvents: "none", zIndex: 0 }} />
+      <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "min(600px, 90vw)", height: "min(400px, 60vh)", background: "radial-gradient(ellipse, rgba(167,139,250,0.06) 0%, transparent 60%)", pointerEvents: "none", zIndex: 0 }} />
 
       <div style={{ maxWidth: 1080, margin: "0 auto", position: "relative", zIndex: 1, width: "100%" }}>
         
         {/* Section Heading */}
-        <div style={{ marginBottom: "clamp(28px, 4vw, 44px)" }}>
-          <div style={{ fontFamily: "var(--font-geist-mono), monospace", fontSize: 11, letterSpacing: ".25em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 8, fontWeight: 500 }}>
-            <GlitchText trigger="inview" speed={16}>// skills & tech</GlitchText>
+        <div style={{ marginBottom: "clamp(32px, 5vw, 52px)" }}>
+          <div style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".3em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 10 }}>
+            <GlitchText trigger="inview" speed={16}>// skills</GlitchText>
           </div>
-          <h2 style={{ fontFamily: "var(--font-syne), 'Syne', sans-serif", fontWeight: 700, fontSize: "clamp(24px, 4.5vw, 44px)", color: "#fff", margin: 0, lineHeight: 1.15, letterSpacing: "-.02em" }}>
+          <h2 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(26px, 5vw, 48px)", color: "#fff", margin: 0, lineHeight: 1.15, letterSpacing: "-.02em" }}>
             <GlitchText trigger="inview" speed={18}>What I Work With</GlitchText>
           </h2>
-          <div style={{ width: 34, height: 2, marginTop: 12, background: "linear-gradient(90deg,#6366f1,#a78bfa)", borderRadius: 2, boxShadow: "0 0 10px #7c3aed" }} />
+          <div style={{ width: 38, height: 2, marginTop: 16, background: "linear-gradient(90deg,#6366f1,#a78bfa)", borderRadius: 2, boxShadow: "0 0 10px #7c3aed" }} />
         </div>
 
-        {/* Categories Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: "clamp(16px, 2.5vw, 26px)", alignItems: "start", width: "100%" }}>
+        {/* Categories Grid (Glassmorphism Awwwards Style) */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: "clamp(18px, 3vw, 32px)", alignItems: "start", width: "100%" }}>
           {skillCategories.map((category, idx) => (
             <div 
               key={category.title}
               ref={el => { cardsRef.current[idx] = el; }}
               style={{
-                background: "linear-gradient(145deg, rgba(255,255,255,.03) 0%, rgba(255,255,255,.01) 100%)",
-                border: "1px solid rgba(255,255,255,.07)",
-                borderRadius: 20,
-                padding: "clamp(18px, 3.5vw, 28px) clamp(16px, 3vw, 24px)",
-                backdropFilter: "blur(20px)",
-                WebkitBackdropFilter: "blur(20px)",
-                transition: "all 0.35s cubic-bezier(0.23, 1, 0.32, 1)",
+                background: "rgba(255,255,255,.025)",
+                border: "1px solid rgba(255,255,255,.05)",
+                borderRadius: 24,
+                padding: "clamp(20px, 4vw, 32px) clamp(16px, 3.5vw, 24px)",
+                backdropFilter: "blur(24px)",
+                WebkitBackdropFilter: "blur(24px)",
+                transition: "all 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
+                transformStyle: "preserve-3d",
                 display: "flex",
                 flexDirection: "column",
                 position: "relative",
                 overflow: "hidden",
-                boxShadow: "0 8px 30px -10px rgba(0,0,0,0.4)",
+                cursor: "pointer",
+                boxShadow: "0 10px 30px -10px rgba(0,0,0,0.3)",
                 width: "100%",
                 boxSizing: "border-box"
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-4px)";
-                e.currentTarget.style.borderColor = category.color + "66";
-                e.currentTarget.style.boxShadow = `0 16px 36px -10px ${category.color}25`;
+                e.currentTarget.style.transform = "translateY(-6px) scale(1.02)";
+                e.currentTarget.style.borderColor = category.color;
+                e.currentTarget.style.background = "rgba(255,255,255,.035)";
+                e.currentTarget.style.boxShadow = `0 20px 40px -10px ${category.color}33`;
+                const glow = e.currentTarget.querySelector('.glow-blob') as HTMLElement;
+                if(glow) { glow.style.opacity = "1"; glow.style.transform = "scale(1.5)"; }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.borderColor = "rgba(255,255,255,.07)";
-                e.currentTarget.style.boxShadow = "0 8px 30px -10px rgba(0,0,0,0.4)";
+                e.currentTarget.style.transform = "translateY(0) scale(1)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,.05)";
+                e.currentTarget.style.background = "rgba(255,255,255,.025)";
+                e.currentTarget.style.boxShadow = "0 10px 30px -10px rgba(0,0,0,0.3)";
+                const glow = e.currentTarget.querySelector('.glow-blob') as HTMLElement;
+                if(glow) { glow.style.opacity = "0"; glow.style.transform = "scale(1)"; }
               }}
             >
+              {/* Internal Glow on Hover */}
+              <div 
+                className="glow-blob"
+                style={{
+                  position: "absolute", top: -50, right: -50, width: 140, height: 140,
+                  background: `radial-gradient(circle, ${category.color}33 0%, transparent 70%)`,
+                  borderRadius: "50%", opacity: 0, transition: "all 0.6s cubic-bezier(0.23, 1, 0.32, 1)",
+                  pointerEvents: "none"
+                }} 
+              />
+
               {/* Card Header */}
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 40, height: 40, borderRadius: 12, background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.08)", flexShrink: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,.04)", border: "1px solid rgba(255,255,255,.08)" }}>
                   {category.icon}
                 </div>
-                <h3 style={{ fontFamily: "var(--font-syne), 'Syne', sans-serif", fontSize: "clamp(17px, 2.5vw, 20px)", fontWeight: 600, color: "#fff", letterSpacing: "-0.01em", margin: 0 }}>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 600, color: "#fff", letterSpacing: "-0.01em", margin: 0 }}>
                   {category.title}
                 </h3>
               </div>
 
               {/* Description */}
-              <p style={{ fontFamily: "var(--font-space-grotesk), 'Inter', sans-serif", fontSize: 12.5, color: "rgba(255,255,255,.5)", lineHeight: 1.6, marginBottom: 18, fontWeight: 400 }}>
+              <p style={{ fontFamily: "'Poppins', sans-serif", fontSize: 13, color: "rgba(255,255,255,.45)", lineHeight: 1.6, marginBottom: 26, fontWeight: 300 }}>
                 {category.description}
               </p>
 
               {/* Skills Tags */}
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 12 }}>
                 {category.skills.map((skill) => (
                   <div 
                     key={skill.name}
                     style={{
-                      display: "inline-flex", alignItems: "center", gap: 7,
-                      padding: "6px 12px", borderRadius: 30,
+                      display: "flex", alignItems: "center", gap: 8,
+                      padding: "8px 14px", borderRadius: 40,
                       background: "rgba(255,255,255,.03)", 
                       border: "1px solid rgba(255,255,255,.08)",
-                      fontFamily: "var(--font-space-grotesk), 'Inter', sans-serif", fontSize: 11.5, color: "rgba(255,255,255,.75)",
-                      transition: "all 0.25s ease",
+                      fontFamily: "'Poppins', sans-serif", fontSize: 11, color: "rgba(255,255,255,.65)",
+                      transition: "all 0.3s ease",
                       cursor: "default"
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = category.color + "88";
+                      e.currentTarget.style.borderColor = category.color;
                       e.currentTarget.style.color = "#fff";
                       e.currentTarget.style.background = `${category.color}15`;
+                      e.currentTarget.style.boxShadow = `0 0 10px ${category.color}35`;
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.borderColor = "rgba(255,255,255,.08)";
-                      e.currentTarget.style.color = "rgba(255,255,255,.75)";
+                      e.currentTarget.style.color = "rgba(255,255,255,.65)";
                       e.currentTarget.style.background = "rgba(255,255,255,.03)";
+                      e.currentTarget.style.boxShadow = "none";
                     }}
                   >
-                    <span style={{ color: category.color, display: "flex", alignItems: "center", fontSize: 13 }}>{skill.icon}</span>
-                    <span>{skill.name}</span>
+                    <span style={{ color: category.color, display: "flex", alignItems: "center" }}>{skill.icon}</span>
+                    <span style={{ paddingTop: 1 }}>{skill.name}</span>
                   </div>
                 ))}
               </div>
