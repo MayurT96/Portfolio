@@ -123,17 +123,17 @@ export default function AIChatbot() {
     <>
       {/* FAB Button */}
       <motion.button
-        whileHover={{ scale: 1.05, boxShadow: "0 15px 40px rgba(167,139,250,0.6)" }}
+        whileHover={{ scale: 1.05, boxShadow: "0 12px 35px rgba(167,139,250,0.5)" }}
         whileTap={{ scale: 0.9 }}
-        animate={{ y: isOpen ? 0 : [0, -6, 0] }}
+        animate={{ y: isOpen ? 0 : [0, -4, 0] }}
         transition={{ y: { repeat: Infinity, duration: 3, ease: "easeInOut" }, type: "spring", stiffness: 400, damping: 15 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-5 right-4 sm:bottom-7 sm:right-7 w-13 h-13 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-white cursor-pointer shadow-xl"
+        className="fixed bottom-4 right-3.5 sm:bottom-7 sm:right-7 w-12 h-12 sm:w-15 sm:h-15 rounded-full flex items-center justify-center text-white cursor-pointer shadow-xl"
         style={{ background: "linear-gradient(135deg,#a78bfa,#763ced)", zIndex: 99999, border: "1px solid rgba(255,255,255,0.3)" }}
       >
-        {!isOpen && <div ref={fabGlowRef} style={{ position: "absolute", inset: -10, borderRadius: "50%", background: "radial-gradient(circle,rgba(167,139,250,0.5) 0%,transparent 70%)", zIndex: -1 }} />}
+        {!isOpen && <div ref={fabGlowRef} style={{ position: "absolute", inset: -8, borderRadius: "50%", background: "radial-gradient(circle,rgba(167,139,250,0.4) 0%,transparent 70%)", zIndex: -1 }} />}
         <AnimatePresence mode="wait">
-          {isOpen ? <FiX size={24} className="sm:w-7 sm:h-7" key="x" /> : <FiMessageSquare size={24} className="sm:w-7 sm:h-7" key="m" />}
+          {isOpen ? <FiX size={20} className="sm:w-6 sm:h-6" key="x" /> : <FiMessageSquare size={20} className="sm:w-6 sm:h-6" key="m" />}
         </AnimatePresence>
       </motion.button>
 
@@ -145,20 +145,23 @@ export default function AIChatbot() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.85, y: 30 }}
             transition={{ type: "spring", damping: 24, stiffness: 340, mass: 0.8 }}
-            className="fixed bottom-20 sm:bottom-26 right-3 sm:right-7 w-[calc(100vw-24px)] sm:w-[400px] max-w-[420px] h-[min(540px,calc(100dvh-110px))] bg-[rgba(10,10,25,0.92)] backdrop-blur-2xl rounded-3xl border border-white/12 shadow-2xl z-[99998] overflow-hidden flex flex-col origin-bottom-right"
+            className="fixed bottom-18 sm:bottom-26 right-3 sm:right-7 w-[calc(100vw-24px)] sm:w-[400px] max-w-[420px] h-[min(520px,calc(100dvh-100px))] bg-[rgba(10,10,25,0.95)] backdrop-blur-2xl rounded-3xl border border-white/12 shadow-2xl z-[99998] overflow-hidden flex flex-col origin-bottom-right"
           >
             {/* Header with 3D Orb */}
             <div ref={headerRef} className="p-4 sm:p-5 bg-[rgba(167,139,250,0.08)] border-b border-white/6">
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div data-anim style={{ position: "relative", width: 48, height: 48, borderRadius: "50%", overflow: "hidden", flexShrink: 0 }}>
-                  <Suspense fallback={<div style={{ width: 48, height: 48, borderRadius: "50%", background: "conic-gradient(from 0deg,#a78bfa,#7c3aed,#22d3ee,#a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", color: "white", fontSize: 13 }}>AI</div>}>
+                <div data-anim style={{ position: "relative", width: 44, height: 44, borderRadius: "50%", overflow: "hidden", flexShrink: 0 }}>
+                  <Suspense fallback={<div style={{ width: 44, height: 44, borderRadius: "50%", background: "conic-gradient(from 0deg,#a78bfa,#7c3aed,#22d3ee,#a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", color: "white", fontSize: 13 }}>AI</div>}>
                     <AIOrbScene isActive={isTyping} />
                   </Suspense>
-                  <div style={{ position: "absolute", bottom: 2, right: 2, width: 11, height: 11, borderRadius: "50%", background: "#10b981", border: "2px solid #0a0a19", zIndex: 2 }} />
+                  <div style={{ position: "absolute", bottom: 2, right: 2, width: 10, height: 10, borderRadius: "50%", background: "#10b981", border: "2px solid #0a0a19", zIndex: 2 }} />
                 </div>
                 <div data-anim>
-                  <h3 style={{ margin: 0, fontSize: 17, fontFamily: "'Playfair Display',serif", fontWeight: 700 }}>BunnyAI</h3>
-                  <p style={{ margin: 0, fontSize: 11, color: "rgba(255,255,255,0.5)" }}>Smart Portfolio Assistant</p>
+                  <h3 style={{ margin: 0, fontSize: 16, fontFamily: "var(--font-syne), sans-serif", fontWeight: 700 }}>BunnyAI</h3>
+                  <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10b981" }} />
+                    <span style={{ fontSize: 11, color: "#a78bfa", fontFamily: "var(--font-space-grotesk), sans-serif" }}>Mayur's AI Assistant</span>
+                  </div>
                 </div>
               </div>
             </div>
