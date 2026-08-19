@@ -1,7 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Syne, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AppShell from "@/components/app/AppShell";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#06060f",
+};
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -43,7 +51,7 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${syne.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full">
+      <body className="min-h-full w-full max-w-full overflow-x-hidden">
         <AppShell>{children}</AppShell>
       </body>
     </html>

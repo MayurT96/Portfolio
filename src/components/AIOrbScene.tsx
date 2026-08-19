@@ -111,7 +111,7 @@ export default function AIOrbScene({ isActive }: { isActive: boolean }) {
   return (
     <Canvas
       camera={{ position: [0, 0, 3], fov: 45 }}
-      style={{ width: "56px", height: "56px" }}
+      style={{ width: "100%", height: "100%" }}
       dpr={[1, 1.5]}
       gl={{ alpha: true, antialias: false, powerPreference: "high-performance" }}
     >

@@ -125,14 +125,15 @@ export default function AIChatbot() {
       <motion.button
         whileHover={{ scale: 1.05, boxShadow: "0 15px 40px rgba(167,139,250,0.6)" }}
         whileTap={{ scale: 0.9 }}
-        animate={{ y: isOpen ? 0 : [0, -8, 0] }}
+        animate={{ y: isOpen ? 0 : [0, -6, 0] }}
         transition={{ y: { repeat: Infinity, duration: 3, ease: "easeInOut" }, type: "spring", stiffness: 400, damping: 15 }}
         onClick={() => setIsOpen(!isOpen)}
-        style={{ position: "fixed", bottom: 30, right: 30, width: 66, height: 66, borderRadius: "50%", background: "linear-gradient(135deg,#a78bfa,#763ced)", color: "white", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 12px 35px rgba(124,58,237,0.5),inset 0 2px 4px rgba(255,255,255,0.3)", zIndex: 99999, border: "1px solid rgba(255,255,255,0.3)", cursor: "pointer" }}
+        className="fixed bottom-5 right-4 sm:bottom-7 sm:right-7 w-13 h-13 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-white cursor-pointer shadow-xl"
+        style={{ background: "linear-gradient(135deg,#a78bfa,#763ced)", zIndex: 99999, border: "1px solid rgba(255,255,255,0.3)" }}
       >
-        {!isOpen && <div ref={fabGlowRef} style={{ position: "absolute", inset: -14, borderRadius: "50%", background: "radial-gradient(circle,rgba(167,139,250,0.5) 0%,transparent 70%)", zIndex: -1 }} />}
+        {!isOpen && <div ref={fabGlowRef} style={{ position: "absolute", inset: -10, borderRadius: "50%", background: "radial-gradient(circle,rgba(167,139,250,0.5) 0%,transparent 70%)", zIndex: -1 }} />}
         <AnimatePresence mode="wait">
-          {isOpen ? <FiX size={28} key="x" /> : <FiMessageSquare size={28} key="m" />}
+          {isOpen ? <FiX size={24} className="sm:w-7 sm:h-7" key="x" /> : <FiMessageSquare size={24} className="sm:w-7 sm:h-7" key="m" />}
         </AnimatePresence>
       </motion.button>
 
@@ -140,75 +141,75 @@ export default function AIChatbot() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.82, y: 50 }}
+            initial={{ opacity: 0, scale: 0.85, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.82, y: 50 }}
-            transition={{ type: "spring", damping: 22, stiffness: 320, mass: 0.8 }}
-            style={{ position: "fixed", bottom: 110, right: 30, width: "min(400px,90vw)", height: 550, background: "rgba(10,10,25,0.88)", backdropFilter: "blur(24px)", borderRadius: 28, border: "1px solid rgba(255,255,255,0.12)", boxShadow: "0 30px 60px -12px rgba(0,0,0,0.6)", zIndex: 99998, overflow: "hidden", display: "flex", flexDirection: "column", transformOrigin: "bottom right" }}
+            exit={{ opacity: 0, scale: 0.85, y: 30 }}
+            transition={{ type: "spring", damping: 24, stiffness: 340, mass: 0.8 }}
+            className="fixed bottom-20 sm:bottom-26 right-3 sm:right-7 w-[calc(100vw-24px)] sm:w-[400px] max-w-[420px] h-[min(540px,calc(100dvh-110px))] bg-[rgba(10,10,25,0.92)] backdrop-blur-2xl rounded-3xl border border-white/12 shadow-2xl z-[99998] overflow-hidden flex flex-col origin-bottom-right"
           >
             {/* Header with 3D Orb */}
-            <div ref={headerRef} style={{ padding: "22px 26px", background: "rgba(167,139,250,0.08)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                <div data-anim style={{ position: "relative", width: 56, height: 56, borderRadius: "50%", overflow: "hidden" }}>
-                  <Suspense fallback={<div style={{ width: 56, height: 56, borderRadius: "50%", background: "conic-gradient(from 0deg,#a78bfa,#7c3aed,#22d3ee,#a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", color: "white", fontSize: 14 }}>AI</div>}>
+            <div ref={headerRef} className="p-4 sm:p-5 bg-[rgba(167,139,250,0.08)] border-b border-white/6">
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div data-anim style={{ position: "relative", width: 48, height: 48, borderRadius: "50%", overflow: "hidden", flexShrink: 0 }}>
+                  <Suspense fallback={<div style={{ width: 48, height: 48, borderRadius: "50%", background: "conic-gradient(from 0deg,#a78bfa,#7c3aed,#22d3ee,#a78bfa)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", color: "white", fontSize: 13 }}>AI</div>}>
                     <AIOrbScene isActive={isTyping} />
                   </Suspense>
-                  <div style={{ position: "absolute", bottom: 2, right: 2, width: 13, height: 13, borderRadius: "50%", background: "#10b981", border: "2px solid #0a0a19", zIndex: 2 }} />
+                  <div style={{ position: "absolute", bottom: 2, right: 2, width: 11, height: 11, borderRadius: "50%", background: "#10b981", border: "2px solid #0a0a19", zIndex: 2 }} />
                 </div>
                 <div data-anim>
-                  <h3 style={{ margin: 0, fontSize: 19, fontFamily: "'Playfair Display',serif", fontWeight: 700 }}>BunnyAI</h3>
-                  <p style={{ margin: 0, fontSize: 12, color: "rgba(255,255,255,0.5)" }}>Smart Portfolio Assistant</p>
+                  <h3 style={{ margin: 0, fontSize: 17, fontFamily: "'Playfair Display',serif", fontWeight: 700 }}>BunnyAI</h3>
+                  <p style={{ margin: 0, fontSize: 11, color: "rgba(255,255,255,0.5)" }}>Smart Portfolio Assistant</p>
                 </div>
               </div>
             </div>
 
             {/* Messages */}
-            <div ref={scrollRef} style={{ flex: 1, overflowY: "auto", padding: 24, display: "flex", flexDirection: "column", gap: 20 }}>
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-4">
               {messages.map((m) => (
                 <div
                   key={m.id}
                   ref={(el) => animMsg(el, m)}
                   style={{
-                    maxWidth: "85%", padding: "14px 18px", borderRadius: 20, fontSize: 14.5, lineHeight: 1.6,
+                    maxWidth: "88%", padding: "12px 16px", borderRadius: 18, fontSize: 13.5, lineHeight: 1.55,
                     alignSelf: m.role === "ai" ? "flex-start" : "flex-end",
                     background: m.role === "ai" ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg,#a78bfa,#7c3aed)",
                     color: m.role === "ai" ? "rgba(255,255,255,0.95)" : "white",
-                    borderTopLeftRadius: m.role === "ai" ? 0 : 20,
-                    borderTopRightRadius: m.role === "user" ? 0 : 20,
+                    borderTopLeftRadius: m.role === "ai" ? 0 : 18,
+                    borderTopRightRadius: m.role === "user" ? 0 : 18,
                     border: m.role === "ai" ? "1px solid rgba(255,255,255,0.08)" : "none",
                     whiteSpace: "pre-wrap", wordBreak: "break-word", opacity: 0,
                   }}
                 >{m.text}</div>
               ))}
               {isTyping && (
-                <div style={{ alignSelf: "flex-start", background: "rgba(255,255,255,0.05)", padding: "14px 22px", borderRadius: "0 20px 20px 20px", border: "1px solid rgba(255,255,255,0.08)", display: "flex", gap: 7, alignItems: "center" }}>
+                <div style={{ alignSelf: "flex-start", background: "rgba(255,255,255,0.05)", padding: "12px 18px", borderRadius: "0 18px 18px 18px", border: "1px solid rgba(255,255,255,0.08)", display: "flex", gap: 6, alignItems: "center" }}>
                   {[0, 1, 2].map(i => (
                     <div key={i} ref={el => { dotEls.current[i] = el; }}
-                      style={{ width: 8, height: 8, borderRadius: "50%", background: "linear-gradient(135deg,#a78bfa,#22d3ee)" }} />
+                      style={{ width: 7, height: 7, borderRadius: "50%", background: "linear-gradient(135deg,#a78bfa,#22d3ee)" }} />
                   ))}
                 </div>
               )}
             </div>
 
             {/* Input Area */}
-            <div style={{ padding: "20px 24px 24px", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-              <div ref={quickPromptsRef} style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: 16, scrollbarWidth: "none" }}>
+            <div className="p-3 sm:p-4 border-t border-white/6">
+              <div ref={quickPromptsRef} style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 10, scrollbarWidth: "none" }}>
                 {prompts.map(s => (
                   <button key={s} onClick={() => setInputText(s)}
-                    style={{ whiteSpace: "nowrap", padding: "8px 16px", borderRadius: 100, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.85)", fontSize: 12, cursor: "pointer", boxShadow: "0 4px 10px rgba(0,0,0,0.2)", transition: "all 0.2s" }}
-                    onMouseEnter={e => gsap.to(e.currentTarget, { y: -3, scale: 1.05, background: "rgba(167,139,250,0.2)", duration: 0.25 })}
-                    onMouseLeave={e => gsap.to(e.currentTarget, { y: 0, scale: 1, background: "rgba(255,255,255,0.06)", duration: 0.25 })}
+                    style={{ whiteSpace: "nowrap", padding: "6px 12px", borderRadius: 100, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.85)", fontSize: 11, cursor: "pointer", boxShadow: "0 4px 10px rgba(0,0,0,0.2)", transition: "all 0.2s", flexShrink: 0 }}
+                    onMouseEnter={e => gsap.to(e.currentTarget, { y: -2, scale: 1.03, background: "rgba(167,139,250,0.2)", duration: 0.2 })}
+                    onMouseLeave={e => gsap.to(e.currentTarget, { y: 0, scale: 1, background: "rgba(255,255,255,0.06)", duration: 0.2 })}
                   >{s}</button>
                 ))}
               </div>
-              <div style={{ display: "flex", gap: 12, background: "rgba(255,255,255,0.04)", borderRadius: 100, padding: "10px 10px 10px 22px", border: "1px solid rgba(255,255,255,0.12)" }}>
+              <div style={{ display: "flex", gap: 8, background: "rgba(255,255,255,0.04)", borderRadius: 100, padding: "6px 6px 6px 16px", border: "1px solid rgba(255,255,255,0.12)" }}>
                 <input type="text" placeholder="Ask me anything..." value={inputText} onChange={e => setInputText(e.target.value)} onKeyDown={e => e.key === "Enter" && handleSend()}
-                  style={{ background: "transparent", border: "none", color: "white", width: "100%", outline: "none", fontSize: 15 }} />
+                  style={{ background: "transparent", border: "none", color: "white", width: "100%", outline: "none", fontSize: 14 }} />
                 <button onClick={handleSend}
-                  onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.15, rotation: 10, background: "#8b5cf6", duration: 0.25 })}
-                  onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, rotation: 0, background: "#a78bfa", duration: 0.25 })}
-                  style={{ width: 44, height: 44, borderRadius: "50%", background: "#a78bfa", border: "none", color: "white", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, boxShadow: "0 4px 15px rgba(139,92,246,0.4)" }}
-                ><FiSend size={20} /></button>
+                  onMouseEnter={e => gsap.to(e.currentTarget, { scale: 1.1, background: "#8b5cf6", duration: 0.2 })}
+                  onMouseLeave={e => gsap.to(e.currentTarget, { scale: 1, background: "#a78bfa", duration: 0.2 })}
+                  style={{ width: 38, height: 38, borderRadius: "50%", background: "#a78bfa", border: "none", color: "white", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0, boxShadow: "0 4px 15px rgba(139,92,246,0.4)" }}
+                ><FiSend size={16} /></button>
               </div>
             </div>
           </motion.div>

@@ -90,25 +90,25 @@ export default function Skills() {
   }, []);
 
   return (
-    <section ref={containerRef} id="skills" style={{ padding: "95px clamp(20px, 6vw, 80px)", background: "rgba(255,255,255,.013)", position: "relative", overflow: "hidden" }}>
+    <section ref={containerRef} id="skills" style={{ padding: "clamp(60px, 8vw, 95px) clamp(16px, 5vw, 80px)", background: "rgba(255,255,255,.013)", position: "relative", overflow: "hidden", width: "100%", maxWidth: "100vw" }}>
       {/* Subtle Background Glow */}
-      <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "80%", height: "50%", background: "radial-gradient(ellipse, rgba(167,139,250,0.06) 0%, transparent 60%)", pointerEvents: "none", zIndex: 0 }} />
+      <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "min(600px, 90vw)", height: "min(400px, 60vh)", background: "radial-gradient(ellipse, rgba(167,139,250,0.06) 0%, transparent 60%)", pointerEvents: "none", zIndex: 0 }} />
 
-      <div style={{ maxWidth: 1080, margin: "0 auto", position: "relative", zIndex: 1 }}>
+      <div style={{ maxWidth: 1080, margin: "0 auto", position: "relative", zIndex: 1, width: "100%" }}>
         
         {/* Section Heading */}
-        <div style={{ marginBottom: 52 }}>
+        <div style={{ marginBottom: "clamp(32px, 5vw, 52px)" }}>
           <div style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".3em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 10 }}>
             <GlitchText trigger="inview" speed={16}>// skills</GlitchText>
           </div>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(28px,4.5vw,50px)", color: "#fff", margin: 0, lineHeight: 1.1, letterSpacing: "-.02em" }}>
+          <h2 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(26px, 5vw, 48px)", color: "#fff", margin: 0, lineHeight: 1.15, letterSpacing: "-.02em" }}>
             <GlitchText trigger="inview" speed={18}>What I Work With</GlitchText>
           </h2>
           <div style={{ width: 38, height: 2, marginTop: 16, background: "linear-gradient(90deg,#6366f1,#a78bfa)", borderRadius: 2, boxShadow: "0 0 10px #7c3aed" }} />
         </div>
 
         {/* Categories Grid (Glassmorphism Awwwards Style) */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))", gap: "clamp(18px, 3vw, 32px)", alignItems: "start", width: "100%" }}>
           {skillCategories.map((category, idx) => (
             <div 
               key={category.title}
@@ -117,7 +117,7 @@ export default function Skills() {
                 background: "rgba(255,255,255,.025)",
                 border: "1px solid rgba(255,255,255,.05)",
                 borderRadius: 24,
-                padding: "clamp(24px, 5vw, 36px) clamp(18px, 4vw, 28px)",
+                padding: "clamp(20px, 4vw, 32px) clamp(16px, 3.5vw, 24px)",
                 backdropFilter: "blur(24px)",
                 WebkitBackdropFilter: "blur(24px)",
                 transition: "all 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
@@ -127,7 +127,9 @@ export default function Skills() {
                 position: "relative",
                 overflow: "hidden",
                 cursor: "pointer",
-                boxShadow: "0 10px 30px -10px rgba(0,0,0,0.3)"
+                boxShadow: "0 10px 30px -10px rgba(0,0,0,0.3)",
+                width: "100%",
+                boxSizing: "border-box"
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-6px) scale(1.02)";
