@@ -536,17 +536,17 @@ export default function App() {
           .two-col { grid-template-columns:1fr !important; gap:28px !important; }
           .proj-grid { grid-template-columns:1fr !important; gap:18px !important; }
           .trait-grid { grid-template-columns:1fr 1fr !important; gap:10px !important; }
-          .hero-links { flex-direction:column !important; gap:10px !important; width: 100% !important; max-width: 320px !important; margin: 16px auto 0 !important; align-items: stretch !important; }
-          .hero-link-item { font-size: 11.5px !important; justify-content: flex-start !important; word-break: break-all !important; }
+          .hero-links { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; gap: 8px 16px !important; width: 100% !important; max-width: 480px !important; margin: 16px auto 0 !important; }
+          .hero-link-item { font-size: 12px !important; justify-content: center !important; word-break: break-all !important; padding: 6px 12px !important; background: rgba(255,255,255,.02) !important; border-radius: 20px !important; border: 1px solid rgba(255,255,255,.05) !important; }
           .nav-links-container { gap: 6px !important; }
           .nav-link { font-size: 10px !important; padding: 4px 8px !important; letter-spacing: 0.04em !important; }
           .floating-resume { padding: 8px 14px !important; font-size: 9.5px !important; left: 12px !important; bottom: 20px !important; gap: 6px !important; }
         }
         @media(max-width:480px){
-          .trait-grid { grid-template-columns:1fr !important; }
+          .trait-grid { grid-template-columns:1fr 1fr !important; gap:8px !important; }
           .nav-link { display: none !important; }
           .nav-link.active-on-mobile { display: inline-block !important; font-size: 9.5px !important; padding: 4px 8px !important; }
-          .hero-links { max-width: 290px !important; }
+          .hero-links { max-width: 100% !important; }
           .hero-link-item { font-size: 11px !important; }
           html, body { overflow-x: hidden !important; width: 100% !important; max-width: 100vw !important; }
         }
