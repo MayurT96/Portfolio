@@ -5,7 +5,7 @@ import gsap from "gsap";
 import GlitchText from "./GlitchText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FaReact, FaNodeJs, FaHtml5, FaCss3Alt, FaDocker, FaGithub, FaAws, FaJava, FaLock } from "react-icons/fa";
-import { SiNextdotjs, SiTailwindcss, SiJavascript, SiTypescript, SiMongodb, SiExpress, SiThreedotjs, SiFigma, SiPostgresql, SiFirebase, SiGraphql, SiVercel, SiPostman, SiSpringboot, SiHibernate, SiMysql, SiApachemaven } from "react-icons/si";
+import { SiNextdotjs, SiTailwindcss, SiJavascript, SiTypescript, SiMongodb, SiExpress, SiThreedotjs, SiFigma, SiPostgresql, SiFirebase, SiGraphql, SiVercel, SiPostman, SiSpringboot, SiHibernate, SiMysql, SiApachemaven, SiBootstrap, SiRender, SiIntellijidea } from "react-icons/si";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,41 +18,44 @@ const skillCategories = [
     skills: [
       { name: "React.js", icon: <FaReact /> },
       { name: "Next.js", icon: <SiNextdotjs /> },
+      { name: "JavaScript (ES6+)", icon: <SiJavascript /> },
       { name: "TypeScript", icon: <SiTypescript /> },
-      { name: "JavaScript", icon: <SiJavascript /> },
+      { name: "Bootstrap 5", icon: <SiBootstrap /> },
       { name: "Tailwind CSS", icon: <SiTailwindcss /> },
+      { name: "HTML5 / CSS3", icon: <FaHtml5 /> },
       { name: "Three.js", icon: <SiThreedotjs /> },
     ]
   },
   {
     title: "Backend & Databases",
-    icon: <FaNodeJs size={24} color="#22c55e" />,
+    icon: <SiSpringboot size={24} color="#22c55e" />,
     color: "#22c55e",
-    description: "Architecting secure, scalable backend services, RESTful APIs, and database structures to power robust applications.",
+    description: "Architecting secure, scalable backend services, RESTful APIs, and database structures to power robust enterprise applications.",
     skills: [
-      { name: "Node.js", icon: <FaNodeJs /> },
-      { name: "Express.js", icon: <SiExpress /> },
       { name: "Java", icon: <FaJava /> },
       { name: "Spring Boot", icon: <SiSpringboot /> },
-      { name: "Spring Security", icon: <FaLock /> },
-      { name: "MongoDB", icon: <SiMongodb /> },
+      { name: "Hibernate / JPA", icon: <SiHibernate /> },
       { name: "MySQL", icon: <SiMysql /> },
+      { name: "Node.js", icon: <FaNodeJs /> },
+      { name: "Express.js", icon: <SiExpress /> },
       { name: "PostgreSQL", icon: <SiPostgresql /> },
+      { name: "MongoDB", icon: <SiMongodb /> },
     ]
   },
   {
     title: "DevOps & Tools",
     icon: <FaGithub size={24} color="#a78bfa" />,
     color: "#a78bfa",
-    description: "Leveraging industry-standard version control, deployment pipelines, cloud hosting, and design collaboration platforms.",
+    description: "Leveraging industry-standard version control, deployment pipelines, cloud hosting, and professional developer tooling.",
     skills: [
       { name: "Git", icon: <FaGithub /> },
       { name: "GitHub", icon: <FaGithub /> },
-      { name: "Docker", icon: <FaDocker /> },
       { name: "Vercel", icon: <SiVercel /> },
-      { name: "AWS", icon: <FaAws /> },
+      { name: "Render", icon: <SiRender /> },
       { name: "Postman", icon: <SiPostman /> },
-      { name: "Figma", icon: <SiFigma /> },
+      { name: "IntelliJ IDEA", icon: <SiIntellijidea /> },
+      { name: "Docker", icon: <FaDocker /> },
+      { name: "AWS", icon: <FaAws /> },
     ]
   }
 ];

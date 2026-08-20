@@ -494,6 +494,7 @@ export default function App() {
   useEffect(function () { if (ready) setTimeout(function () { setHeroIn(true); }, 100); }, [ready]);
 
   const projects = [
+        { emoji: "🏢", title: "EMS Pro — Employee Hub", c1: "#6366f1", c2: "#a855f7", desc: "A full-stack enterprise Employee Management System with interactive directory search, department analytics, role-based workflows, RESTful APIs, and cloud sync.", stack: ["React.js", "Java", "Spring Boot", "MySQL", "Spring Data JPA", "Hibernate", "Bootstrap 5", "Render", "Vercel"], github: "https://github.com/MayurT96", live: "https://employee-management-frontend-one-lime.vercel.app/employees" },
     { emoji: "🌍", title: "BunnyTravel", c1: "#38bdf8", c2: "#6366f1", desc: "A responsive travel booking website inspired by MakeMyTrip — featuring Three.js 3D animations, an interactive globe, and mobile-optimised layouts.", stack: ["React", "Three.js", "Tailwind", "Framer Motion"], github: "https://github.com/MayurT96", live: null },
     { emoji: "🛒", title: "E-Commerce Store", c1: "#4ade80", c2: "#38bdf8", desc: "Full-stack MERN online store with product listing, cart management, JWT authentication, and order tracking.", stack: ["MongoDB", "Express", "React", "Node.js", "JWT"], github: "https://github.com/MayurT96", live: null },
     { emoji: "📱", title: "VPN Android App", c1: "#f43f5e", c2: "#8b5cf6", desc: "A secure and robust VPN application for Android devices, providing private and unrestricted internet access.", stack: ["Android", "Java", "Kotlin"], github: "https://github.com/MayurT96/VPN-android-app", live: null },
@@ -658,7 +659,7 @@ export default function App() {
                       I'm looking for my first professional opportunity where I can contribute meaningfully, grow alongside experienced developers, and solve real problems with code.
                     </p>
                     <div style={{ display: "flex", gap: "clamp(16px,4vw,36px)", marginTop: 28, flexWrap: "wrap" }}>
-                      {[["4", "Projects Built"], ["6+", "Months Learning"], ["∞", "Curiosity"]].map(function (it) {
+                      {[["5", "Projects Built"], ["6+", "Months Learning"], ["∞", "Curiosity"]].map(function (it) {
                         return <div key={it[1]}>
                           <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(24px,4vw,36px)", background: "linear-gradient(135deg,#a78bfa,#38bdf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{it[0]}</div>
                           <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 10, color: "rgba(255,255,255,.26)", letterSpacing: ".1em", marginTop: 2 }}>{it[1]}</div>
