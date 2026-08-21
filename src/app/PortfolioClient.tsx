@@ -495,10 +495,7 @@ export default function App() {
 
   const projects = [
         { emoji: "🏢", title: "EMS Pro — Employee Hub", c1: "#6366f1", c2: "#a855f7", desc: "A full-stack enterprise Employee Management System with interactive directory search, department analytics, role-based workflows, RESTful APIs, and cloud sync.", stack: ["React.js", "Java", "Spring Boot", "MySQL", "Spring Data JPA", "Hibernate", "Bootstrap 5", "Render", "Vercel"], github: "https://github.com/MayurT96", live: "https://employee-management-frontend-one-lime.vercel.app/employees" },
-    { emoji: "🌍", title: "BunnyTravel", c1: "#38bdf8", c2: "#6366f1", desc: "A responsive travel booking website inspired by MakeMyTrip — featuring Three.js 3D animations, an interactive globe, and mobile-optimised layouts.", stack: ["React", "Three.js", "Tailwind", "Framer Motion"], github: "https://github.com/MayurT96", live: null },
-    { emoji: "🛒", title: "E-Commerce Store", c1: "#4ade80", c2: "#38bdf8", desc: "Full-stack MERN online store with product listing, cart management, JWT authentication, and order tracking.", stack: ["MongoDB", "Express", "React", "Node.js", "JWT"], github: "https://github.com/MayurT96", live: null },
     { emoji: "📱", title: "VPN Android App", c1: "#f43f5e", c2: "#8b5cf6", desc: "A secure and robust VPN application for Android devices, providing private and unrestricted internet access.", stack: ["Android", "Java", "Kotlin"], github: "https://github.com/MayurT96/VPN-android-app", live: null },
-    { emoji: "📝", title: "Task Manager App", c1: "#a78bfa", c2: "#f472b6", desc: "Drag-and-drop Kanban productivity app with task priorities, due dates, and local-storage persistence.", stack: ["React", "CSS Modules", "LocalStorage"], github: "https://github.com/MayurT96", live: null },
   ];
 
   const traits = [

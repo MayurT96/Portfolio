@@ -16,7 +16,7 @@ const getSmartFallback = (input: string) => {
   if (msg.includes("skill") || msg.includes("tech") || msg.includes("stack") || msg.includes("know"))
     return "Mayur's core stack: React.js, Java Spring Boot, MySQL, Hibernate/JPA, Next.js, TypeScript, and MERN (Node/Express/Mongo). He's also skilled with Bootstrap 5, Tailwind CSS, Vercel, Render & REST APIs ✨";
   if (msg.includes("project") || msg.includes("work") || msg.includes("built") || msg.includes("portfolio"))
-    return "His standout projects: 🏢 EMS Pro (Java Spring Boot + React + MySQL Employee Hub), 🌍 BunnyTravel (3D globe travel app), 🛒 E-Commerce Store (full-stack MERN), 📱 VPN Android App, and 📋 Kanban Task Manager. Check out the Projects section!";
+    return "His standout projects: 🏢 EMS Pro (Java Spring Boot + React + MySQL Employee Hub) and 📱 VPN Android App. Check out the Projects section!";
   if (msg.includes("hire") || msg.includes("job") || msg.includes("available") || msg.includes("intern"))
     return "Yep — Mayur is actively looking for Junior Developer or Intern roles! Reach him at mayurtamkhane96@gmail.com or +91 7387553347.";
   if (msg.includes("contact") || msg.includes("email") || msg.includes("phone") || msg.includes("reach"))
