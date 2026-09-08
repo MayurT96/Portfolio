@@ -191,7 +191,24 @@ function Navbar(props) {
   const s = useState(null); const hov = s[0]; const setHov = s[1];
   return (
     <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, height: 60, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(14px,4vw,80px)", background: props.scrolled ? "rgba(6,6,15,.92)" : "transparent", backdropFilter: props.scrolled ? "blur(22px)" : "none", WebkitBackdropFilter: props.scrolled ? "blur(22px)" : "none", borderBottom: props.scrolled ? "1px solid rgba(255,255,255,.06)" : "none", transition: "all .4s", width: "100%", maxWidth: "100vw", boxSizing: "border-box" }}>
-      <GlitchText as="div" trigger="mount" delay={200} speed={22} style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(16px, 4vw, 19px)", background: "linear-gradient(120deg,#fff,rgba(167,139,250,.8))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Bunny96</GlitchText>
+      <a href="#hero" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10, cursor: "none" }}>
+        <div style={{
+          width: 32,
+          height: 32,
+          borderRadius: "50%",
+          padding: 1.5,
+          background: "linear-gradient(135deg, #6366f1, #a78bfa)",
+          boxShadow: "0 0 12px rgba(124,58,237,0.35)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "hidden",
+          flexShrink: 0
+        }}>
+          <img src="/mayur.jpg" alt="Mayur Tamkhane" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", borderRadius: "50%" }} />
+        </div>
+        <GlitchText as="div" trigger="mount" delay={200} speed={22} style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(16px, 4vw, 19px)", background: "linear-gradient(120deg,#fff,rgba(167,139,250,.8))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Bunny96</GlitchText>
+      </a>
       <div className="nav-links-container" style={{ display: "flex", gap: "clamp(6px,2vw,36px)", alignItems: "center" }}>
         {links.map(function (l) {
           const isMain = l === "About" || l === "Projects";
@@ -208,6 +225,176 @@ function Navbar(props) {
         </a>
       </div>
     </nav>
+  );
+}
+
+
+function AboutPortraitCard() {
+  const ref = useRef(null);
+  const [glare, setGlare] = useState({ x: 50, y: 50, o: 0 });
+  const [hov, setHov] = useState(false);
+
+  return (
+    <div 
+      ref={ref}
+      onMouseEnter={function () { setHov(true); setGlare(function (prev) { return Object.assign({}, prev, { o: 1 }); }); }}
+      onMouseLeave={function () {
+        setHov(false);
+        setGlare(function (prev) { return Object.assign({}, prev, { o: 0 }); });
+        if (ref.current) ref.current.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
+      }}
+      onMouseMove={function (e) {
+        if (!ref.current) return;
+        if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) return;
+        const r = ref.current.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width;
+        const y = (e.clientY - r.top) / r.height;
+        const tiltX = (0.5 - y) * 10;
+        const tiltY = (x - 0.5) * 10;
+        ref.current.style.transform = "perspective(1000px) rotateX(" + tiltX + "deg) rotateY(" + tiltY + "deg) scale(1.02)";
+        setGlare({ x: x * 100, y: y * 100, o: 1 });
+      }}
+      style={{
+        position: "relative",
+        background: "linear-gradient(165deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)",
+        border: "1px solid " + (hov ? "rgba(167,139,250,0.4)" : "rgba(255,255,255,0.08)"),
+        borderRadius: 24,
+        overflow: "hidden",
+        padding: "clamp(12px, 2.5vw, 16px)",
+        transformStyle: "preserve-3d",
+        transition: "transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2), border-color 0.4s ease, box-shadow 0.4s ease",
+        boxShadow: hov 
+          ? "0 25px 50px -12px rgba(124, 58, 237, 0.25), 0 0 30px rgba(167, 139, 250, 0.15)" 
+          : "0 10px 30px rgba(0, 0, 0, 0.4)",
+        width: "100%",
+        boxSizing: "border-box"
+      }}
+    >
+      {/* Glare effect */}
+      <div style={{
+        position: "absolute",
+        top: 0, left: 0, right: 0, bottom: 0,
+        background: "radial-gradient(circle at " + glare.x + "% " + glare.y + "%, rgba(167,139,250, 0.18) 0%, transparent 60%)",
+        opacity: glare.o,
+        transition: "opacity 0.4s ease",
+        pointerEvents: "none",
+        zIndex: 10
+      }} />
+
+      {/* Image Frame */}
+      <div style={{
+        position: "relative",
+        width: "100%",
+        aspectRatio: "1 / 1.05",
+        borderRadius: 18,
+        overflow: "hidden",
+        border: "1px solid rgba(255,255,255,0.1)",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.5)"
+      }}>
+        <img 
+          src="/mayur.jpg" 
+          alt="Mayur Tamkhane - Web Developer" 
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center 18%",
+            display: "block",
+            transition: "transform 0.5s ease",
+            transform: hov ? "scale(1.04)" : "scale(1)"
+          }}
+        />
+
+        {/* Ambient Dark Bottom Gradient */}
+        <div style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(to top, rgba(6,6,15,0.92) 0%, rgba(6,6,15,0.25) 40%, transparent 70%)"
+        }} />
+
+        {/* Floating badge inside photo */}
+        <div style={{
+          position: "absolute",
+          bottom: 12,
+          left: 12,
+          right: 12,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-end"
+        }}>
+          <div>
+            <div style={{
+              fontFamily: "'Playfair Display', serif",
+              fontWeight: 700,
+              fontSize: 16,
+              color: "#fff",
+              textShadow: "0 2px 8px rgba(0,0,0,0.8)"
+            }}>
+              Mayur Tamkhane
+            </div>
+            <div style={{
+              fontSize: 11,
+              color: "rgba(167, 139, 250, 0.95)",
+              letterSpacing: "0.06em",
+              fontWeight: 500,
+              display: "flex",
+              alignItems: "center",
+              gap: 4
+            }}>
+              <span>📍</span> Dhule, Maharashtra
+            </div>
+          </div>
+          <div style={{
+            background: "rgba(16, 185, 129, 0.2)",
+            border: "1px solid rgba(52, 211, 153, 0.5)",
+            backdropFilter: "blur(8px)",
+            padding: "3px 8px",
+            borderRadius: 12,
+            fontSize: 10,
+            color: "#6ee7b7",
+            fontWeight: 600,
+            display: "flex",
+            alignItems: "center",
+            gap: 4
+          }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10b981", boxShadow: "0 0 6px #10b981" }} />
+            Active
+          </div>
+        </div>
+      </div>
+
+      {/* Card Info Details */}
+      <div style={{ padding: "14px 4px 4px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 10 }}>
+          {["Full-Stack", "React.js", "Spring Boot", "MySQL", "Next.js"].map(function (tag) {
+            return (
+              <span key={tag} style={{
+                padding: "3px 9px",
+                borderRadius: 20,
+                fontSize: 10.5,
+                fontFamily: "'Playfair Display', serif",
+                background: "rgba(167, 139, 250, 0.08)",
+                border: "1px solid rgba(167, 139, 250, 0.2)",
+                color: "#c4b5fd"
+              }}>
+                {tag}
+              </span>
+            );
+          })}
+        </div>
+
+        <p style={{
+          fontFamily: "'Playfair Display', serif",
+          fontSize: 12,
+          color: "rgba(255,255,255,0.5)",
+          lineHeight: 1.6,
+          margin: 0,
+          fontStyle: "italic"
+        }}>
+          "Crafting responsive, high-performance web experiences with modern architecture."
+        </p>
+      </div>
+    </div>
   );
 }
 
@@ -530,6 +717,8 @@ export default function App() {
         @keyframes fadeup { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
         @keyframes pulse  { 0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.35} 50%{transform:translate(-50%,-50%) scale(1.12);opacity:.65} }
         @keyframes sbar   { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+        @keyframes gradientFlow { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        @keyframes avatarFloat { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-6px)} }
         @media(max-width:768px){
           .two-col { grid-template-columns:1fr !important; gap:28px !important; }
           .proj-grid { grid-template-columns:1fr !important; gap:18px !important; }
@@ -576,9 +765,11 @@ export default function App() {
               <div style={{ position: "absolute", width: "min(500px,80vw)", height: "min(500px,80vw)", borderRadius: "50%", background: "radial-gradient(circle,rgba(99,102,241,.1) 0%,transparent 68%)", top: "50%", left: "50%", transform: "translate(-50%, -50%)", animation: "pulse 6s ease-in-out infinite", pointerEvents: "none" }} />
               <div style={{ opacity: heroIn ? 1 : 0, transform: heroIn ? "translateY(0)" : "translateY(24px)", transition: "opacity 1s .1s, transform 1s .1s", width: "100%", maxWidth: 1080, margin: "0 auto" }}>
 
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 16px", borderRadius: 40, border: "1px solid rgba(167,139,250,.25)", background: "rgba(124,58,237,.07)", fontFamily: "'Playfair Display', serif", fontSize: 11, color: "#a78bfa", letterSpacing: ".14em", marginBottom: 24 }}>
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", boxShadow: "0 0 8px #4ade80", display: "inline-block", animation: "blink 2.5s infinite" }} />
-                  <GlitchText trigger="mount" delay={400} speed={20} style={{ fontSize: 11, color: "#a78bfa", letterSpacing: ".14em", fontFamily: "'Playfair Display', serif" }}>OPEN TO OPPORTUNITIES</GlitchText>
+                <div style={{ display: "block", marginBottom: 24 }}>
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 16px", borderRadius: 40, border: "1px solid rgba(167,139,250,.25)", background: "rgba(124,58,237,.07)", fontFamily: "'Playfair Display', serif", fontSize: 11, color: "#a78bfa", letterSpacing: ".14em" }}>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", boxShadow: "0 0 8px #4ade80", display: "inline-block", animation: "blink 2.5s infinite" }} />
+                    <GlitchText trigger="mount" delay={400} speed={20} style={{ fontSize: 11, color: "#a78bfa", letterSpacing: ".14em", fontFamily: "'Playfair Display', serif" }}>OPEN TO OPPORTUNITIES</GlitchText>
+                  </div>
                 </div>
 
                 <h1 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 500, fontSize: "clamp(30px,9vw,96px)", lineHeight: 1.0, letterSpacing: "-.03em", background: "linear-gradient(145deg, #ffffff 20%, #e2e8f0 55%, #c4b5fd 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: 8, wordBreak: "break-word" }}>
@@ -644,7 +835,10 @@ export default function App() {
             <Fade id="about" style={{ padding: "clamp(60px,8vw,95px) " + P, width: "100%", maxWidth: "100vw" }}>
               <div style={{ maxWidth: 1080, margin: "0 auto", width: "100%" }}>
                 <SH tag="// about me"><GlitchText trigger="inview" speed={22}>A Little About Me</GlitchText></SH>
-                <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(24px,5vw,76px)", alignItems: "start", width: "100%" }}>
+                <div className="two-col" style={{ display: "grid", gridTemplateColumns: "clamp(280px, 30vw, 360px) 1fr", gap: "clamp(24px, 4vw, 56px)", alignItems: "start", width: "100%" }}>
+                  <div>
+                    <AboutPortraitCard />
+                  </div>
                   <div>
                     <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(14px,1.7vw,17px)", color: "rgba(255,255,255,.7)", lineHeight: 1.88, marginBottom: 18, fontWeight: 400 }}>
                       Hi, I'm <span style={{ color: "#a78bfa", fontWeight: 600 }}><GlitchText trigger="inview" delay={100} speed={18}>Mayur</GlitchText></span> — a fresher web developer from Dhule, Maharashtra, passionate about building clean, functional, and visually appealing web applications.
@@ -655,7 +849,7 @@ export default function App() {
                     <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.42)", lineHeight: 1.9, fontWeight: 300 }}>
                       I'm looking for my first professional opportunity where I can contribute meaningfully, grow alongside experienced developers, and solve real problems with code.
                     </p>
-                    <div style={{ display: "flex", gap: "clamp(16px,4vw,36px)", marginTop: 28, flexWrap: "wrap" }}>
+                    <div style={{ display: "flex", gap: "clamp(16px,4vw,36px)", marginTop: 24, marginBottom: 28, flexWrap: "wrap" }}>
                       {[["5", "Projects Built"], ["6+", "Months Learning"], ["∞", "Curiosity"]].map(function (it) {
                         return <div key={it[1]}>
                           <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(24px,4vw,36px)", background: "linear-gradient(135deg,#a78bfa,#38bdf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{it[0]}</div>
@@ -663,17 +857,17 @@ export default function App() {
                         </div>;
                       })}
                     </div>
-                  </div>
-                  <div className="trait-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, width: "100%" }}>
-                    {traits.map(function (tr) {
-                      return <div key={tr.label} style={Object.assign({}, glass, { padding: "18px 16px", transition: "transform .25s, border-color .25s", width: "100%", boxSizing: "border-box" })}
-                        onMouseEnter={function (e) { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.borderColor = "rgba(167,139,250,.2)"; }}
-                        onMouseLeave={function (e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = "rgba(255,255,255,.07)"; }}>
-                        <div style={{ fontSize: 22, marginBottom: 9 }}>{tr.icon}</div>
-                        <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 13, color: "#fff", marginBottom: 5 }}><GlitchText trigger="inview" speed={20}>{tr.label}</GlitchText></div>
-                        <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 12, color: "rgba(255,255,255,.36)", lineHeight: 1.55, fontWeight: 300 }}>{tr.desc}</div>
-                      </div>;
-                    })}
+                    <div className="trait-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, width: "100%" }}>
+                      {traits.map(function (tr) {
+                        return <div key={tr.label} style={Object.assign({}, glass, { padding: "16px 14px", transition: "transform .25s, border-color .25s", width: "100%", boxSizing: "border-box" })}
+                          onMouseEnter={function (e) { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.borderColor = "rgba(167,139,250,.2)"; }}
+                          onMouseLeave={function (e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.borderColor = "rgba(255,255,255,.07)"; }}>
+                          <div style={{ fontSize: 20, marginBottom: 7 }}>{tr.icon}</div>
+                          <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 13, color: "#fff", marginBottom: 4 }}><GlitchText trigger="inview" speed={20}>{tr.label}</GlitchText></div>
+                          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 11.5, color: "rgba(255,255,255,.36)", lineHeight: 1.5, fontWeight: 300 }}>{tr.desc}</div>
+                        </div>;
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
