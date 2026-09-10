@@ -410,12 +410,12 @@ function Fade(props) {
 
 function SH(props) {
   return (
-    <div style={{ marginBottom: "clamp(32px, 5vw, 52px)" }}>
-      <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 10, letterSpacing: ".3em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 10 }}>
+    <div style={{ marginBottom: "clamp(22px, 3.5vw, 36px)" }}>
+      <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 10, letterSpacing: ".3em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 8 }}>
         <GlitchText trigger="inview" speed={16}>{props.tag}</GlitchText>
       </div>
       <h2 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(26px, 5vw, 48px)", color: "#fff", margin: 0, lineHeight: 1.15, letterSpacing: "-.02em" }}>{props.children}</h2>
-      <div style={{ width: 38, height: 2, marginTop: 16, background: "linear-gradient(90deg,#6366f1,#a78bfa)", borderRadius: 2, boxShadow: "0 0 10px #7c3aed" }} />
+      <div style={{ width: 38, height: 2, marginTop: 12, background: "linear-gradient(90deg,#6366f1,#a78bfa)", borderRadius: 2, boxShadow: "0 0 10px #7c3aed" }} />
     </div>
   );
 }
@@ -474,9 +474,11 @@ function PCard(props) {
       <div style={{ height: 165, background: "linear-gradient(135deg," + p.c1 + "18," + p.c2 + "12)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
         <div style={{ fontSize: 52, filter: "drop-shadow(0 4px 14px " + p.c1 + "55)", transform: "translateZ(30px)", transition: "transform 0.4s ease" }}>{p.emoji}</div>
         <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 6, zIndex: 11 }}>
-          <a href={p.github} target="_blank" rel="noopener noreferrer" style={{ padding: "3px 9px", borderRadius: 20, background: "rgba(0,0,0,.5)", border: "1px solid rgba(255,255,255,.12)", color: "rgba(255,255,255,.65)", fontFamily: "'Playfair Display', serif", fontSize: 10, textDecoration: "none", cursor: "none" }}
-            onMouseEnter={function (e) { e.currentTarget.style.color = "#fff"; }} onMouseLeave={function (e) { e.currentTarget.style.color = "rgba(255,255,255,.65)"; }}>GitHub ↗</a>
-          {p.live && <a href={p.live} target="_blank" rel="noopener noreferrer" style={{ padding: "3px 9px", borderRadius: 20, background: p.c1 + "30", border: "1px solid " + p.c1 + "50", color: p.c1, fontFamily: "'Playfair Display', serif", fontSize: 10, textDecoration: "none", cursor: "pointer" }}>Live ↗</a>}
+          <a href={p.github} target="_blank" rel="noopener noreferrer" style={{ padding: "3px 9px", borderRadius: 20, background: "rgba(0,0,0,.6)", border: "1px solid rgba(255,255,255,.15)", color: "rgba(255,255,255,.75)", fontFamily: "'Playfair Display', serif", fontSize: 10, textDecoration: "none", cursor: "pointer", transition: "all .2s ease" }}
+            onMouseEnter={function (e) { e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "rgba(255,255,255,.4)"; }} onMouseLeave={function (e) { e.currentTarget.style.color = "rgba(255,255,255,.75)"; e.currentTarget.style.borderColor = "rgba(255,255,255,.15)"; }}>GitHub ↗</a>
+          {p.live && <a href={p.live} target="_blank" rel="noopener noreferrer" style={{ padding: "3px 9px", borderRadius: 20, background: p.c1 + "25", border: "1px solid " + p.c1 + "60", color: p.c1, fontFamily: "'Playfair Display', serif", fontSize: 10, fontWeight: 500, textDecoration: "none", cursor: "pointer", transition: "all .2s ease" }}
+            onMouseEnter={function (e) { e.currentTarget.style.background = p.c1; e.currentTarget.style.color = "#000"; e.currentTarget.style.boxShadow = "0 0 12px " + p.c1 + "80"; }}
+            onMouseLeave={function (e) { e.currentTarget.style.background = p.c1 + "25"; e.currentTarget.style.color = p.c1; e.currentTarget.style.boxShadow = "none"; }}>Live ↗</a>}
         </div>
       </div>
       <div style={{ padding: "clamp(16px, 3.5vw, 22px)" }}>
@@ -681,7 +683,8 @@ export default function App() {
   useEffect(function () { if (ready) setTimeout(function () { setHeroIn(true); }, 100); }, [ready]);
 
   const projects = [
-        { emoji: "🏢", title: "EMS Pro — Employee Hub", c1: "#6366f1", c2: "#a855f7", desc: "A full-stack enterprise Employee Management System with interactive directory search, department analytics, role-based workflows, RESTful APIs, and cloud sync.", stack: ["React.js", "Java", "Spring Boot", "MySQL", "Spring Data JPA", "Hibernate", "Bootstrap 5", "Render", "Vercel"], github: "https://github.com/MayurT96", live: "https://employee-management-frontend-one-lime.vercel.app/employees" },
+    { emoji: "🚆", title: "RailSetu — Indian Railway Portal", c1: "#06b6d4", c2: "#3b82f6", desc: "A modern Indian Railway travel portal featuring live train schedules, station corridor navigation, interactive route timetables, ticket booking flow, and a neo-animated 3D UI.", stack: ["React.js", "Three.js", "GSAP", "Framer Motion", "Tailwind CSS", "REST APIs", "Vercel"], github: "https://github.com/MayurT96/InRailway-Frontend", live: "https://in-railway-frontend.vercel.app/" },
+    { emoji: "🏢", title: "EMS Pro — Employee Hub", c1: "#6366f1", c2: "#a855f7", desc: "A full-stack enterprise Employee Management System with interactive directory search, department analytics, role-based workflows, RESTful APIs, and cloud sync.", stack: ["React.js", "Java", "Spring Boot", "MySQL", "Spring Data JPA", "Hibernate", "Bootstrap 5", "Render", "Vercel"], github: "https://github.com/MayurT96", live: "https://employee-management-frontend-one-lime.vercel.app/employees" },
     { emoji: "📱", title: "VPN Android App", c1: "#f43f5e", c2: "#8b5cf6", desc: "A secure and robust VPN application for Android devices, providing private and unrestricted internet access.", stack: ["Android", "Java", "Kotlin"], github: "https://github.com/MayurT96/VPN-android-app", live: null },
   ];
 
@@ -719,6 +722,7 @@ export default function App() {
         @keyframes sbar   { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
         @keyframes gradientFlow { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
         @keyframes avatarFloat { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-6px)} }
+        @keyframes statusPing { 0%{transform:scale(0.95);box-shadow:0 0 0 0 rgba(34,197,94,0.7)} 70%{transform:scale(1);box-shadow:0 0 0 5px rgba(34,197,94,0)} 100%{transform:scale(0.95);box-shadow:0 0 0 0 rgba(34,197,94,0)} }
         @media(max-width:768px){
           .two-col { grid-template-columns:1fr !important; gap:28px !important; }
           .proj-grid { grid-template-columns:1fr !important; gap:18px !important; }
@@ -761,7 +765,7 @@ export default function App() {
             <Navbar scrolled={scrolled} />
 
             {/* ── HERO ── */}
-            <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "clamp(85px,12vh,120px) " + P + " clamp(60px, 10vh, 100px)", position: "relative", overflow: "hidden", width: "100%", maxWidth: "100vw" }}>
+            <section id="hero" style={{ minHeight: "88vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "clamp(75px,9vh,95px) " + P + " clamp(26px, 5vh, 42px)", position: "relative", overflow: "hidden", width: "100%", maxWidth: "100vw" }}>
               <div style={{ position: "absolute", width: "min(500px,80vw)", height: "min(500px,80vw)", borderRadius: "50%", background: "radial-gradient(circle,rgba(99,102,241,.1) 0%,transparent 68%)", top: "50%", left: "50%", transform: "translate(-50%, -50%)", animation: "pulse 6s ease-in-out infinite", pointerEvents: "none" }} />
               <div style={{ opacity: heroIn ? 1 : 0, transform: heroIn ? "translateY(0)" : "translateY(24px)", transition: "opacity 1s .1s, transform 1s .1s", width: "100%", maxWidth: 1080, margin: "0 auto" }}>
 
@@ -777,11 +781,11 @@ export default function App() {
                 </h1>
 
                 <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(14px,3vw,21px)", color: "rgba(255,255,255,.52)", margin: "16px 0 12px", minHeight: 28, fontWeight: 300 }}>
-                  <Typewriter words={["Fresher Web Developer", "React Enthusiast", "Building Real Projects", "Open to Work"]} />
+                  <Typewriter words={["Full-Stack Developer", "React & Next.js", "Java & Spring Boot", "Interactive 3D Motion", "Open to Work"]} />
                 </div>
 
-                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,2vw,16px)", color: "rgba(255,255,255,.35)", maxWidth: 500, margin: "0 auto 36px", lineHeight: 1.75, fontWeight: 300, padding: "0 8px" }}>
-                  A passionate developer learning modern web tech — focused on writing clean code and shipping real, useful projects.
+                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,2vw,16px)", color: "rgba(255,255,255,.38)", maxWidth: 520, margin: "0 auto 36px", lineHeight: 1.75, fontWeight: 300, padding: "0 8px" }}>
+                  A passionate developer crafting modern, high-performance web applications — focused on clean code, robust architectures, and production-ready products.
                 </p>
 
                 <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", marginBottom: 32 }}>
@@ -832,29 +836,82 @@ export default function App() {
             </section>
 
             {/* ── ABOUT ── */}
-            <Fade id="about" style={{ padding: "clamp(60px,8vw,95px) " + P, width: "100%", maxWidth: "100vw" }}>
+            <Fade id="about" style={{ padding: "clamp(36px,5vw,55px) " + P, width: "100%", maxWidth: "100vw" }}>
               <div style={{ maxWidth: 1080, margin: "0 auto", width: "100%" }}>
                 <SH tag="// about me"><GlitchText trigger="inview" speed={22}>A Little About Me</GlitchText></SH>
-                <div className="two-col" style={{ display: "grid", gridTemplateColumns: "clamp(280px, 30vw, 360px) 1fr", gap: "clamp(24px, 4vw, 56px)", alignItems: "start", width: "100%" }}>
+                <div className="two-col" style={{ display: "grid", gridTemplateColumns: "clamp(280px, 30vw, 360px) 1fr", gap: "clamp(20px, 3.5vw, 40px)", alignItems: "start", width: "100%" }}>
                   <div>
                     <AboutPortraitCard />
                   </div>
                   <div>
-                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(14px,1.7vw,17px)", color: "rgba(255,255,255,.7)", lineHeight: 1.88, marginBottom: 18, fontWeight: 400 }}>
-                      Hi, I'm <span style={{ color: "#a78bfa", fontWeight: 600 }}><GlitchText trigger="inview" delay={100} speed={18}>Mayur</GlitchText></span> — a fresher web developer from Dhule, Maharashtra, passionate about building clean, functional, and visually appealing web applications.
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(14px,1.7vw,17px)", color: "rgba(255,255,255,.82)", lineHeight: 1.88, marginBottom: 18, fontWeight: 400 }}>
+                      Hi, I'm <span style={{ color: "#a78bfa", fontWeight: 600 }}><GlitchText trigger="inview" delay={100} speed={18}>Mayur</GlitchText></span> — a Full-Stack Web Developer based in Maharashtra, India. I specialize in architecting fast, production-ready web applications and crafting immersive, animated 3D digital experiences.
                     </p>
-                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.42)", lineHeight: 1.9, marginBottom: 20, fontWeight: 300 }}>
-                      I'm currently focused on mastering the MERN stack and modern frontend technologies. I believe in learning by building — every project teaches me something new.
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.48)", lineHeight: 1.9, marginBottom: 20, fontWeight: 300 }}>
+                      My engineering toolkit bridges high-performance frontend engineering (<span style={{ color: "#38bdf8", fontWeight: 400 }}>React, Next.js, Three.js & GSAP</span>) with solid enterprise backends (<span style={{ color: "#c084fc", fontWeight: 400 }}>Java, Spring Boot & MySQL</span>). I don't just write code — I build complete, end-to-end products focused on scalability, clean design systems, and seamless user interaction.
                     </p>
-                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.42)", lineHeight: 1.9, fontWeight: 300 }}>
-                      I'm looking for my first professional opportunity where I can contribute meaningfully, grow alongside experienced developers, and solve real problems with code.
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.48)", lineHeight: 1.9, fontWeight: 300 }}>
+                      I am actively seeking <span style={{ color: "#34d399", fontWeight: 500 }}>Software Engineer / Full-Stack opportunities</span> where I can contribute high-quality code, collaborate with experienced engineers, and ship features that create real business value.
                     </p>
-                    <div style={{ display: "flex", gap: "clamp(16px,4vw,36px)", marginTop: 24, marginBottom: 28, flexWrap: "wrap" }}>
-                      {[["5", "Projects Built"], ["6+", "Months Learning"], ["∞", "Curiosity"]].map(function (it) {
-                        return <div key={it[1]}>
-                          <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(24px,4vw,36px)", background: "linear-gradient(135deg,#a78bfa,#38bdf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{it[0]}</div>
-                          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 10, color: "rgba(255,255,255,.26)", letterSpacing: ".1em", marginTop: 2 }}>{it[1]}</div>
-                        </div>;
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 125px), 1fr))", gap: 10, marginTop: 24, marginBottom: 28, width: "100%" }}>
+                      {[
+                        { val: "3+", label: "Deployed Apps", sub: "Production-grade" },
+                        { val: "Full-Stack", label: "Core Stack", sub: "React & Spring Boot" },
+                        { val: "3D Motion", label: "Interactive UI", sub: "Three.js & GSAP" },
+                        { val: "Active", label: "Open to Work", sub: "Junior Dev / Intern", isLive: true }
+                      ].map(function (it) {
+                        return (
+                          <div key={it.label} style={{
+                            background: "rgba(255,255,255,0.02)",
+                            border: "1px solid rgba(255,255,255,0.06)",
+                            borderRadius: 14,
+                            padding: "12px 14px",
+                            transition: "transform .25s ease, border-color .25s ease, background .25s ease",
+                            position: "relative",
+                            boxSizing: "border-box"
+                          }}
+                          onMouseEnter={function (e) {
+                            e.currentTarget.style.borderColor = "rgba(167,139,250,0.35)";
+                            e.currentTarget.style.transform = "translateY(-3px)";
+                            e.currentTarget.style.background = "rgba(124,58,237,0.05)";
+                          }}
+                          onMouseLeave={function (e) {
+                            e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)";
+                            e.currentTarget.style.transform = "translateY(0)";
+                            e.currentTarget.style.background = "rgba(255,255,255,0.02)";
+                          }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                              {it.isLive && (
+                                <span style={{
+                                  width: 7,
+                                  height: 7,
+                                  borderRadius: "50%",
+                                  background: "#22c55e",
+                                  animation: "statusPing 1.8s infinite ease-in-out",
+                                  display: "inline-block",
+                                  flexShrink: 0
+                                }} />
+                              )}
+                              <div style={{
+                                fontFamily: "'Playfair Display', serif",
+                                fontWeight: 700,
+                                fontSize: it.val.length > 5 ? "clamp(15px, 1.6vw, 18px)" : "clamp(18px, 2.2vw, 24px)",
+                                background: it.isLive ? "linear-gradient(135deg, #4ade80, #22c55e)" : "linear-gradient(135deg, #a78bfa, #38bdf8)",
+                                WebkitBackgroundClip: "text",
+                                WebkitTextFillColor: "transparent",
+                                lineHeight: 1.15
+                              }}>
+                                {it.val}
+                              </div>
+                            </div>
+                            <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 11, color: "rgba(255,255,255,0.78)", fontWeight: 500, letterSpacing: ".02em" }}>
+                              {it.label}
+                            </div>
+                            <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 9.5, color: "rgba(255,255,255,0.32)", marginTop: 2, fontWeight: 300 }}>
+                              {it.sub}
+                            </div>
+                          </div>
+                        );
                       })}
                     </div>
                     <div className="trait-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, width: "100%" }}>
@@ -877,19 +934,19 @@ export default function App() {
             <Skills />
 
             {/* ── PROJECTS ── */}
-            <Fade id="projects" style={{ padding: "clamp(60px,8vw,95px) " + P, width: "100%", maxWidth: "100vw" }}>
+            <Fade id="projects" style={{ padding: "clamp(36px,5vw,55px) " + P, width: "100%", maxWidth: "100vw" }}>
               <div style={{ maxWidth: 1080, margin: "0 auto", width: "100%" }}>
                 <SH tag="// projects"><GlitchText trigger="inview" speed={22}>Things I've Built</GlitchText></SH>
-                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.36)", marginBottom: "clamp(24px,4vw,44px)", lineHeight: 1.8, maxWidth: 520, fontWeight: 300 }}>
+                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.36)", marginBottom: "clamp(16px,2.5vw,26px)", lineHeight: 1.8, maxWidth: 520, fontWeight: 300 }}>
                   Personal projects I've built to practice and apply what I've learned. These show how I think and approach problems.
                 </p>
 
-                <div className="proj-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))", gap: "clamp(16px,3vw,20px)", width: "100%" }}>
+                <div className="proj-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 320px), 1fr))", gap: "clamp(14px,2.5vw,18px)", width: "100%" }}>
                   {projects.map(function (p) { 
                     return <PCard key={p.title} p={p} />; 
                   })}
                 </div>
-                <div style={{ marginTop: 36, textAlign: "center" }}>
+                <div style={{ marginTop: 26, textAlign: "center" }}>
                   <a href="https://github.com/MayurT96" target="_blank" rel="noopener noreferrer" style={{ fontFamily: "'Playfair Display', serif", fontSize: 12, letterSpacing: ".12em", color: "rgba(255,255,255,.3)", textDecoration: "none", padding: "9px 22px", borderRadius: 40, border: "1px solid rgba(255,255,255,.07)", transition: "all .25s", cursor: "none", display: "inline-block" }}
                     onMouseEnter={function (e) { e.currentTarget.style.color = "#a78bfa"; e.currentTarget.style.borderColor = "rgba(167,139,250,.28)"; }}
                     onMouseLeave={function (e) { e.currentTarget.style.color = "rgba(255,255,255,.3)"; e.currentTarget.style.borderColor = "rgba(255,255,255,.07)"; }}>
@@ -900,12 +957,12 @@ export default function App() {
             </Fade>
 
             {/* ── CONTACT ── */}
-            <Fade id="contact" style={{ padding: "clamp(60px,8vw,95px) " + P + " 60px", background: "rgba(99,102,241,.022)", width: "100%", maxWidth: "100vw" }}>
+            <Fade id="contact" style={{ padding: "clamp(36px,5vw,55px) " + P + " clamp(30px, 4vw, 45px)", background: "rgba(99,102,241,.022)", width: "100%", maxWidth: "100vw" }}>
               <div style={{ maxWidth: 1080, margin: "0 auto", width: "100%" }}>
                 <SH tag="// contact"><GlitchText trigger="inview" speed={22}>Let's Connect</GlitchText></SH>
-                <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(24px,5vw,76px)", alignItems: "start", width: "100%" }}>
+                <div className="two-col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(20px,3.5vw,48px)", alignItems: "start", width: "100%" }}>
                   <div style={{ width: "100%" }}>
-                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.5vw,16px)", color: "rgba(255,255,255,.55)", lineHeight: 1.88, marginBottom: 28, fontWeight: 300 }}>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.5vw,16px)", color: "rgba(255,255,255,.55)", lineHeight: 1.88, marginBottom: 24, fontWeight: 300 }}>
                       I'm actively looking for my <span style={{ color: "#a78bfa", fontWeight: 500 }}>first developer role</span> — internships, junior positions, or freelance work. Let's build something together.
                     </p>
                     {contacts.map(function (c) {
@@ -921,9 +978,9 @@ export default function App() {
                       </a>;
                     })}
                   </div>
-                  <div style={Object.assign({}, glass, { padding: "clamp(18px,4vw,38px)", width: "100%", boxSizing: "border-box" })}>
+                  <div style={Object.assign({}, glass, { padding: "clamp(18px,4vw,34px)", width: "100%", boxSizing: "border-box" })}>
                     <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 600, fontSize: 19, color: "#fff", marginBottom: 5, letterSpacing: "-.01em" }}><GlitchText trigger="inview" speed={22}>Send a message</GlitchText></div>
-                    <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 12, color: "rgba(255,255,255,.28)", marginBottom: 22, fontWeight: 300 }}>I'll reply within 24 hours.</div>
+                    <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 12, color: "rgba(255,255,255,.28)", marginBottom: 20, fontWeight: 300 }}>I'll reply within 24 hours.</div>
                     <ContactForm />
                   </div>
                 </div>
@@ -931,7 +988,7 @@ export default function App() {
             </Fade>
 
             {/* ── LUXURY CREDIT ── */}
-            <div style={{ padding: "80px 0 40px", textAlign: "center", position: "relative", width: "100%", overflow: "hidden" }}>
+            <div style={{ padding: "36px 0 16px", textAlign: "center", position: "relative", width: "100%", overflow: "hidden" }}>
               <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: "200px", height: "1px", background: "linear-gradient(90deg, transparent, rgba(167,139,250,0.15), transparent)" }} />
               <div style={{ position: "relative", zIndex: 1, display: "inline-block", padding: "0 16px" }}>
                 <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 11, letterSpacing: "0.22em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase" }}>
@@ -946,7 +1003,7 @@ export default function App() {
             </div>
 
             {/* ── FOOTER ── */}
-            <footer style={{ padding: "24px " + P, borderTop: "1px solid rgba(255,255,255,.04)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, width: "100%", maxWidth: "100vw", boxSizing: "border-box" }}>
+            <footer style={{ padding: "18px " + P, borderTop: "1px solid rgba(255,255,255,.04)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12, width: "100%", maxWidth: "100vw", boxSizing: "border-box" }}>
               <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 12.5, color: "rgba(255,255,255,.22)", fontWeight: 300 }}>
                 © 2026 <span style={{ color: "#a78bfa", fontWeight: 500 }}>Mayur Tamkhane</span>
               </div>

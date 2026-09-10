@@ -93,15 +93,15 @@ export default function Skills() {
   }, []);
 
   return (
-    <section ref={containerRef} id="skills" style={{ padding: "clamp(60px, 8vw, 95px) clamp(16px, 5vw, 80px)", background: "rgba(255,255,255,.013)", position: "relative", overflow: "hidden", width: "100%", maxWidth: "100vw" }}>
+    <section ref={containerRef} id="skills" style={{ padding: "clamp(36px, 5vw, 55px) clamp(16px, 5vw, 80px)", background: "rgba(255,255,255,.013)", position: "relative", overflow: "hidden", width: "100%", maxWidth: "100vw" }}>
       {/* Subtle Background Glow */}
       <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "min(600px, 90vw)", height: "min(400px, 60vh)", background: "radial-gradient(ellipse, rgba(167,139,250,0.06) 0%, transparent 60%)", pointerEvents: "none", zIndex: 0 }} />
 
       <div style={{ maxWidth: 1080, margin: "0 auto", position: "relative", zIndex: 1, width: "100%" }}>
         
         {/* Section Heading */}
-        <div style={{ marginBottom: "clamp(32px, 5vw, 52px)" }}>
-          <div style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".3em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 10 }}>
+        <div style={{ marginBottom: "clamp(22px, 3.5vw, 36px)" }}>
+          <div style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".3em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 8 }}>
             <GlitchText trigger="inview" speed={16}>// skills</GlitchText>
           </div>
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(26px, 5vw, 48px)", color: "#fff", margin: 0, lineHeight: 1.15, letterSpacing: "-.02em" }}>

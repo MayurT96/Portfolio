@@ -5,28 +5,28 @@ import { ensureGsap, gsap, ScrollTrigger } from "@/lib/gsap";
 
 const PROJECTS = [
   {
-    id: "portfolio",
+    id: "railsetu",
     number: "01",
-    title: "Portfolio 2025",
-    description: "A minimal, high-end digital experience prioritizing typography, refined motion, and true 3D architecture.",
-    tech: ["Next.js", "GSAP", "Three.js", "Tailwind CSS"],
-    links: { repo: "https://github.com/MayurT96" }
+    title: "RailSetu — Indian Railway Portal",
+    description: "A modern Indian Railway travel portal featuring live train schedules, station corridor navigation, interactive route timetables, ticket booking flow, and a neo-animated 3D UI.",
+    tech: ["React.js", "Three.js", "GSAP", "Framer Motion", "Tailwind CSS"],
+    links: { repo: "https://github.com/MayurT96/InRailway-Frontend", live: "https://in-railway-frontend.vercel.app/" }
   },
   {
-    id: "ecommerce",
+    id: "ems",
     number: "02",
-    title: "E-Commerce OS",
-    description: "A full-stack headless commerce solution featuring JWT authentication and robust state management.",
-    tech: ["React", "Express.js", "MongoDB"],
-    links: {}
+    title: "EMS Pro — Employee Hub",
+    description: "A full-stack enterprise Employee Management System with interactive directory search, department analytics, role-based workflows, RESTful APIs, and cloud sync.",
+    tech: ["React.js", "Java", "Spring Boot", "MySQL", "Hibernate"],
+    links: { repo: "https://github.com/MayurT96", live: "https://employee-management-frontend-one-lime.vercel.app/employees" }
   },
   {
-    id: "ai-tools",
+    id: "vpn",
     number: "03",
-    title: "AI Productivity Suite",
-    description: "An interface integrating multiple LLM APIs for automated content generation and developer workflows.",
-    tech: ["TypeScript", "REST APIs", "Node.js"],
-    links: {}
+    title: "VPN Android App",
+    description: "A secure and robust VPN application for Android devices, providing private and unrestricted internet access.",
+    tech: ["Android", "Java", "Kotlin"],
+    links: { repo: "https://github.com/MayurT96/VPN-android-app" }
   }
 ];
 
