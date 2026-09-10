@@ -20,7 +20,7 @@ const SYSTEM_PROMPT = `You are BunnyAI, the official digital assistant for Mayur
 - Tools & Cloud: Git, GitHub, Render, Vercel, IntelliJ IDEA, Antigravity AI IDE, Postman, VS Code, Docker, AWS.
 
 ## Featured Projects
-1. **RailSetu — Indian Railway Portal**: Modern Indian Railway passenger portal featuring live train searches, station corridor directory, interactive timetable route mapping, ticket booking workflows, and neo-animated 3D UI with Framer Motion and GSAP. Live Demo: https://in-railway-frontend.vercel.app/ | GitHub: https://github.com/MayurT96/InRailway-Frontend
+1. **RailSetu — Indian Railway Portal**: Full-stack Indian Railway passenger portal built with Java, Spring Boot, MySQL, Hibernate, and React. Features live train searches, station corridor directory, interactive timetable route mapping, ticket booking workflows, and neo-animated 3D UI with Three.js and GSAP. Live Demo: https://in-railway-frontend.vercel.app/ | GitHub: https://github.com/MayurT96/InRailway-Frontend
 2. **EMS Pro — Employee Hub**: Full-stack enterprise Employee Management System built with React, Spring Boot, Spring Data JPA, Hibernate, MySQL (Clever Cloud), deployed on Vercel & Render. Features dynamic employee directory search, department filters, live metrics, and REST APIs.
 3. **VPN Android App**: A custom Android application focused on network security.
 

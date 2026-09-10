@@ -8,8 +8,8 @@ const PROJECTS = [
     id: "railsetu",
     number: "01",
     title: "RailSetu — Indian Railway Portal",
-    description: "A modern Indian Railway travel portal featuring live train schedules, station corridor navigation, interactive route timetables, ticket booking flow, and a neo-animated 3D UI.",
-    tech: ["React.js", "Three.js", "GSAP", "Framer Motion", "Tailwind CSS"],
+    description: "A full-stack Indian Railway travel portal built on the Java Spring Boot ecosystem with React. Features live train schedules, station corridor navigation, route timetables, ticket booking flow, and a neo-animated 3D UI.",
+    tech: ["Java", "Spring Boot", "MySQL", "Hibernate", "React.js", "Three.js", "GSAP"],
     links: { repo: "https://github.com/MayurT96/InRailway-Frontend", live: "https://in-railway-frontend.vercel.app/" }
   },
   {
