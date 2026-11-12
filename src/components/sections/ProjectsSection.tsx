@@ -5,8 +5,16 @@ import { ensureGsap, gsap, ScrollTrigger } from "@/lib/gsap";
 
 const PROJECTS = [
   {
-    id: "railsetu",
+    id: "cosmic-explorer",
     number: "01",
+    title: "Cosmic Explorer AI",
+    description: "An interactive 3D solar system simulation and celestial exploration platform powered by Three.js and AI. Features real-time orbital mechanics, planetary analytics, guided space tours, and NASA API integration.",
+    tech: ["Three.js", "React.js", "WebGL", "Vite", "Tailwind CSS", "Gemini AI"],
+    links: { repo: "https://github.com/MayurT96" }
+  },
+  {
+    id: "railsetu",
+    number: "02",
     title: "RailSetu — Indian Railway Portal",
     description: "A full-stack Indian Railway travel portal built on the Java Spring Boot ecosystem with React. Features live train schedules, station corridor navigation, route timetables, ticket booking flow, and a neo-animated 3D UI.",
     tech: ["Java", "Spring Boot", "MySQL", "Hibernate", "React.js", "Three.js", "GSAP"],
@@ -14,7 +22,7 @@ const PROJECTS = [
   },
   {
     id: "ems",
-    number: "02",
+    number: "03",
     title: "EMS Pro — Employee Hub",
     description: "A full-stack enterprise Employee Management System with interactive directory search, department analytics, role-based workflows, RESTful APIs, and cloud sync.",
     tech: ["React.js", "Java", "Spring Boot", "MySQL", "Hibernate"],
@@ -22,7 +30,7 @@ const PROJECTS = [
   },
   {
     id: "vpn",
-    number: "03",
+    number: "04",
     title: "VPN Android App",
     description: "A secure and robust VPN application for Android devices, providing private and unrestricted internet access.",
     tech: ["Android", "Java", "Kotlin"],

@@ -15,8 +15,8 @@ const getSmartFallback = (input: string) => {
     return "Mayur Tamkhane (Bunny96) is a passionate Fresher Web Developer from Dhule, Maharashtra. He builds slick animated UIs with React, Next.js, Three.js & GSAP. Currently hunting for Junior Dev or Intern roles — want to see his projects?";
   if (msg.includes("skill") || msg.includes("tech") || msg.includes("stack") || msg.includes("know"))
     return "Mayur's core stack: React.js, Java Spring Boot, MySQL, Hibernate/JPA, Next.js, TypeScript, and MERN (Node/Express/Mongo). He's also skilled with Bootstrap 5, Tailwind CSS, Vercel, Render & REST APIs ✨";
-  if (msg.includes("project") || msg.includes("work") || msg.includes("built") || msg.includes("portfolio"))
-    return "His standout projects: 🚆 RailSetu (Indian Railway Portal with Neo 3D animations), 🏢 EMS Pro (Java Spring Boot + React + MySQL Employee Hub), and 📱 VPN Android App. Check out the Projects section!";
+  if (msg.includes("project") || msg.includes("work") || msg.includes("built") || msg.includes("portfolio") || msg.includes("cosmic") || msg.includes("space"))
+    return "His standout projects: 🪐 Cosmic Explorer AI (3D Solar System simulation & celestial intelligence platform with Three.js & AI), 🚆 RailSetu (Indian Railway Portal with Neo 3D animations), 🏢 EMS Pro (Java Spring Boot + React + MySQL Employee Hub), and 📱 VPN Android App. Check out the Projects section!";
   if (msg.includes("hire") || msg.includes("job") || msg.includes("available") || msg.includes("intern"))
     return "Yep — Mayur is actively looking for Junior Developer or Intern roles! Reach him at mayurtamkhane96@gmail.com or +91 7387553347.";
   if (msg.includes("contact") || msg.includes("email") || msg.includes("phone") || msg.includes("reach"))
@@ -128,7 +128,7 @@ export default function AIChatbot() {
         animate={{ y: isOpen ? 0 : [0, -6, 0] }}
         transition={{ y: { repeat: Infinity, duration: 3, ease: "easeInOut" }, type: "spring", stiffness: 400, damping: 15 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-5 right-4 sm:bottom-7 sm:right-7 w-13 h-13 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-white cursor-pointer shadow-xl"
+        className="fixed bottom-5 right-4 sm:bottom-7 sm:right-7 w-[52px] h-[52px] sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-white cursor-pointer shadow-xl"
         style={{ background: "linear-gradient(135deg,#a78bfa,#763ced)", zIndex: 99999, border: "1px solid rgba(255,255,255,0.3)" }}
       >
         {!isOpen && <div ref={fabGlowRef} style={{ position: "absolute", inset: -10, borderRadius: "50%", background: "radial-gradient(circle,rgba(167,139,250,0.5) 0%,transparent 70%)", zIndex: -1 }} />}

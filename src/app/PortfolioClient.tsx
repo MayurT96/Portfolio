@@ -187,44 +187,258 @@ function Preloader(props) {
 }
 
 function Navbar(props) {
-  const links = ["About", "Skills", "Projects", "Contact"];
-  const s = useState(null); const hov = s[0]; const setHov = s[1];
+  const links = [
+    { name: "About", href: "#about" },
+    { name: "Skills", href: "#skills" },
+    { name: "Projects", href: "#projects" },
+    { name: "Contact", href: "#contact" }
+  ];
+  const [open, setOpen] = useState(false);
+  const [hov, setHov] = useState(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768 && open) setOpen(false);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [open]);
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
-    <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, height: 60, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 clamp(14px,4vw,80px)", background: props.scrolled ? "rgba(6,6,15,.92)" : "transparent", backdropFilter: props.scrolled ? "blur(22px)" : "none", WebkitBackdropFilter: props.scrolled ? "blur(22px)" : "none", borderBottom: props.scrolled ? "1px solid rgba(255,255,255,.06)" : "none", transition: "all .4s", width: "100%", maxWidth: "100vw", boxSizing: "border-box" }}>
-      <a href="#hero" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10, cursor: "none" }}>
-        <div style={{
-          width: 32,
-          height: 32,
-          borderRadius: "50%",
-          padding: 1.5,
-          background: "linear-gradient(135deg, #6366f1, #a78bfa)",
-          boxShadow: "0 0 12px rgba(124,58,237,0.35)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "hidden",
-          flexShrink: 0
-        }}>
-          <img src="/mayur.jpg" alt="Mayur Tamkhane" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", borderRadius: "50%" }} />
-        </div>
-        <GlitchText as="div" trigger="mount" delay={200} speed={22} style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(16px, 4vw, 19px)", background: "linear-gradient(120deg,#fff,rgba(167,139,250,.8))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Bunny96</GlitchText>
-      </a>
-      <div className="nav-links-container" style={{ display: "flex", gap: "clamp(6px,2vw,36px)", alignItems: "center" }}>
-        {links.map(function (l) {
-          const isMain = l === "About" || l === "Projects";
-          return <a key={l} href={"#" + l.toLowerCase()} onMouseEnter={function () { setHov(l); }} onMouseLeave={function () { setHov(null); }}
-            className={"nav-link" + (isMain ? " active-on-mobile" : "")}
-            style={{ fontFamily: "'Playfair Display', serif", fontSize: 11, letterSpacing: ".1em", textTransform: "uppercase", color: hov === l ? "#fff" : "rgba(255,255,255,.55)", textDecoration: "none", transition: "color .25s", cursor: "none" }}>{l}</a>;
-        })}
-        <a href="https://github.com/MayurT96" target="_blank" rel="noopener noreferrer"
-          className="nav-link active-on-mobile"
-          style={{ fontFamily: "'Playfair Display', serif", fontSize: 11, letterSpacing: ".08em", padding: "5px 12px", borderRadius: 40, border: "1px solid rgba(167,139,250,.35)", color: "rgba(167,139,250,.85)", textDecoration: "none", transition: "all .25s", cursor: "none" }}
-          onMouseEnter={function (e) { e.currentTarget.style.background = "rgba(139,92,246,.12)"; e.currentTarget.style.color = "#c4b5fd"; }}
-          onMouseLeave={function (e) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(167,139,250,.85)"; }}>
-          GitHub
+    <>
+      <nav style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        height: 64,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0 clamp(16px, 4vw, 80px)",
+        background: props.scrolled || open ? "rgba(6, 6, 15, 0.94)" : "transparent",
+        backdropFilter: props.scrolled || open ? "blur(24px)" : "none",
+        WebkitBackdropFilter: props.scrolled || open ? "blur(24px)" : "none",
+        borderBottom: props.scrolled || open ? "1px solid rgba(255, 255, 255, 0.08)" : "none",
+        transition: "all .3s ease",
+        width: "100%",
+        maxWidth: "100vw",
+        boxSizing: "border-box"
+      }}>
+        <a href="#hero" onClick={() => setOpen(false)} style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{
+            width: 34,
+            height: 34,
+            borderRadius: "50%",
+            padding: 1.5,
+            background: "linear-gradient(135deg, #6366f1, #a78bfa)",
+            boxShadow: "0 0 14px rgba(124,58,237,0.4)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+            flexShrink: 0
+          }}>
+            <img src="/mayur.jpg" alt="Mayur Tamkhane" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%", borderRadius: "50%" }} />
+          </div>
+          <GlitchText as="div" trigger="mount" delay={200} speed={22} style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: "clamp(17px, 4vw, 20px)", background: "linear-gradient(120deg,#fff,rgba(167,139,250,.9))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Bunny96</GlitchText>
         </a>
-      </div>
-    </nav>
+
+        {/* Desktop Navigation */}
+        <div className="desktop-nav">
+          {links.map((l) => (
+            <a
+              key={l.name}
+              href={l.href}
+              onMouseEnter={() => setHov(l.name)}
+              onMouseLeave={() => setHov(null)}
+              className="nav-link"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: 12,
+                letterSpacing: ".1em",
+                textTransform: "uppercase",
+                color: hov === l.name ? "#fff" : "rgba(255,255,255,.6)",
+                textDecoration: "none",
+                transition: "color .2s ease",
+                padding: "6px 8px"
+              }}
+            >
+              {l.name}
+            </a>
+          ))}
+          <a
+            href="https://github.com/MayurT96"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontSize: 11.5,
+              letterSpacing: ".08em",
+              padding: "6px 14px",
+              borderRadius: 40,
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "rgba(255,255,255,0.8)",
+              textDecoration: "none",
+              transition: "all .25s ease"
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = "#fff"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,0.8)"; }}
+          >
+            GitHub
+          </a>
+        </div>
+
+        {/* Mobile Hamburger Toggle Button */}
+        <button
+          onClick={() => setOpen(!open)}
+          aria-label={open ? "Close menu" : "Open menu"}
+          className="mobile-menu-btn"
+          style={{
+            background: "rgba(255, 255, 255, 0.05)",
+            border: "1px solid rgba(255, 255, 255, 0.12)",
+            borderRadius: 12,
+            padding: "8px 10px",
+            color: "#fff",
+            cursor: "pointer",
+            display: "none",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 40,
+            height: 40,
+            outline: "none",
+            transition: "all 0.25s ease"
+          }}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            {open ? (
+              <>
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </>
+            ) : (
+              <>
+                <line x1="3" y1="7" x2="21" y2="7"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="17" x2="21" y2="17"></line>
+              </>
+            )}
+          </svg>
+        </button>
+      </nav>
+
+      {/* Mobile Menu Drawer */}
+      {open && (
+        <div style={{
+          position: "fixed",
+          inset: 0,
+          top: 64,
+          background: "rgba(6, 6, 15, 0.98)",
+          backdropFilter: "blur(28px)",
+          WebkitBackdropFilter: "blur(28px)",
+          zIndex: 999,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          padding: "24px 20px 32px",
+          boxSizing: "border-box",
+          overflowY: "auto"
+        }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ fontFamily: "monospace", fontSize: 10, letterSpacing: ".25em", color: "#a78bfa", textTransform: "uppercase", marginBottom: 2 }}>
+              Navigation
+            </div>
+            {links.map((l, i) => (
+              <a
+                key={l.name}
+                href={l.href}
+                onClick={() => setOpen(false)}
+                style={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontSize: 22,
+                  fontWeight: 600,
+                  color: "#fff",
+                  textDecoration: "none",
+                  padding: "12px 0",
+                  borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between"
+                }}
+              >
+                <span>{l.name}</span>
+                <span style={{ fontSize: 12, color: "#a78bfa", fontFamily: "monospace" }}>0{i + 1}</span>
+              </a>
+            ))}
+          </div>
+
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 18, marginTop: 24 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#4ade80", boxShadow: "0 0 8px #4ade80" }} />
+              <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 12, color: "#4ade80", letterSpacing: ".04em" }}>
+                Available for Junior / Intern Roles
+              </span>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              <a
+                href="https://github.com/MayurT96"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  padding: "10px",
+                  borderRadius: 12,
+                  background: "rgba(255, 255, 255, 0.04)",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  color: "#fff",
+                  fontSize: 12,
+                  textDecoration: "none",
+                  fontFamily: "'Playfair Display', serif"
+                }}
+              >
+                GitHub ↗
+              </a>
+              <a
+                href="https://www.linkedin.com/in/mayur-tamkhane-7a9726243"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  padding: "10px",
+                  borderRadius: 12,
+                  background: "rgba(255, 255, 255, 0.04)",
+                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  color: "#a78bfa",
+                  fontSize: 12,
+                  textDecoration: "none",
+                  fontFamily: "'Playfair Display', serif"
+                }}
+              >
+                LinkedIn ↗
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -267,6 +481,8 @@ function AboutPortraitCard() {
           ? "0 25px 50px -12px rgba(124, 58, 237, 0.25), 0 0 30px rgba(167, 139, 250, 0.15)" 
           : "0 10px 30px rgba(0, 0, 0, 0.4)",
         width: "100%",
+        maxWidth: 360,
+        margin: "0 auto",
         boxSizing: "border-box"
       }}
     >
@@ -471,14 +687,30 @@ function PCard(props) {
         zIndex: 10
       }} />
 
-      <div style={{ height: 165, background: "linear-gradient(135deg," + p.c1 + "18," + p.c2 + "12)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
-        <div style={{ fontSize: 52, filter: "drop-shadow(0 4px 14px " + p.c1 + "55)", transform: "translateZ(30px)", transition: "transform 0.4s ease" }}>{p.emoji}</div>
-        <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 6, zIndex: 11 }}>
-          <a href={p.github} target="_blank" rel="noopener noreferrer" style={{ padding: "3px 9px", borderRadius: 20, background: "rgba(0,0,0,.6)", border: "1px solid rgba(255,255,255,.15)", color: "rgba(255,255,255,.75)", fontFamily: "'Playfair Display', serif", fontSize: 10, textDecoration: "none", cursor: "pointer", transition: "all .2s ease" }}
-            onMouseEnter={function (e) { e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "rgba(255,255,255,.4)"; }} onMouseLeave={function (e) { e.currentTarget.style.color = "rgba(255,255,255,.75)"; e.currentTarget.style.borderColor = "rgba(255,255,255,.15)"; }}>GitHub ↗</a>
-          {p.live && <a href={p.live} target="_blank" rel="noopener noreferrer" style={{ padding: "3px 9px", borderRadius: 20, background: p.c1 + "25", border: "1px solid " + p.c1 + "60", color: p.c1, fontFamily: "'Playfair Display', serif", fontSize: 10, fontWeight: 500, textDecoration: "none", cursor: "pointer", transition: "all .2s ease" }}
-            onMouseEnter={function (e) { e.currentTarget.style.background = p.c1; e.currentTarget.style.color = "#000"; e.currentTarget.style.boxShadow = "0 0 12px " + p.c1 + "80"; }}
-            onMouseLeave={function (e) { e.currentTarget.style.background = p.c1 + "25"; e.currentTarget.style.color = p.c1; e.currentTarget.style.boxShadow = "none"; }}>Live ↗</a>}
+      <div style={{ height: 165, background: "linear-gradient(135deg," + p.c1 + "18," + p.c2 + "12)", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
+        {p.image ? (
+          <div style={{ width: "100%", height: "100%", position: "relative", overflow: "hidden" }}>
+            <img src={p.image} alt={p.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top", transition: "transform 0.5s ease", transform: hov ? "scale(1.06)" : "scale(1)" }} />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(6,6,15,0.92) 0%, rgba(6,6,15,0.25) 50%, rgba(6,6,15,0.5) 100%)" }} />
+            <div style={{ position: "absolute", bottom: 10, left: 14, fontSize: 30, filter: "drop-shadow(0 2px 10px rgba(0,0,0,0.9))", transform: "translateZ(30px)" }}>{p.emoji}</div>
+          </div>
+        ) : (
+          <div style={{ fontSize: 52, filter: "drop-shadow(0 4px 14px " + p.c1 + "55)", transform: "translateZ(30px)", transition: "transform 0.4s ease" }}>{p.emoji}</div>
+        )}
+        <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 6, zIndex: 11, alignItems: "center" }}>
+          {p.inProgress && (
+            <span style={{ padding: "4px 10px", borderRadius: 20, background: "rgba(14,165,233,0.22)", border: "1px solid rgba(56,189,248,0.45)", color: "#38bdf8", fontFamily: "'Poppins', sans-serif", fontSize: 10, fontWeight: 500, letterSpacing: ".04em", display: "inline-flex", alignItems: "center", gap: 5, backdropFilter: "blur(8px)" }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#38bdf8", boxShadow: "0 0 6px #38bdf8" }} />
+              Building
+            </span>
+          )}
+          {p.github && (
+            <a href={p.github} target="_blank" rel="noopener noreferrer" style={{ padding: "5px 12px", borderRadius: 20, background: "rgba(0,0,0,.7)", border: "1px solid rgba(255,255,255,.2)", color: "rgba(255,255,255,.85)", fontFamily: "'Playfair Display', serif", fontSize: 11, textDecoration: "none", cursor: "pointer", transition: "all .2s ease", display: "inline-flex", alignItems: "center" }}
+              onMouseEnter={function (e) { e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "rgba(255,255,255,.5)"; }} onMouseLeave={function (e) { e.currentTarget.style.color = "rgba(255,255,255,.85)"; e.currentTarget.style.borderColor = "rgba(255,255,255,.2)"; }}>GitHub ↗</a>
+          )}
+          {p.live && <a href={p.live} target="_blank" rel="noopener noreferrer" style={{ padding: "5px 12px", borderRadius: 20, background: p.c1 + "30", border: "1px solid " + p.c1 + "80", color: p.c1, fontFamily: "'Playfair Display', serif", fontSize: 11, fontWeight: 600, textDecoration: "none", cursor: "pointer", transition: "all .2s ease", display: "inline-flex", alignItems: "center" }}
+            onMouseEnter={function (e) { e.currentTarget.style.background = p.c1; e.currentTarget.style.color = "#000"; e.currentTarget.style.boxShadow = "0 0 14px " + p.c1 + "90"; }}
+            onMouseLeave={function (e) { e.currentTarget.style.background = p.c1 + "30"; e.currentTarget.style.color = p.c1; e.currentTarget.style.boxShadow = "none"; }}>Live ↗</a>}
         </div>
       </div>
       <div style={{ padding: "clamp(16px, 3.5vw, 22px)" }}>
@@ -539,7 +771,7 @@ function ContactForm() {
   };
 
   function iS(f) {
-    return { width: "100%", maxWidth: "100%", padding: "12px 16px", background: "rgba(255,255,255,.04)", border: "1px solid " + (ff === f ? "rgba(167,139,250,.5)" : "rgba(255,255,255,.08)"), borderRadius: 11, color: "#fff", fontSize: 15, fontFamily: "'Playfair Display', serif", outline: "none", transition: "border-color .25s, box-shadow .25s", boxSizing: "border-box", boxShadow: ff === f ? "0 0 0 3px rgba(124,58,237,.12)" : "none", fontWeight: 300 };
+    return { width: "100%", maxWidth: "100%", padding: "13px 16px", background: "rgba(255,255,255,.04)", border: "1px solid " + (ff === f ? "rgba(167,139,250,.5)" : "rgba(255,255,255,.08)"), borderRadius: 11, color: "#fff", fontSize: 16, fontFamily: "'Playfair Display', serif", outline: "none", transition: "border-color .25s, box-shadow .25s", boxSizing: "border-box", boxShadow: ff === f ? "0 0 0 3px rgba(124,58,237,.12)" : "none", fontWeight: 300 };
   }
 
   if (status === "ok") return (
@@ -572,7 +804,7 @@ function ContactForm() {
       {status === "ef" && <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "#f87171", padding: "9px 14px", borderRadius: 9, background: "rgba(248,113,113,.07)", border: "1px solid rgba(248,113,113,.18)" }}>⚠ Please fill all fields.</div>}
       {status === "ee" && <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "#f87171", padding: "9px 14px", borderRadius: 9, background: "rgba(248,113,113,.07)", border: "1px solid rgba(248,113,113,.18)" }}>⚠ Please enter a valid email.</div>}
       {status === "es" && <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "#f87171", padding: "9px 14px", borderRadius: 9, background: "rgba(248,113,113,.07)", border: "1px solid rgba(248,113,113,.18)" }}>⚠ Failed to send — email me at <a href="mailto:mayurtamkhane96@gmail.com" style={{ color: "#a78bfa" }}>mayurtamkhane96@gmail.com</a></div>}
-      <button type="submit" disabled={status === "sending"} style={{ padding: "13px 28px", borderRadius: 40, border: "none", background: status === "sending" ? "rgba(99,102,241,.35)" : "linear-gradient(135deg,#6366f1,#a78bfa)", color: "#fff", fontFamily: "'Playfair Display', serif", fontSize: 13, fontWeight: 600, letterSpacing: ".08em", cursor: status === "sending" ? "default" : "pointer", transition: "opacity .25s, transform .25s", alignSelf: "flex-start" }}
+      <button type="submit" className="contact-form-btn" disabled={status === "sending"} style={{ padding: "13px 28px", borderRadius: 40, border: "none", background: status === "sending" ? "rgba(99,102,241,.35)" : "linear-gradient(135deg,#6366f1,#a78bfa)", color: "#fff", fontFamily: "'Playfair Display', serif", fontSize: 13, fontWeight: 600, letterSpacing: ".08em", cursor: status === "sending" ? "default" : "pointer", transition: "opacity .25s, transform .25s", alignSelf: "flex-start" }}
         onMouseEnter={function (e) { if (status !== "sending") { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(99,102,241,.4)"; } }}
         onMouseLeave={function (e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}>
         {status === "sending" ? "Sending…" : "Send Message →"}
@@ -584,18 +816,18 @@ function ContactForm() {
 function FloatingResume() {
   const [hov, setHov] = useState(false);
   const [status, setStatus] = useState("RESUME");
-  
+
   const handleClick = (e) => {
     e.preventDefault();
-    
+
     // Play sound
     if (typeof Audio !== "undefined") {
       const audio = new Audio("/fahhhhh.mp3");
-      audio.volume = 0.5;
+      audio.volume = 0.6;
       audio.play().catch(() => {});
     }
 
-    // Show 'Not Uploaded' status
+    // Show 'NOT UPLOADED' status
     setStatus("NOT UPLOADED");
     setTimeout(() => {
       setStatus("RESUME");
@@ -613,11 +845,11 @@ function FloatingResume() {
         zIndex: 9998,
         padding: "10px 20px",
         borderRadius: 40,
-        background: status === "NOT UPLOADED" ? "rgba(239, 68, 68, 0.1)" : "rgba(6, 6, 15, 0.65)",
+        background: status === "NOT UPLOADED" ? "rgba(239, 68, 68, 0.15)" : "rgba(6, 6, 15, 0.75)",
         backdropFilter: "blur(16px)",
         WebkitBackdropFilter: "blur(16px)",
-        border: `1px solid ${status === "NOT UPLOADED" ? "rgba(239, 68, 68, 0.5)" : (hov ? "rgba(167,139,250,0.7)" : "rgba(167,139,250,0.2)")}`,
-        color: status === "NOT UPLOADED" ? "#f87171" : (hov ? "#fff" : "rgba(255,255,255,0.7)"),
+        border: `1px solid ${status === "NOT UPLOADED" ? "rgba(239, 68, 68, 0.5)" : (hov ? "rgba(167,139,250,0.7)" : "rgba(167,139,250,0.25)")}`,
+        color: status === "NOT UPLOADED" ? "#f87171" : (hov ? "#fff" : "rgba(255,255,255,0.85)"),
         fontFamily: "'Playfair Display', serif",
         fontSize: 11,
         letterSpacing: "0.14em",
@@ -627,9 +859,9 @@ function FloatingResume() {
         alignItems: "center",
         gap: 10,
         transition: "all 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
-        boxShadow: hov ? "0 10px 40px -10px rgba(167,139,250,0.5)" : "0 4px 20px -5px rgba(0,0,0,0.5)",
+        boxShadow: status === "NOT UPLOADED" ? "0 0 24px rgba(239, 68, 68, 0.35)" : (hov ? "0 10px 40px -10px rgba(167,139,250,0.5)" : "0 4px 20px -5px rgba(0,0,0,0.5)"),
         transform: hov ? "translateY(-3px) scale(1.02)" : "translateY(0) scale(1)",
-        cursor: hov ? "pointer" : "none"
+        cursor: "pointer"
       }}
       className="floating-resume"
       onMouseEnter={() => setHov(true)}
@@ -642,7 +874,7 @@ function FloatingResume() {
         width: 24,
         height: 24,
         borderRadius: "50%",
-        background: status === "NOT UPLOADED" ? "rgba(239, 68, 68, 0.2)" : (hov ? "rgba(167,139,250,0.25)" : "rgba(255,255,255,0.08)"),
+        background: status === "NOT UPLOADED" ? "rgba(239, 68, 68, 0.25)" : (hov ? "rgba(167,139,250,0.25)" : "rgba(255,255,255,0.08)"),
         transition: "background 0.4s",
         color: status === "NOT UPLOADED" ? "#f87171" : (hov ? "#fff" : "#a78bfa"),
         flexShrink: 0
@@ -683,6 +915,18 @@ export default function App() {
   useEffect(function () { if (ready) setTimeout(function () { setHeroIn(true); }, 100); }, [ready]);
 
   const projects = [
+    { 
+      emoji: "🪐", 
+      title: "Cosmic Explorer AI", 
+      c1: "#38bdf8", 
+      c2: "#818cf8", 
+      image: "/cosmic-explorer.png",
+      inProgress: true,
+      desc: "An interactive 3D solar system simulation and celestial exploration platform powered by Three.js and AI. Features real-time orbital mechanics, planetary analytics, guided space tours, and NASA data integration.", 
+      stack: ["React.js", "Three.js", "WebGL", "Vite", "Tailwind CSS", "Gemini AI", "NASA APIs"], 
+      github: "https://github.com/MayurT96", 
+      live: null 
+    },
     { emoji: "🚆", title: "RailSetu — Indian Railway Portal", c1: "#06b6d4", c2: "#3b82f6", desc: "A full-stack Indian Railway travel portal built on the Java Spring Boot ecosystem with React. Features live train schedules, station corridor navigation, route timetables, ticket booking flows, and a neo-animated 3D UI.", stack: ["Java", "Spring Boot", "MySQL", "Hibernate", "React.js", "REST APIs", "Three.js", "GSAP", "Tailwind CSS"], github: "https://github.com/MayurT96/InRailway-Frontend", live: "https://in-railway-frontend.vercel.app/" },
     { emoji: "🏢", title: "EMS Pro — Employee Hub", c1: "#6366f1", c2: "#a855f7", desc: "A full-stack enterprise Employee Management System with interactive directory search, department analytics, role-based workflows, RESTful APIs, and cloud sync.", stack: ["React.js", "Java", "Spring Boot", "MySQL", "Spring Data JPA", "Hibernate", "Bootstrap 5", "Render", "Vercel"], github: "https://github.com/MayurT96", live: "https://employee-management-frontend-one-lime.vercel.app/employees" },
     { emoji: "📱", title: "VPN Android App", c1: "#f43f5e", c2: "#8b5cf6", desc: "A secure and robust VPN application for Android devices, providing private and unrestricted internet access.", stack: ["Android", "Java", "Kotlin"], github: "https://github.com/MayurT96/VPN-android-app", live: null },
@@ -723,22 +967,78 @@ export default function App() {
         @keyframes gradientFlow { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
         @keyframes avatarFloat { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-6px)} }
         @keyframes statusPing { 0%{transform:scale(0.95);box-shadow:0 0 0 0 rgba(34,197,94,0.7)} 70%{transform:scale(1);box-shadow:0 0 0 5px rgba(34,197,94,0)} 100%{transform:scale(0.95);box-shadow:0 0 0 0 rgba(34,197,94,0)} }
-        @media(max-width:768px){
-          .two-col { grid-template-columns:1fr !important; gap:28px !important; }
-          .proj-grid { grid-template-columns:1fr !important; gap:18px !important; }
-          .trait-grid { grid-template-columns:1fr 1fr !important; gap:10px !important; }
-          .hero-links { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; gap: 8px 16px !important; width: 100% !important; max-width: 480px !important; margin: 16px auto 0 !important; }
-          .hero-link-item { font-size: 12px !important; justify-content: center !important; word-break: break-all !important; padding: 6px 12px !important; background: rgba(255,255,255,.02) !important; border-radius: 20px !important; border: 1px solid rgba(255,255,255,.05) !important; }
-          .nav-links-container { gap: 6px !important; }
-          .nav-link { font-size: 10px !important; padding: 4px 8px !important; letter-spacing: 0.04em !important; }
-          .floating-resume { padding: 8px 14px !important; font-size: 9.5px !important; left: 12px !important; bottom: 20px !important; gap: 6px !important; }
+        
+        .desktop-nav { display: flex; gap: clamp(8px, 2vw, 32px); align-items: center; }
+        .mobile-menu-btn { display: none; }
+        .desktop-label { display: inline; }
+        .mobile-label { display: none; }
+        
+        @media (max-width: 768px) {
+          .desktop-nav { display: none !important; }
+          .mobile-menu-btn { display: flex !important; }
+          .floating-resume {
+            display: flex !important;
+            left: 12px !important;
+            bottom: 18px !important;
+            padding: 8px 14px !important;
+            font-size: 9.5px !important;
+            gap: 6px !important;
+          }
+          .scroll-indicator-bar { display: none !important; }
+          
+          .desktop-label { display: none !important; }
+          .mobile-label { display: inline !important; }
+
+          .hero-section {
+            min-height: auto !important;
+            padding-top: max(82px, 12svh) !important;
+            padding-bottom: 40px !important;
+          }
+          .hero-cta-group {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            gap: 10px !important;
+            width: 100% !important;
+          }
+          .hero-cta-btn {
+            flex: 1 1 auto !important;
+            min-width: 140px !important;
+            max-width: 220px !important;
+            text-align: center !important;
+            justify-content: center !important;
+            padding: 11px 18px !important;
+            font-size: 12px !important;
+          }
+          .hero-links {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            gap: 8px 10px !important;
+            width: 100% !important;
+            max-width: 380px !important;
+            margin: 14px auto 0 !important;
+          }
+          .hero-link-item {
+            font-size: 11.5px !important;
+            padding: 7px 14px !important;
+            border-radius: 20px !important;
+            background: rgba(255,255,255,.03) !important;
+            border: 1px solid rgba(255,255,255,.08) !important;
+          }
+
+          .two-col { grid-template-columns: 1fr !important; gap: 24px !important; }
+          .proj-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+          .trait-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+          .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
         }
-        @media(max-width:480px){
-          .trait-grid { grid-template-columns:1fr 1fr !important; gap:8px !important; }
-          .nav-link { display: none !important; }
-          .nav-link.active-on-mobile { display: inline-block !important; font-size: 9.5px !important; padding: 4px 8px !important; }
-          .hero-links { max-width: 100% !important; }
-          .hero-link-item { font-size: 11px !important; }
+
+        @media (max-width: 480px) {
+          .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+          .hero-cta-btn {
+            max-width: 100% !important;
+            width: 100% !important;
+          }
           html, body { overflow-x: hidden !important; width: 100% !important; max-width: 100vw !important; }
         }
         @media (pointer: coarse), (max-width: 768px) {
@@ -765,72 +1065,73 @@ export default function App() {
             <Navbar scrolled={scrolled} />
 
             {/* ── HERO ── */}
-            <section id="hero" style={{ minHeight: "88vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "clamp(75px,9vh,95px) " + P + " clamp(26px, 5vh, 42px)", position: "relative", overflow: "hidden", width: "100%", maxWidth: "100vw" }}>
+            <section id="hero" className="hero-section" style={{ minHeight: "88vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "clamp(75px,9vh,95px) " + P + " clamp(26px, 5vh, 42px)", position: "relative", overflow: "hidden", width: "100%", maxWidth: "100vw" }}>
               <div style={{ position: "absolute", width: "min(500px,80vw)", height: "min(500px,80vw)", borderRadius: "50%", background: "radial-gradient(circle,rgba(99,102,241,.1) 0%,transparent 68%)", top: "50%", left: "50%", transform: "translate(-50%, -50%)", animation: "pulse 6s ease-in-out infinite", pointerEvents: "none" }} />
               <div style={{ opacity: heroIn ? 1 : 0, transform: heroIn ? "translateY(0)" : "translateY(24px)", transition: "opacity 1s .1s, transform 1s .1s", width: "100%", maxWidth: 1080, margin: "0 auto" }}>
 
-                <div style={{ display: "block", marginBottom: 24 }}>
+                <div style={{ display: "block", marginBottom: 20 }}>
                   <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 16px", borderRadius: 40, border: "1px solid rgba(167,139,250,.25)", background: "rgba(124,58,237,.07)", fontFamily: "'Playfair Display', serif", fontSize: 11, color: "#a78bfa", letterSpacing: ".14em" }}>
                     <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4ade80", boxShadow: "0 0 8px #4ade80", display: "inline-block", animation: "blink 2.5s infinite" }} />
                     <GlitchText trigger="mount" delay={400} speed={20} style={{ fontSize: 11, color: "#a78bfa", letterSpacing: ".14em", fontFamily: "'Playfair Display', serif" }}>OPEN TO OPPORTUNITIES</GlitchText>
                   </div>
                 </div>
 
-                <h1 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 500, fontSize: "clamp(30px,9vw,96px)", lineHeight: 1.0, letterSpacing: "-.03em", background: "linear-gradient(145deg, #ffffff 20%, #e2e8f0 55%, #c4b5fd 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: 8, wordBreak: "break-word" }}>
+                <h1 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 500, fontSize: "clamp(34px,9vw,96px)", lineHeight: 1.05, letterSpacing: "-.03em", background: "linear-gradient(145deg, #ffffff 20%, #e2e8f0 55%, #c4b5fd 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: 8, wordBreak: "break-word" }}>
                   <GlitchText trigger="mount" delay={600} speed={18}>Mayur</GlitchText><br /><span style={{ fontStyle: "italic", fontWeight: 400 }}><GlitchText trigger="mount" delay={900} speed={18}>Tamkhane.</GlitchText></span>
                 </h1>
 
-                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(14px,3vw,21px)", color: "rgba(255,255,255,.52)", margin: "16px 0 12px", minHeight: 28, fontWeight: 300 }}>
+                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(14px,3vw,21px)", color: "rgba(255,255,255,.52)", margin: "14px 0 10px", minHeight: 28, fontWeight: 300 }}>
                   <Typewriter words={["Full-Stack Developer", "React & Next.js", "Java & Spring Boot", "Interactive 3D Motion", "Open to Work"]} />
                 </div>
 
-                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,2vw,16px)", color: "rgba(255,255,255,.38)", maxWidth: 520, margin: "0 auto 36px", lineHeight: 1.75, fontWeight: 300, padding: "0 8px" }}>
+                <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,2vw,16px)", color: "rgba(255,255,255,.38)", maxWidth: 520, margin: "0 auto 28px", lineHeight: 1.75, fontWeight: 300, padding: "0 8px" }}>
                   A passionate developer crafting modern, high-performance web applications — focused on clean code, robust architectures, and production-ready products.
                 </p>
 
-                <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", marginBottom: 32 }}>
-                  <a href="#projects" style={{ padding: "11px 26px", borderRadius: 40, background: "linear-gradient(135deg,#6366f1,#a78bfa)", color: "#fff", fontFamily: "'Playfair Display', serif", fontSize: 12.5, letterSpacing: ".08em", textDecoration: "none", transition: "transform .25s, box-shadow .25s", boxShadow: "0 4px 22px rgba(99,102,241,.35)", cursor: "none" }}
+                <div className="hero-cta-group" style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap", marginBottom: 28 }}>
+                  <a href="#projects" className="hero-cta-btn" style={{ padding: "11px 24px", borderRadius: 40, background: "linear-gradient(135deg,#6366f1,#a78bfa)", color: "#fff", fontFamily: "'Playfair Display', serif", fontSize: 12.5, letterSpacing: ".08em", textDecoration: "none", transition: "transform .25s, box-shadow .25s", boxShadow: "0 4px 22px rgba(99,102,241,.35)", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
                     onMouseEnter={function (e) { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 36px rgba(99,102,241,.55)"; }}
                     onMouseLeave={function (e) { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 22px rgba(99,102,241,.35)"; }}>
                     View Projects →
                   </a>
-                  <a href="#contact" style={{ padding: "11px 26px", borderRadius: 40, border: "1px solid rgba(255,255,255,.13)", color: "rgba(255,255,255,.68)", fontFamily: "'Playfair Display', serif", fontSize: 12.5, letterSpacing: ".08em", textDecoration: "none", transition: "all .25s", cursor: "none" }}
+                  <a href="#contact" className="hero-cta-btn" style={{ padding: "11px 24px", borderRadius: 40, border: "1px solid rgba(255,255,255,.13)", color: "rgba(255,255,255,.68)", fontFamily: "'Playfair Display', serif", fontSize: 12.5, letterSpacing: ".08em", textDecoration: "none", transition: "all .25s", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
                     onMouseEnter={function (e) { e.currentTarget.style.borderColor = "rgba(167,139,250,.45)"; e.currentTarget.style.color = "#fff"; e.currentTarget.style.transform = "translateY(-2px)"; }}
                     onMouseLeave={function (e) { e.currentTarget.style.borderColor = "rgba(255,255,255,.13)"; e.currentTarget.style.color = "rgba(255,255,255,.68)"; e.currentTarget.style.transform = "translateY(0)"; }}>
                     Get in Touch
                   </a>
                 </div>
 
-                <div className="hero-links" style={{ display: "flex", gap: "16px 24px", justifyContent: "center", flexWrap: "wrap", marginTop: 4 }}>
+                <div className="hero-links" style={{ display: "flex", gap: "12px 20px", justifyContent: "center", flexWrap: "wrap", marginTop: 4 }}>
                   {[
-                    [<svg key="em" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>, "mayurtamkhane96@gmail.com", "mailto:mayurtamkhane96@gmail.com"], 
-                    [<svg key="ph" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>, <span style={{ fontFamily: "'Poppins', sans-serif" }}>+91 7387553347</span>, "tel:+917387553347"], 
-                    [<svg key="li" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>, "LinkedIn", "https://www.linkedin.com/in/mayur-tamkhane-7a9726243"], 
-                    [<svg key="gh" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>, "GitHub", "https://github.com/MayurT96"]
+                    { icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>, full: "mayurtamkhane96@gmail.com", short: "Email", href: "mailto:mayurtamkhane96@gmail.com" }, 
+                    { icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>, full: <span style={{ fontFamily: "'Poppins', sans-serif" }}>+91 7387553347</span>, short: "Call", href: "tel:+917387553347" }, 
+                    { icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>, full: "LinkedIn", short: "LinkedIn", href: "https://www.linkedin.com/in/mayur-tamkhane-7a9726243" }, 
+                    { icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>, full: "GitHub", short: "GitHub", href: "https://github.com/MayurT96" }
                   ].map(function (it) {
-                    return <a key={it[1]} href={it[2]} target={it[2].startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
+                    return <a key={it.short} href={it.href} target={it.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"
                       className="hero-link-item"
-                      style={{ fontFamily: "'Playfair Display', serif", fontSize: 12.5, color: "rgba(255,255,255,.45)", textDecoration: "none", display: "flex", alignItems: "center", gap: 8, transition: "color .25s", cursor: "none" }}
+                      style={{ fontFamily: "'Playfair Display', serif", fontSize: 12.5, color: "rgba(255,255,255,.55)", textDecoration: "none", display: "flex", alignItems: "center", gap: 8, transition: "all .25s", cursor: "pointer" }}
                       onMouseEnter={function (e) { 
                         e.currentTarget.style.color = "#a78bfa"; 
                         const ic = e.currentTarget.querySelector('.icon-circle');
-                        if (ic) { ic.style.background = "rgba(167,139,250,.1)"; ic.style.borderColor = "rgba(167,139,250,.3)"; ic.style.transform = "scale(1.08)"; }
+                        if (ic) { ic.style.background = "rgba(167,139,250,.15)"; ic.style.borderColor = "rgba(167,139,250,.35)"; ic.style.transform = "scale(1.08)"; }
                       }} 
                       onMouseLeave={function (e) { 
-                        e.currentTarget.style.color = "rgba(255,255,255,.45)"; 
+                        e.currentTarget.style.color = "rgba(255,255,255,.55)"; 
                         const ic = e.currentTarget.querySelector('.icon-circle');
                         if (ic) { ic.style.background = "rgba(255,255,255,.03)"; ic.style.borderColor = "rgba(255,255,255,.08)"; ic.style.transform = "scale(1)"; }
                       }}>
                       <span className="icon-circle" style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 30, height: 30, borderRadius: "50%", background: "rgba(255,255,255,.03)", border: "1px solid rgba(255,255,255,.08)", transition: "all .3s cubic-bezier(0.23, 1, 0.32, 1)", flexShrink: 0 }}>
-                        {it[0]}
+                        {it.icon}
                       </span>
-                      <span style={{ wordBreak: "break-all" }}>{it[1]}</span>
+                      <span className="desktop-label">{it.full}</span>
+                      <span className="mobile-label">{it.short}</span>
                     </a>;
                   })}
                 </div>
               </div>
 
-              <div style={{ position: "absolute", bottom: 20, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 7, opacity: heroIn ? .38 : 0, transition: "opacity 1s 2s", pointerEvents: "none" }}>
+              <div className="scroll-indicator-bar" style={{ position: "absolute", bottom: 20, left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 7, opacity: heroIn ? .38 : 0, transition: "opacity 1s 2s", pointerEvents: "none" }}>
                 <div style={{ width: 1, height: 36, background: "linear-gradient(180deg,#a78bfa,transparent)", animation: "sbar 2.4s ease-in-out infinite", pointerEvents: "none" }} />
               </div>
             </section>
@@ -853,7 +1154,7 @@ export default function App() {
                     <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(13px,1.4vw,15px)", color: "rgba(255,255,255,.48)", lineHeight: 1.9, fontWeight: 300 }}>
                       I am actively seeking <span style={{ color: "#34d399", fontWeight: 500 }}>Software Engineer / Full-Stack opportunities</span> where I can contribute high-quality code, collaborate with experienced engineers, and ship features that create real business value.
                     </p>
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 125px), 1fr))", gap: 10, marginTop: 24, marginBottom: 28, width: "100%" }}>
+                    <div className="stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 125px), 1fr))", gap: 10, marginTop: 24, marginBottom: 28, width: "100%" }}>
                       {[
                         { val: "3+", label: "Deployed Apps", sub: "Production-grade" },
                         { val: "Full-Stack", label: "Core Stack", sub: "React & Spring Boot" },

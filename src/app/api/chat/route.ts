@@ -20,9 +20,10 @@ const SYSTEM_PROMPT = `You are BunnyAI, the official digital assistant for Mayur
 - Tools & Cloud: Git, GitHub, Render, Vercel, IntelliJ IDEA, Antigravity AI IDE, Postman, VS Code, Docker, AWS.
 
 ## Featured Projects
-1. **RailSetu — Indian Railway Portal**: Full-stack Indian Railway passenger portal built with Java, Spring Boot, MySQL, Hibernate, and React. Features live train searches, station corridor directory, interactive timetable route mapping, ticket booking workflows, and neo-animated 3D UI with Three.js and GSAP. Live Demo: https://in-railway-frontend.vercel.app/ | GitHub: https://github.com/MayurT96/InRailway-Frontend
-2. **EMS Pro — Employee Hub**: Full-stack enterprise Employee Management System built with React, Spring Boot, Spring Data JPA, Hibernate, MySQL (Clever Cloud), deployed on Vercel & Render. Features dynamic employee directory search, department filters, live metrics, and REST APIs.
-3. **VPN Android App**: A custom Android application focused on network security.
+1. **Cosmic Explorer AI**: Interactive 3D Solar System simulation & celestial intelligence platform built with Three.js, WebGL, React.js, and Gemini AI. Features realistic planetary orbits, real-time astrophysics telemetry, guided planetary tours, orbital mechanics, and NASA API integration. Status: In Active Development / Building.
+2. **RailSetu — Indian Railway Portal**: Full-stack Indian Railway passenger portal built with Java, Spring Boot, MySQL, Hibernate, and React. Features live train searches, station corridor directory, interactive timetable route mapping, ticket booking workflows, and neo-animated 3D UI with Three.js and GSAP. Live Demo: https://in-railway-frontend.vercel.app/ | GitHub: https://github.com/MayurT96/InRailway-Frontend
+3. **EMS Pro — Employee Hub**: Full-stack enterprise Employee Management System built with React, Spring Boot, Spring Data JPA, Hibernate, MySQL (Clever Cloud), deployed on Vercel & Render. Features dynamic employee directory search, department filters, live metrics, and REST APIs.
+4. **VPN Android App**: A custom Android application focused on network security.
 
 ## Behavioral Rules
 - Portfolio Questions: When asked about Mayur, leverage the "About" and "Projects" sections to provide specific, engaging details.
